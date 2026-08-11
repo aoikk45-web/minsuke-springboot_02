@@ -352,10 +352,68 @@ WHERE event_id = :eventId AND status = 'REGISTERED';
 | `Child` | children | family |
 | `Event` | events | event |
 | `EventAttendance` | event_attendances | event |
+| `Instructor`（Loop 08） | instructors | instructor |
 
 ---
 
-## 12. Open Questions
+## 12. Loop 08 — Instructors（Proposed — 2026-08-12）
+
+> 実装（Flyway V3 適用・Entity）は **設計承認後**。SQL 草案: `docs/database/V3__create_instructors.sql`
+
+### 12.1 ER（追加）
+
+```mermaid
+erDiagram
+    instructors {
+        bigint id PK
+        varchar name
+        varchar name_kana
+        varchar email
+        varchar phone
+        text notes
+        boolean active
+        timestamptz created_at
+        timestamptz updated_at
+    }
+```
+
+- Loop 08 では他テーブルとの FK **なし**（孤立マスタ）
+- **Loop 09:** イベントおよび／またはスケジュールから `instructor_id`（または割当テーブル）を参照（OQ-03 依存）
+- **稼働状況（FR-I06）:** 割当データから集計する想定（専用稼働カレンダーは Loop 09 設計で判断）
+- `users` との紐づけは **行わない**（OQ-I01 ✅ ログインは Loop 08 外）
+
+### 12.2 カラム定義（Proposed）
+
+| カラム | 型 | NULL | 説明 |
+|---|---|---|---|
+| id | BIGSERIAL | NO | PK |
+| name | VARCHAR(100) | NO | 氏名 |
+| name_kana | VARCHAR(100) | NO | ふりがな |
+| email | VARCHAR(255) | YES | 連絡用（ログイン ID ではない） |
+| phone | VARCHAR(20) | YES | 電話 |
+| notes | TEXT | YES | 備考（ADMIN 向け） |
+| active | BOOLEAN | NO | 有効フラグ（DEFAULT TRUE） |
+| created_at / updated_at | TIMESTAMPTZ | NO | 監査 |
+
+### 12.3 削除ポリシー（OQ-I04）
+
+| 案 | 内容 | 推奨 |
+|---|---|---|
+| A | 物理削除（参照がない間のみ） | Loop 08 では可。Loop 09 以降は FK RESTRICT |
+| B | `active = false` のみ | 履歴保全向き |
+| **推奨** | **B を主とし、未使用時のみ物理削除を許可** | Proposed |
+
+### 12.4 Decision 候補
+
+| ID | 内容 | 状態 |
+|---|---|---|
+| DD-06 | `instructors` テーブルを追加（マスタのみ、users 非連動） | ✅ **Approved** 2026-08-12 |
+| DD-07 | Loop 08 では `INSTRUCTOR` を `users.role` に追加しない | ✅ **Approved** 2026-08-12 |
+| DD-08 | イベント／スケジュールへの講師割当・稼働可視化は Loop 09（OQ-03 後） | ✅ **Approved** 2026-08-12 |
+
+---
+
+## 13. Open Questions
 
 | # | 質問 | 状態 |
 |---|---|---|
@@ -365,13 +423,17 @@ WHERE event_id = :eventId AND status = 'REGISTERED';
 | DQ-04 | 監査ログ MVP 含有 | ✅ **DD-02**（含まない） |
 | DQ-05 | 個人情報暗号化 | ✅ **DD-03**（MVP 外） |
 | DQ-06 | 保持期間・削除 | ✅ 選択肢 B |
+| OQ-I04 | 講師の削除方針（物理 / 無効フラグ） | ✅ **active 主**（2026-08-12） |
+| DQ-07 | イベントへの担当講師 | ✅ Loop 09（DD-08） |
+| DQ-08 | 講師稼働状況の永続化方法 | Open（Loop 09 — 割当集計 vs 専用テーブル） |
 
 ---
 
-## 13. Reference
+## 14. Reference
 
 - `docs/database/V1__create_schema.sql` — Flyway 設計 SQL
 - `docs/database/V2__seed_dev.sql` — 開発 seed 設計
+- `docs/database/V3__create_instructors.sql` — Loop 08 草案
 - `requirements.md` — FR 対応
 - `architecture.md` — Flyway / PostgreSQL 方針
 - `security.md` — SD-03 初回 ADMIN seed

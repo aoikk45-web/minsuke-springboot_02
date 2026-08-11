@@ -45,6 +45,12 @@
 | S10 | イベント作成 | `/events/new` | **ADMIN** | Yes |
 | S11 | イベント詳細（**個別参加選択**） | `/events/{id}` | 認証済 | Yes |
 | S12 | ログアウト | POST `/logout` | 認証済 | Yes |
+| S13 | 講師一覧 | `/instructors` | 認証済 | Loop 08 |
+| S14 | 講師詳細 | `/instructors/{id}` | 認証済 | Loop 08 |
+| S15 | 講師作成 | `/instructors/new` | **ADMIN** | Loop 08 |
+| S16 | 講師編集 | `/instructors/{id}/edit` | **ADMIN** | Loop 08 |
+
+> S13〜S14 の閲覧は **認証済み全員**（OQ-I02 ✅）。
 
 ---
 
@@ -76,6 +82,8 @@ flowchart TD
 | カレンダー | S03 | 全員 |
 | 家族一覧 | S04 | 全員 |
 | マイファミリー | S06 | PARENT |
+| イベント作成 | S10 | ADMIN |
+| 講師一覧 | S13 | 認証済 |
 | ログアウト | — | 全員 |
 
 ### モバイル
@@ -124,10 +132,21 @@ flowchart TD
 
 | 機能 | 画面 |
 |---|---|
-| 講師ダッシュボード | 担当スケジュール一覧 |
+| 講師ダッシュボード | 担当・稼働状況（FR-I06、Loop 09 以降） |
+| イベント／スケジュール詳細 | 担当講師表示（FR-I05、Loop 09） |
 | お知らせ | 一覧・詳細・既読 |
 | 管理者 | ユーザー管理、一括登録 |
 | 通知バッジ | 未読お知らせ数 |
+
+### Loop 08 画面フロー（Proposed）
+
+```mermaid
+flowchart TD
+    Calendar[カレンダー] --> Instructors[講師一覧 S13]
+    Instructors --> Detail[講師詳細 S14]
+    Instructors --> Create[講師作成 S15]
+    Detail --> Edit[講師編集 S16]
+```
 
 ---
 

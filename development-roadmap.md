@@ -1,8 +1,8 @@
 # MinSuke — Development Roadmap
 
-**Status:** Loop 07 **Completed** — MVP（Loop 04〜07）完了 → Loop 08 または統合レビュー  
-**Date:** 2026-08-11  
-**Version:** 1.1
+**Status:** Loop 08 **Completed** → Loop 09（Schedule / 担当講師・稼働）または PR merge  
+**Date:** 2026-08-12  
+**Version:** 1.3
 
 ---
 
@@ -49,7 +49,7 @@ gantt
 | **06** | Family Management | 家庭・保護者・子ども | あり |
 | **07** | Event Management | イベント・カレンダー・参加 | あり |
 | **08** | Instructor Management | 講師マスタ | あり |
-| **09** | Schedule Management | スケジュール・割当 | あり |
+| **09** | Schedule Management | スケジュール・割当・**イベント講師・稼働可視化**（FR-I05/I06, OQ-03） | あり |
 | **10** | Notification | お知らせ・配信 | あり |
 | **11** | Mobile UI | レスポンシブ改善 | あり |
 | **12** | Testing & Security | テスト整備・セキュリティ強化 | あり |
@@ -163,11 +163,11 @@ Loop 02 で決定すべき事項：
 
 ---
 
-## 8. Next Actions（Post-MVP）
+## 8. Next Actions（Post Loop 08）
 
-1. ~~MVP（Loop 04〜07）統合レビュー~~ ✅ 2026-08-11（`minutes.md` §15.2）
-2. Loop 08 — Instructor Management の開始判断
-3. 任意: Loop 11 Mobile UI / Loop 12 Testing & Security の前倒し
+1. ~~Loop 08 実装・ローカル確認~~ ✅ 2026-08-12
+2. `feature/loop-08-instructor` を `main` へ PR / merge
+3. Loop 09: OQ-03 → FR-I05（担当講師）・FR-I06（稼働状況）
 
 ---
 
