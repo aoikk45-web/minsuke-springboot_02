@@ -437,9 +437,9 @@ a {
     color: #991b1b;
 }
 
-.badge-registered {
-    background: #ecfdf5;
-    color: #065f46;
+.badge-inactive {
+    background: #e2e8f0;
+    color: #475569;
     margin-left: 0.35rem;
 }
 

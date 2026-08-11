@@ -39,17 +39,26 @@
 |---|---|---|
 | **ADMIN** | 全機能・全データ管理、**イベント作成** | **Confirmed** |
 | **PARENT** | 自家庭の CRUD、**本人・子ども個別**のイベント参加 | Yes |
-| **INSTRUCTOR** | 担当スケジュール参照・更新 | No（将来） |
+| **INSTRUCTOR** | 担当スケジュール参照・更新 | No（Loop 08 では導入しない — OQ-I01） |
 
-### Permission Matrix（MVP 案）
+### Permission Matrix（MVP + Loop 08 案）
 
 | リソース | ADMIN | PARENT | INSTRUCTOR |
 |---|---|---|---|
 | 自家庭情報 | CRUD | CRUD | — |
-| 他家庭情報 | R | — | — |
+| 他家庭情報 | R | R（一覧・詳細） | — |
 | イベント作成 | **CRUD（ADMIN のみ）** | — | — |
 | イベント参加 | R（全参加者一覧） | CRU（**自家庭の保護者・子ども個別**） | — |
+| 講師マスタ | **CRUD** | R（OQ-I02 で確定） / — | —（ログイン未導入） |
 | ユーザー管理 | CRUD | — | — |
+
+### Loop 08 認可方針（Proposed）
+
+| 操作 | ロール | 備考 |
+|---|---|---|
+| 講師一覧・詳細 | 認証済み全員 | **OQ-I02 ✅** |
+| 作成・編集・削除・無効化 | **ADMIN のみ** | Service + SecurityConfig |
+| 講師ログイン | 導入しない（Loop 08） | **OQ-I01 ✅** |
 
 ### Confirmed（2026-08-10）
 

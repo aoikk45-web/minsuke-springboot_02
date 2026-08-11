@@ -10,7 +10,7 @@ Greenfield / New Development
 
 ## Current Loop
 
-Loop 08 — Instructor Management（`feature/loop-08-instructor`）
+Loop 08 ✅ Completed — Instructor Management
 
 ## Date
 

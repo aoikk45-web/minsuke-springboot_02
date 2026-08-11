@@ -5,8 +5,8 @@
 **Project Name:** MinSuke（みんスケ）  
 **Development Model:** Greenfield / New Development  
 **Development Environment:** Cursor + Composer 2.5  
-**Current Loop:** Loop 08 — Instructor Management（`feature/loop-08-instructor`）  
-**Current Phase:** Post-MVP / Instructor Management  
+**Current Loop:** Loop 08 ✅ Completed — Instructor Management  
+**Current Phase:** Post-MVP / Ready for Loop 09 or PR merge  
 **Date:** 2026-08-12
 
 MinSuke（みんスケ）は、家庭・講師・スケジュール・イベント等を管理するための新規システムとして開発する。
@@ -222,12 +222,22 @@ Loop 08の目的は、
 
 である。
 
-Loop 08で実施する（案）。
+Loop 08で実施する。
 
-- 講師の要件確定（FR-I01 等）と Open Questions の整理
-- テーブル / Entity / 認可方針の設計
-- ADMIN による講師 CRUD（範囲は設計後に確定）
-- テスト・Consistency Review
+**フェーズ A（設計）** ✅ 完了・承認（2026-08-12）
+
+**フェーズ B（実装）** ✅ 完了（2026-08-12）— ローカル画面確認済
+
+- Flyway V3 + `com.minsuke.instructor`
+- ADMIN による講師 CRUD、認証済み全員の閲覧（PARENT は有効のみ）
+- InstructorServiceTest / InstructorControllerSecurityTest
+- ローカル動作確認 ✅
+
+**Loop 09 へ持ち越し（Confirmed）**
+
+- FR-I05 イベント／スケジュールへの担当講師
+- FR-I06 講師稼働状況の可視化
+- OQ-03（イベントとスケジュールの関係）の確定
 
 ## 5. Loop 01 Investigation
 

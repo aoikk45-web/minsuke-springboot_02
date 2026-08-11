@@ -7,7 +7,9 @@
         <a class="nav-brand" th:href="@{/calendar}">MinSuke</a>
         <a th:href="@{/calendar}">カレンダー</a>
         <a th:href="@{/families}">家族一覧</a>
+        <a th:href="@{/instructors}">講師一覧</a>
         <a th:href="@{/my-family}" sec:authorize="hasRole('PARENT')">マイファミリー</a>
+        <a th:href="@{/instructors/new}" sec:authorize="hasRole('ADMIN')">講師追加</a>
         <a th:href="@{/events/new}" sec:authorize="hasRole('ADMIN')">イベント作成</a>
         <form th:action="@{/logout}" method="post" class="logout-form">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">

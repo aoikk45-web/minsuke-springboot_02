@@ -180,19 +180,27 @@ com.minsuke
 │   ├── repository
 │   ├── entity
 │   └── dto
+├── instructor          … Loop 08（Proposed）
+│   ├── controller
+│   ├── service
+│   ├── repository
+│   ├── entity
+│   └── dto
 └── common
     ├── exception       … GlobalExceptionHandler
-    ├── security        … カスタム UserDetails 等（Loop 05）
     └── util
 ```
 
-**AD-04:** カレンダーは `event` モジュールに含める。独立 `calendar` パッケージは作らない。**Approved 2026-08-11**
+**AD-04:** カレンダーは `event` モジュールに含める。独立 `calendar` パッケージは作らない。**Approved 2026-08-11**  
+（理由: events と同一データソース、MVP のモジュール数削減）
+
+**AD-09（Approved 2026-08-12）:** 講師は独立モジュール `instructor` とする。イベント／スケジュールへの割当と稼働可視化は Loop 09（DD-08）。
 
 | 理由 | 内容 |
 |---|---|
-| データソース | カレンダーは `events` テーブルの月間ビュー |
-| 複雑性回避 | MVP では Controller + Service を event 内に配置 |
-| 将来 | 表示ロジックが肥大化したら `event.calendar` サブパッケージへ分割可 |
+| 境界 | マスタ CRUD とスケジュール／イベント割当を分離 |
+| 依存 | Loop 08 時点では他モジュールへの FK なし |
+| 将来 | Loop 09 で event/schedule → instructor 参照＋稼働（FR-I05 / FR-I06） |
 
 ### 5.4 レイヤー内の責務ルール
 
@@ -221,6 +229,10 @@ com.minsuke
 | 作成フォーム | `GET /events/new` |
 | 作成 POST | `POST /events` |
 | 参加登録 | `POST /events/{id}/attend` |
+| 講師一覧 | `GET /instructors`（Loop 08） |
+| 講師作成 | `GET/POST /instructors/new`（ADMIN） |
+| 講師編集 | `GET/POST /instructors/{id}/edit`（ADMIN） |
+| 講師削除 | `POST /instructors/{id}/delete`（ADMIN） |
 
 ---
 

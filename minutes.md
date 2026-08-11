@@ -16,7 +16,7 @@
 ## Current Loop
 
 **MVP（Loop 04〜07）完了** — 統合レビュー済（2026-08-11）  
-**Current Loop:** Loop 08 — Instructor Management（`feature/loop-08-instructor`）
+**Current Loop:** Loop 08 — Instructor Management ✅ 完了（`feature/loop-08-instructor`）
 
 ## Date
 
@@ -28,17 +28,20 @@
 
 ## Current State
 
-**Loop 08 開始**（2026-08-12）。MVP は public 公開済み。講師管理の要件・設計から着手。
+**Loop 08 完了**（2026-08-12）。講師マスタ CRUD を実装し、ローカル画面確認まで完了。次は Loop 09（割当・稼働）または PR merge。
 
 ## Loop 08 Progress
 
 | 作業 | 状態 |
 |---|---|
-| 要件・設計の整理（FR-I01 等） | ⏳ |
-| DB / Entity 設計 | ⏳ |
-| 実装 | ⏳ |
-| テスト・ローカル確認 | ⏳ |
-| Loop 08 完了 | ⏳ |
+| 要件・設計の整理（FR-I01 等） | ✅ |
+| Open Questions（OQ-I01〜I04）提示 | ✅ |
+| 人間承認（設計確定） | ✅ **2026-08-12**（推奨案＋DD-08） |
+| DB / Entity 実装（Flyway V3） | ✅ |
+| Controller / Service / 画面 | ✅ |
+| InstructorServiceTest / SecurityTest | ✅ |
+| テスト・ローカル確認 | ✅ **2026-08-12** |
+| Loop 08 完了 | ✅ **2026-08-12** |
 
 ## Loop 07 Progress
 
@@ -462,9 +465,8 @@ MVP は **認証 + ADMIN によるイベント管理 + 家庭管理 + 保護者�
 
 # 16. Next Loop
 
-**Loop 08 — Instructor Management**（ブランチ: `feature/loop-08-instructor`）
-
-または Loop 11（Mobile UI）/ Loop 12（Testing & Security）の前倒し。
+**Loop 08 — Instructor Management**（ブランチ: `feature/loop-08-instructor`）  
+**Loop 08 完了。** 次は `main` への PR / merge、または Loop 09（担当講師・稼働）。
 
 ---
 
@@ -542,6 +544,77 @@ Consistency Engineer 観点で横断確認。
 ## 結論
 
 **MVP は設計・実装・ローカル検証の観点で完了。** 残 Warning は運用・次 Loop で問題にならない軽微事項。次は Loop 08（講師）または Mobile UI / テスト強化を選択。
+
+---
+
+# 24. Loop 08 — Instructor Management（設計 **Approved** 2026-08-12）
+
+## 目的
+
+スケジュール／イベント割当（Loop 09）と **講師稼働状況の可視化（将来必須）** の前提となる講師マスタを整備する。
+
+## スコープ（Approved）
+
+| 含む | 含まない（後続） |
+|---|---|
+| FR-I01 / FR-I01a（CRUD・一覧・詳細） | FR-I02 種目・資格 |
+| `instructors` テーブル（孤立マスタ） | FR-I03 / FR-I06 稼働・割当 |
+| `com.minsuke.instructor` | FR-I04 講師ログイン |
+| ADMIN 変更、閲覧は認証済み全員 | FR-I05 イベントへの担当講師 |
+
+## 人間承認結果（推奨案採用）
+
+| ID | 決定 |
+|---|---|
+| OQ-I01 | **No** — Loop 08 で講師ログインしない |
+| OQ-I02 | **認証済み全員** が一覧・詳細を閲覧可 |
+| OQ-I03 | **区別しない**（同一マスタ） |
+| OQ-I04 | **active 無効化を主**、未参照時のみ物理削除可 |
+| DD-06 / DD-07 | **Approve** |
+| DD-08 | イベント／スケジュールへの講師割当・稼働可視化は **Loop 09**（OQ-03 確定後） |
+
+## 将来要件（ユーザー確認 2026-08-12）
+
+- **イベントに担当講師を入れる** → Loop 09 で OQ-03 と一体設計（FR-I05）
+- **担当講師の稼働状況がわかる** → 将来必須（FR-I06）。Loop 09 で指標・画面を具体化
+
+## 設計サマリー
+
+| 領域 | 内容 |
+|---|---|
+| DB | `docs/database/V3__create_instructors.sql` / `database.md` §12 |
+| モジュール | AD-09: `instructor` パッケージ |
+| URL | `/instructors`, `/new`, `/{id}`, `/{id}/edit`, `/{id}/delete` |
+| 画面 | S13〜S16（`ui.md`） |
+| 認可 | 変更 ADMIN / 閲覧 認証済み全員 |
+
+## 実装チェックリスト
+
+- [x] ADMIN: 講師追加・編集・無効化・削除
+- [x] PARENT: 講師一覧・詳細（有効のみ）閲覧、作成画面は 403
+- [x] ナビに「講師一覧」表示
+- [x] Flyway V3 / V4 seed 適用（local）
+
+## 実装概要
+
+| レイヤ | 内容 |
+|---|---|
+| Flyway | `V3__create_instructors.sql` + local `V4__seed_instructors.sql` |
+| モジュール | `com.minsuke.instructor` |
+| 画面 | `instructor/list`, `detail`, `form` |
+| 認可 | 変更 ADMIN / 閲覧 認証済み（PARENT は有効のみ） |
+
+## 次アクション
+
+**`feature/loop-08-instructor` → `main` への PR / merge**、または **Loop 09**（FR-I05 / FR-I06 / OQ-03）
+
+## 参照
+
+- `requirements.md` §6.4
+- `database.md` §12
+- `architecture.md` AD-09
+- `security.md` Permission Matrix
+- `ui.md` S13〜S16
 
 ---
 
@@ -694,11 +767,12 @@ docker compose up -d
 
 ## Loop 08
 
-- **Status:** **IN PROGRESS**
+- **Status:** **COMPLETED**
 - **Started:** 2026-08-12
+- **Completed:** 2026-08-12
 - **Branch:** `feature/loop-08-instructor`
-- **Last Updated:** 2026-08-12 — ブランチ作成・Loop 開始記録
-- **Next Action:** 講師管理の要件・設計整理
+- **Last Updated:** 2026-08-12 — ローカル画面確認完了（ユーザー承認）
+- **Next Action:** PR merge to `main`、または **Loop 09 開始**
 
 ## Loop 07
 

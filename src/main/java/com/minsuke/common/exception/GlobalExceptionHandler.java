@@ -12,6 +12,8 @@ import com.minsuke.event.exception.EventAccessDeniedException;
 import com.minsuke.event.exception.EventNotFoundException;
 import com.minsuke.family.exception.FamilyAccessDeniedException;
 import com.minsuke.family.exception.FamilyNotFoundException;
+import com.minsuke.instructor.exception.InstructorAccessDeniedException;
+import com.minsuke.instructor.exception.InstructorNotFoundException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -42,6 +44,20 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EventNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleEventNotFound(EventNotFoundException ex, Model model) {
+        model.addAttribute("message", ex.getMessage());
+        return "error";
+    }
+
+    @ExceptionHandler(InstructorAccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public String handleInstructorAccessDenied(InstructorAccessDeniedException ex, Model model) {
+        model.addAttribute("message", ex.getMessage());
+        return "error/forbidden";
+    }
+
+    @ExceptionHandler(InstructorNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleInstructorNotFound(InstructorNotFoundException ex, Model model) {
         model.addAttribute("message", ex.getMessage());
         return "error";
     }
