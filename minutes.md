@@ -15,11 +15,12 @@
 
 ## Current Loop
 
-**MVP（Loop 04〜07）完了** — 統合レビュー済（2026-08-11）
+**MVP（Loop 04〜07）完了** — 統合レビュー済（2026-08-11）  
+**公開準備:** README 追加・リポジトリ public 化（2026-08-12）
 
 ## Date
 
-**2026-08-11**（最終更新）
+**2026-08-12**（最終更新）
 
 ---
 
@@ -27,7 +28,8 @@
 
 ## Current State
 
-**MVP（Loop 04〜07）完了・統合レビュー済**（2026-08-11）。認証・家庭・イベントの横断整合を確認。Blocker 0。
+**MVP（Loop 04〜07）完了・統合レビュー済**（2026-08-11）。認証・家庭・イベントの横断整合を確認。Blocker 0。  
+**2026-08-12:** `README.md` 追加、GitHub リポジトリを public 化。以降の開発は `feature/loop-08-instructor` 等のブランチで実施。
 
 ## Loop 07 Progress
 
@@ -451,7 +453,7 @@ MVP は **認証 + ADMIN によるイベント管理 + 家庭管理 + 保護者�
 
 # 16. Next Loop
 
-**Loop 08 — Instructor Management**（要否判断可）
+**Loop 08 — Instructor Management**（ブランチ: `feature/loop-08-instructor`）
 
 または Loop 11（Mobile UI）/ Loop 12（Testing & Security）の前倒し。
 
