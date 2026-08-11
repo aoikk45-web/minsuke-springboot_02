@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: minsuke
+      POSTGRES_USER: minsuke
+      POSTGRES_PASSWORD: minsuke
+    volumes:
+      - minsuke_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U minsuke -d minsuke"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  minsuke_pg_data:

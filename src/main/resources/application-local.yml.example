@@ -1,0 +1,23 @@
+# ローカル開発用プロファイル（テンプレート）
+#
+# 使い方:
+#   1. このファイルを application-local.yml にコピー
+#   2. docker compose up -d
+#   3. .\mvnw.cmd spring-boot:run "-Dspring-boot.run.profiles=local"
+#
+# 注意: application-local.yml は .gitignore 対象（機密の上書き用）
+
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:postgresql://localhost:5433/minsuke
+    username: minsuke
+    password: minsuke
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    locations: classpath:db/migration,classpath:db/migration-dev
+
+server:
+  port: 8081

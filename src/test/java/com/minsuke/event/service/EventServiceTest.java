@@ -1,0 +1,233 @@
+package com.minsuke.event.service;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+
+import com.minsuke.auth.domain.Role;
+import com.minsuke.auth.entity.User;
+import com.minsuke.auth.repository.UserRepository;
+import com.minsuke.auth.security.MinsukeUserDetails;
+import com.minsuke.event.dto.EventForm;
+import com.minsuke.event.exception.EventAccessDeniedException;
+import com.minsuke.event.exception.EventCapacityFullException;
+import com.minsuke.event.exception.EventNotFoundException;
+import com.minsuke.event.repository.EventAttendanceRepository;
+import com.minsuke.event.repository.EventRepository;
+import com.minsuke.family.dto.ParentForm;
+import com.minsuke.family.entity.Household;
+import com.minsuke.family.repository.HouseholdRepository;
+import com.minsuke.family.repository.ParentRepository;
+import com.minsuke.family.service.FamilyService;
+
+@SpringBootTest
+@ActiveProfiles("test")
+@Testcontainers(disabledWithoutDocker = true)
+@Transactional
+class EventServiceTest {
+
+    @Container
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16-alpine")
+            .withDatabaseName("minsuke")
+            .withUsername("minsuke")
+            .withPassword("minsuke");
+
+    @DynamicPropertySource
+    static void configureDatasource(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", postgres::getJdbcUrl);
+        registry.add("spring.datasource.username", postgres::getUsername);
+        registry.add("spring.datasource.password", postgres::getPassword);
+    }
+
+    @Autowired
+    private EventService eventService;
+
+    @Autowired
+    private FamilyService familyService;
+
+    @Autowired
+    private EventRepository eventRepository;
+
+    @Autowired
+    private EventAttendanceRepository attendanceRepository;
+
+    @Autowired
+    private HouseholdRepository householdRepository;
+
+    @Autowired
+    private ParentRepository parentRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    private MinsukeUserDetails adminUser;
+    private MinsukeUserDetails parentUser;
+    private Long parentId;
+
+    @BeforeEach
+    void setUp() {
+        Instant now = Instant.now();
+
+        Household household = new Household();
+        household.setName("A家");
+        household.setNameKana("えーけ");
+        household.setCreatedAt(now);
+        household.setUpdatedAt(now);
+        household = householdRepository.save(household);
+
+        User parent = new User();
+        parent.setEmail("parent@test.local");
+        parent.setPasswordHash("hash");
+        parent.setRole(Role.PARENT);
+        parent.setHouseholdId(household.getId());
+        parent.setCreatedAt(now);
+        parent.setUpdatedAt(now);
+        parent = userRepository.save(parent);
+        parentUser = new MinsukeUserDetails(parent);
+
+        User admin = new User();
+        admin.setEmail("admin@test.local");
+        admin.setPasswordHash("hash");
+        admin.setRole(Role.ADMIN);
+        admin.setCreatedAt(now);
+        admin.setUpdatedAt(now);
+        admin = userRepository.save(admin);
+        adminUser = new MinsukeUserDetails(admin);
+
+        ParentForm parentForm = new ParentForm();
+        parentForm.setName("太郎");
+        parentForm.setNameKana("たろう");
+        familyService.createParent(parentUser, parentForm);
+        parentId = parentRepository.findByHouseholdIdOrderByIdAsc(household.getId()).get(0).getId();
+    }
+
+    @Test
+    void adminCanCreateEvent() {
+        EventForm form = sampleEventForm();
+        Long eventId = eventService.createEvent(adminUser, form);
+
+        assertThat(eventRepository.findById(eventId)).isPresent();
+        assertThat(eventRepository.findById(eventId).orElseThrow().getTitle()).isEqualTo("運動会");
+    }
+
+    @Test
+    void parentCannotCreateEvent() {
+        assertThatThrownBy(() -> eventService.createEvent(parentUser, sampleEventForm()))
+                .isInstanceOf(EventAccessDeniedException.class);
+    }
+
+    @Test
+    void calendarViewIncludesCreatedEvent() {
+        Long eventId = eventService.createEvent(adminUser, sampleEventForm());
+        var calendar = eventService.buildCalendarView(
+                sampleEventForm().getEventDate().getYear(),
+                sampleEventForm().getEventDate().getMonthValue());
+
+        assertThat(calendar.getWeeks()).isNotEmpty();
+        boolean found = calendar.getWeeks().stream()
+                .flatMap(w -> w.getDays().stream())
+                .flatMap(d -> d.getEvents().stream())
+                .anyMatch(e -> e.getId().equals(eventId));
+        assertThat(found).isTrue();
+    }
+
+    @Test
+    void parentCanRegisterAndCancel() {
+        Long eventId = eventService.createEvent(adminUser, sampleEventForm());
+
+        eventService.registerParent(parentUser, eventId, parentId);
+        var detail = eventService.getEventDetail(eventId, parentUser);
+        assertThat(detail.getRegisteredCount()).isEqualTo(1);
+        assertThat(detail.getParticipantOptions().get(0).isRegistered()).isTrue();
+
+        eventService.cancelParent(parentUser, eventId, parentId);
+        detail = eventService.getEventDetail(eventId, parentUser);
+        assertThat(detail.getRegisteredCount()).isZero();
+    }
+
+    @Test
+    void capacityFullPreventsRegistration() {
+        EventForm form = sampleEventForm();
+        form.setCapacity(1);
+        Long eventId = eventService.createEvent(adminUser, form);
+
+        eventService.registerParent(parentUser, eventId, parentId);
+
+        Household otherHousehold = new Household();
+        Instant now = Instant.now();
+        otherHousehold.setName("B家");
+        otherHousehold.setNameKana("びーけ");
+        otherHousehold.setCreatedAt(now);
+        otherHousehold.setUpdatedAt(now);
+        otherHousehold = householdRepository.save(otherHousehold);
+
+        User otherParentUserEntity = new User();
+        otherParentUserEntity.setEmail("other@test.local");
+        otherParentUserEntity.setPasswordHash("hash");
+        otherParentUserEntity.setRole(Role.PARENT);
+        otherParentUserEntity.setHouseholdId(otherHousehold.getId());
+        otherParentUserEntity.setCreatedAt(now);
+        otherParentUserEntity.setUpdatedAt(now);
+        otherParentUserEntity = userRepository.save(otherParentUserEntity);
+        MinsukeUserDetails otherParentUser = new MinsukeUserDetails(otherParentUserEntity);
+
+        ParentForm otherParentForm = new ParentForm();
+        otherParentForm.setName("次郎");
+        otherParentForm.setNameKana("じろう");
+        familyService.createParent(otherParentUser, otherParentForm);
+        Long otherParentId = parentRepository.findByHouseholdIdOrderByIdAsc(otherHousehold.getId()).get(0).getId();
+
+        assertThatThrownBy(() -> eventService.registerParent(otherParentUser, eventId, otherParentId))
+                .isInstanceOf(EventCapacityFullException.class);
+    }
+
+    @Test
+    void parentCannotRegisterOtherHouseholdMember() {
+        Long eventId = eventService.createEvent(adminUser, sampleEventForm());
+
+        assertThatThrownBy(() -> eventService.registerParent(parentUser, eventId, 99999L))
+                .isInstanceOf(EventAccessDeniedException.class);
+    }
+
+    @Test
+    void getEventDetailThrowsWhenNotFound() {
+        assertThatThrownBy(() -> eventService.getEventDetail(99999L, parentUser))
+                .isInstanceOf(EventNotFoundException.class);
+    }
+
+    @Test
+    void invalidTimeRangeRejected() {
+        EventForm form = sampleEventForm();
+        form.setStartTime(LocalTime.of(18, 0));
+        form.setEndTime(LocalTime.of(9, 0));
+
+        assertThatThrownBy(() -> eventService.createEvent(adminUser, form))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    private EventForm sampleEventForm() {
+        EventForm form = new EventForm();
+        form.setTitle("運動会");
+        form.setDescription("年次運動会です");
+        form.setEventDate(LocalDate.of(2026, 8, 15));
+        form.setStartTime(LocalTime.of(10, 0));
+        form.setEndTime(LocalTime.of(12, 0));
+        form.setCapacity(null);
+        return form;
+    }
+}

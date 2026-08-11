@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>家族一覧 — MinSuke</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header th:replace="~{fragments/header :: header}"></header>
+<main class="container container-wide">
+    <h1>家族一覧</h1>
+
+    <p th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></p>
+    <p th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></p>
+
+    <div class="card-grid" th:if="${!households.isEmpty()}">
+        <a th:each="h : ${households}" th:href="@{/families/{id}(id=${h.id})}" class="card card-link">
+            <h2 class="card-title" th:text="${h.name}">家族名</h2>
+            <p class="card-kana" th:text="${h.nameKana}">ふりがな</p>
+            <p class="card-meta" th:if="${h.groupName != null}" th:text="'班: ' + ${h.groupName}"></p>
+            <p class="card-meta"
+               th:text="'保護者 ' + ${h.parentCount} + ' 名 / 子ども ' + ${h.childCount} + ' 名'"></p>
+        </a>
+    </div>
+    <p th:if="${households.isEmpty()}" class="hint">登録されている家族はありません。</p>
+</main>
+</body>
+</html>

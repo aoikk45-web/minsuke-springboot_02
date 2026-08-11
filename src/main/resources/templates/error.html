@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>エラー — MinSuke</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<main class="container">
+    <h1>エラー</h1>
+    <p th:text="${message}">エラーが発生しました。</p>
+    <p><a th:href="@{/}">トップへ戻る</a></p>
+</main>
+</body>
+</html>
