@@ -10,11 +10,11 @@ Greenfield / New Development
 
 ## Current Loop
 
-Loop 07 ✅ Completed — MVP（Loop 04〜07）完了 / Post-MVP
+Loop 08 — Instructor Management（`feature/loop-08-instructor`）
 
 ## Date
 
-2026-08-11
+2026-08-12
 
 ---
 

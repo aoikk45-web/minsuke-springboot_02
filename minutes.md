@@ -16,7 +16,7 @@
 ## Current Loop
 
 **MVP（Loop 04〜07）完了** — 統合レビュー済（2026-08-11）  
-**公開準備:** README 追加・リポジトリ public 化（2026-08-12）
+**Current Loop:** Loop 08 — Instructor Management（`feature/loop-08-instructor`）
 
 ## Date
 
@@ -28,8 +28,17 @@
 
 ## Current State
 
-**MVP（Loop 04〜07）完了・統合レビュー済**（2026-08-11）。認証・家庭・イベントの横断整合を確認。Blocker 0。  
-**2026-08-12:** `README.md` 追加、GitHub リポジトリを public 化。以降の開発は `feature/loop-08-instructor` 等のブランチで実施。
+**Loop 08 開始**（2026-08-12）。MVP は public 公開済み。講師管理の要件・設計から着手。
+
+## Loop 08 Progress
+
+| 作業 | 状態 |
+|---|---|
+| 要件・設計の整理（FR-I01 等） | ⏳ |
+| DB / Entity 設計 | ⏳ |
+| 実装 | ⏳ |
+| テスト・ローカル確認 | ⏳ |
+| Loop 08 完了 | ⏳ |
 
 ## Loop 07 Progress
 
@@ -682,6 +691,14 @@ docker compose up -d
 ---
 
 # 18. Loop History
+
+## Loop 08
+
+- **Status:** **IN PROGRESS**
+- **Started:** 2026-08-12
+- **Branch:** `feature/loop-08-instructor`
+- **Last Updated:** 2026-08-12 — ブランチ作成・Loop 開始記録
+- **Next Action:** 講師管理の要件・設計整理
 
 ## Loop 07
 

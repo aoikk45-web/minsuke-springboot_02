@@ -5,9 +5,9 @@
 **Project Name:** MinSuke（みんスケ）  
 **Development Model:** Greenfield / New Development  
 **Development Environment:** Cursor + Composer 2.5  
-**Current Loop:** Loop 07 ✅ Completed — **MVP（Loop 04〜07）完了**（統合レビュー済）  
-**Current Phase:** Post-MVP / Next Loop 判断  
-**Date:** 2026-08-11
+**Current Loop:** Loop 08 — Instructor Management（`feature/loop-08-instructor`）  
+**Current Phase:** Post-MVP / Instructor Management  
+**Date:** 2026-08-12
 
 MinSuke（みんスケ）は、家庭・講師・スケジュール・イベント等を管理するための新規システムとして開発する。
 
@@ -211,6 +211,23 @@ Loop 07で実施する。
 - EventController / CalendarController
 - Thymeleaf 画面（S03 カレンダー・S10 イベント作成・S11 イベント詳細）
 - EventServiceTest / EventControllerSecurityTest
+
+---
+
+## 4.6 Current Loop — Loop 08
+
+Loop 08の目的は、
+
+**講師（Instructor）のマスタ管理** を設計・実装すること
+
+である。
+
+Loop 08で実施する（案）。
+
+- 講師の要件確定（FR-I01 等）と Open Questions の整理
+- テーブル / Entity / 認可方針の設計
+- ADMIN による講師 CRUD（範囲は設計後に確定）
+- テスト・Consistency Review
 
 ## 5. Loop 01 Investigation
 

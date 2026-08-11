@@ -1,8 +1,8 @@
 # MinSuke — Development Roadmap
 
-**Status:** Loop 07 **Completed** — MVP（Loop 04〜07）完了 → Loop 08 または統合レビュー  
-**Date:** 2026-08-11  
-**Version:** 1.1
+**Status:** Loop 08 **In Progress**（`feature/loop-08-instructor`）— MVP public 公開済  
+**Date:** 2026-08-12  
+**Version:** 1.2
 
 ---
 
@@ -163,11 +163,12 @@ Loop 02 で決定すべき事項：
 
 ---
 
-## 8. Next Actions（Post-MVP）
+## 8. Next Actions（Loop 08）
 
-1. ~~MVP（Loop 04〜07）統合レビュー~~ ✅ 2026-08-11（`minutes.md` §15.2）
-2. Loop 08 — Instructor Management の開始判断
-3. 任意: Loop 11 Mobile UI / Loop 12 Testing & Security の前倒し
+1. 講師管理の要件確定（`requirements.md` FR-I01〜）
+2. テーブル / Entity 設計（`database.md`）
+3. ADMIN CRUD・認可の実装方針を `architecture.md` / `security.md` に反映
+4. 実装 → テスト → Consistency Review
 
 ---
 
