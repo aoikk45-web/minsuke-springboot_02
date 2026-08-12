@@ -81,6 +81,24 @@ class EventControllerSecurityTest {
     }
 
     @Test
+    @WithMockUser(roles = "PARENT")
+    void parentCannotViewEventEditForm() throws Exception {
+        mockMvc.perform(get("/events/1/edit"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = "PARENT")
+    void parentCannotPostEventEdit() throws Exception {
+        mockMvc.perform(post("/events/1/edit")
+                        .with(csrf())
+                        .param("title", "テスト")
+                        .param("description", "説明")
+                        .param("eventDate", "2026-08-15"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     @WithMockUser(roles = "ADMIN")
     void adminCannotAttendEvent() throws Exception {
         mockMvc.perform(post("/events/1/attend")

@@ -42,13 +42,14 @@
 | S07 | マイファミリー編集 | `/my-family/edit` | PARENT | Yes |
 | S08 | 保護者追加/編集 | `/my-family/parents/...` | PARENT | Yes |
 | S09 | 子ども追加/編集 | `/my-family/children/...` | PARENT | Yes |
-| S10 | イベント作成 | `/events/new` | **ADMIN** | Yes |
-| S11 | イベント詳細（**個別参加選択**） | `/events/{id}` | 認証済 | Yes |
+| S10 | イベント作成 | `/events/new` | **ADMIN** | Yes → Loop 09 で担当講師欄追加 |
+| S11 | イベント詳細（**個別参加選択**） | `/events/{id}` | 認証済 | Yes → Loop 09 で担当講師表示 |
 | S12 | ログアウト | POST `/logout` | 認証済 | Yes |
 | S13 | 講師一覧 | `/instructors` | 認証済 | Loop 08 |
-| S14 | 講師詳細 | `/instructors/{id}` | 認証済 | Loop 08 |
+| S14 | 講師詳細 | `/instructors/{id}` | 認証済 | Loop 08 → Loop 09 で稼働セクション |
 | S15 | 講師作成 | `/instructors/new` | **ADMIN** | Loop 08 |
 | S16 | 講師編集 | `/instructors/{id}/edit` | **ADMIN** | Loop 08 |
+| S17 | イベント編集（案） | `/events/{id}/edit` | **ADMIN** | Loop 09（担当講師変更用） |
 
 > S13〜S14 の閲覧は **認証済み全員**（OQ-I02 ✅）。
 

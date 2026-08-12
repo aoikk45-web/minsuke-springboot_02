@@ -15,6 +15,7 @@ import com.minsuke.event.dto.AttendanceForm;
 import com.minsuke.event.dto.EventForm;
 import com.minsuke.event.exception.EventCapacityFullException;
 import com.minsuke.event.service.EventService;
+import com.minsuke.instructor.service.InstructorService;
 
 import jakarta.validation.Valid;
 
@@ -22,14 +23,17 @@ import jakarta.validation.Valid;
 public class EventController {
 
     private final EventService eventService;
+    private final InstructorService instructorService;
 
-    public EventController(EventService eventService) {
+    public EventController(EventService eventService, InstructorService instructorService) {
         this.eventService = eventService;
+        this.instructorService = instructorService;
     }
 
     @GetMapping("/events/new")
     public String createForm(Model model) {
         model.addAttribute("eventForm", new EventForm());
+        model.addAttribute("instructors", instructorService.listActiveInstructors());
         return "event/create";
     }
 
@@ -37,8 +41,10 @@ public class EventController {
     public String create(
             @AuthenticationPrincipal MinsukeUserDetails user,
             @Valid @ModelAttribute("eventForm") EventForm form,
-            BindingResult bindingResult) {
+            BindingResult bindingResult,
+            Model model) {
         if (bindingResult.hasErrors()) {
+            model.addAttribute("instructors", instructorService.listActiveInstructors());
             return "event/create";
         }
         try {
@@ -46,7 +52,39 @@ public class EventController {
             return "redirect:/events/" + eventId;
         } catch (IllegalArgumentException ex) {
             bindingResult.reject("eventForm", ex.getMessage());
+            model.addAttribute("instructors", instructorService.listActiveInstructors());
             return "event/create";
+        }
+    }
+
+    @GetMapping("/events/{id}/edit")
+    public String editForm(@PathVariable Long id, Model model) {
+        model.addAttribute("eventForm", eventService.toEventForm(id));
+        model.addAttribute("eventId", id);
+        model.addAttribute("instructors", instructorService.listActiveInstructors());
+        return "event/edit";
+    }
+
+    @PostMapping("/events/{id}/edit")
+    public String update(
+            @AuthenticationPrincipal MinsukeUserDetails user,
+            @PathVariable Long id,
+            @Valid @ModelAttribute("eventForm") EventForm form,
+            BindingResult bindingResult,
+            Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("eventId", id);
+            model.addAttribute("instructors", instructorService.listActiveInstructors());
+            return "event/edit";
+        }
+        try {
+            eventService.updateEvent(user, id, form);
+            return "redirect:/events/" + id;
+        } catch (IllegalArgumentException ex) {
+            bindingResult.reject("eventForm", ex.getMessage());
+            model.addAttribute("eventId", id);
+            model.addAttribute("instructors", instructorService.listActiveInstructors());
+            return "event/edit";
         }
     }
 

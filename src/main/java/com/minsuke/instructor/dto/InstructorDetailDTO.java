@@ -14,4 +14,5 @@ public class InstructorDetailDTO {
     private String phone;
     private String notes;
     private boolean active;
+    private InstructorWorkloadDTO workload;
 }

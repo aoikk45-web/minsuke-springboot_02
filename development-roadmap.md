@@ -1,8 +1,8 @@
 # MinSuke — Development Roadmap
 
-**Status:** Loop 08 **Completed** → Loop 09（Schedule / 担当講師・稼働）または PR merge  
+**Status:** Loop 09 **In Progress**（`feature/loop-09-instructor-assignment`）— ローカル確認済
 **Date:** 2026-08-12  
-**Version:** 1.3
+**Version:** 1.4
 
 ---
 
@@ -163,11 +163,10 @@ Loop 02 で決定すべき事項：
 
 ---
 
-## 8. Next Actions（Post Loop 08）
+## 8. Next Actions（Loop 09）
 
-1. ~~Loop 08 実装・ローカル確認~~ ✅ 2026-08-12
-2. `feature/loop-08-instructor` を `main` へ PR / merge
-3. Loop 09: OQ-03 → FR-I05（担当講師）・FR-I06（稼働状況）
+1. commit / PR → `main` へ merge
+2. FR-S01 本格スケジュールは後続 Loop に残す
 
 ---
 

@@ -37,6 +37,8 @@ import com.minsuke.family.entity.Parent;
 import com.minsuke.family.repository.ChildRepository;
 import com.minsuke.family.repository.HouseholdRepository;
 import com.minsuke.family.repository.ParentRepository;
+import com.minsuke.instructor.entity.Instructor;
+import com.minsuke.instructor.repository.InstructorRepository;
 
 @Service
 public class EventService {
@@ -50,18 +52,21 @@ public class EventService {
     private final ParentRepository parentRepository;
     private final ChildRepository childRepository;
     private final HouseholdRepository householdRepository;
+    private final InstructorRepository instructorRepository;
 
     public EventService(
             EventRepository eventRepository,
             EventAttendanceRepository attendanceRepository,
             ParentRepository parentRepository,
             ChildRepository childRepository,
-            HouseholdRepository householdRepository) {
+            HouseholdRepository householdRepository,
+            InstructorRepository instructorRepository) {
         this.eventRepository = eventRepository;
         this.attendanceRepository = attendanceRepository;
         this.parentRepository = parentRepository;
         this.childRepository = childRepository;
         this.householdRepository = householdRepository;
+        this.instructorRepository = instructorRepository;
     }
 
     @Transactional
@@ -75,6 +80,30 @@ public class EventService {
         event.setCreatedAt(now);
         event.setUpdatedAt(now);
         return eventRepository.save(event).getId();
+    }
+
+    @Transactional
+    public void updateEvent(MinsukeUserDetails user, Long eventId, EventForm form) {
+        requireAdmin(user);
+        validateTimeRange(form);
+        Event event = findEventOrThrow(eventId);
+        applyForm(event, form);
+        event.setUpdatedAt(Instant.now());
+        eventRepository.save(event);
+    }
+
+    @Transactional(readOnly = true)
+    public EventForm toEventForm(Long eventId) {
+        Event event = findEventOrThrow(eventId);
+        EventForm form = new EventForm();
+        form.setTitle(event.getTitle());
+        form.setDescription(event.getDescription());
+        form.setEventDate(event.getEventDate());
+        form.setStartTime(event.getStartTime());
+        form.setEndTime(event.getEndTime());
+        form.setCapacity(event.getCapacity());
+        form.setInstructorId(event.getInstructorId());
+        return form;
     }
 
     @Transactional(readOnly = true)
@@ -352,6 +381,11 @@ public class EventService {
         dto.setStartTime(event.getStartTime());
         dto.setEndTime(event.getEndTime());
         dto.setCapacity(event.getCapacity());
+        dto.setInstructorId(event.getInstructorId());
+        if (event.getInstructorId() != null) {
+            instructorRepository.findById(event.getInstructorId())
+                    .ifPresent(instructor -> dto.setInstructorName(instructor.getName()));
+        }
         dto.setRegisteredCount(registeredCount);
         dto.setUnlimitedCapacity(event.getCapacity() == null);
         dto.setFull(event.getCapacity() != null && registeredCount >= event.getCapacity());
@@ -365,6 +399,19 @@ public class EventService {
         event.setStartTime(form.getStartTime());
         event.setEndTime(form.getEndTime());
         event.setCapacity(form.getCapacity());
+        event.setInstructorId(resolveInstructorId(form.getInstructorId()));
+    }
+
+    private Long resolveInstructorId(Long instructorId) {
+        if (instructorId == null) {
+            return null;
+        }
+        Instructor instructor = instructorRepository.findById(instructorId)
+                .orElseThrow(() -> new IllegalArgumentException("指定された講師が見つかりません"));
+        if (!instructor.isActive()) {
+            throw new IllegalArgumentException("無効な講師は担当に設定できません");
+        }
+        return instructor.getId();
     }
 
     private void validateTimeRange(EventForm form) {

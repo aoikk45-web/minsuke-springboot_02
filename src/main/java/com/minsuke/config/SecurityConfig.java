@@ -34,8 +34,9 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/register", "/css/**", "/health").permitAll()
-                        .requestMatchers("/events/new").hasRole("ADMIN")
+                        .requestMatchers("/events/new", "/events/*/edit").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/events").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/events/*/edit").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/events/*/attend").hasRole("PARENT")
                         .requestMatchers(HttpMethod.POST, "/families/*/delete").hasRole("ADMIN")
                         .requestMatchers("/instructors/new", "/instructors/*/edit").hasRole("ADMIN")

@@ -419,13 +419,41 @@ erDiagram
 |---|---|---|
 | DQ-01 | 参加単位 | ✅ 個別 |
 | DQ-02 | 論理削除 vs 物理削除 | ✅ **DD-01**（物理削除 + status） |
-| DQ-03 | イベントとスケジュール同一テーブル | Open（Post-MVP） |
-| DQ-04 | 監査ログ MVP 含有 | ✅ **DD-02**（含まない） |
-| DQ-05 | 個人情報暗号化 | ✅ **DD-03**（MVP 外） |
-| DQ-06 | 保持期間・削除 | ✅ 選択肢 B |
-| OQ-I04 | 講師の削除方針（物理 / 無効フラグ） | ✅ **active 主**（2026-08-12） |
-| DQ-07 | イベントへの担当講師 | ✅ Loop 09（DD-08） |
-| DQ-08 | 講師稼働状況の永続化方法 | Open（Loop 09 — 割当集計 vs 専用テーブル） |
+| DQ-03 | イベントとスケジュール同一テーブル | Open — Loop 09 推奨: 当面イベントのみ拡張 |
+| DQ-07 | イベントへの担当講師 | ✅ Loop 09（DD-08）→ `events.instructor_id` 案 |
+| DQ-08 | 講師稼働状況の永続化方法 | Open — **推奨: 割当集計のみ**（専用テーブルなし） |
+| DD-09 | `events.instructor_id` NULL FK → instructors ON DELETE SET NULL | Proposed |
+| DD-10 | 稼働は events 集計。専用 availability テーブルは作らない | Proposed |
+
+---
+
+## 15. Loop 09 — Event instructor & availability（Proposed）
+
+> SQL 草案: `docs/database/V5__events_instructor.sql`（承認後に `src/.../migration` へ配置）
+
+### 15.1 変更概要
+
+```mermaid
+erDiagram
+    instructors ||--o{ events : "assigned to"
+    events {
+        bigint id PK
+        bigint instructor_id FK "NULL allowed"
+    }
+```
+
+| カラム | 型 | NULL | 説明 |
+|---|---|---|---|
+| instructor_id | BIGINT | YES | 担当講師。未設定可 |
+
+- ON DELETE **SET NULL** — 講師物理削除後もイベントは残す
+- 無効講師（active=false）の新規割当は UI/Service で拒否（案）
+
+### 15.2 稼働クエリ（案）
+
+- 一覧: `event_date >= today` AND `instructor_id = :id` ORDER BY event_date
+- 月次: `GROUP BY year, month` WHERE instructor_id = :id
+
 
 ---
 

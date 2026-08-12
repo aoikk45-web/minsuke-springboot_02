@@ -19,6 +19,8 @@ public class EventDetailDTO {
     private LocalTime startTime;
     private LocalTime endTime;
     private Integer capacity;
+    private Long instructorId;
+    private String instructorName;
     private long registeredCount;
     private boolean full;
     private boolean unlimitedCapacity;

@@ -5,8 +5,8 @@
 **Project Name:** MinSuke（みんスケ）  
 **Development Model:** Greenfield / New Development  
 **Development Environment:** Cursor + Composer 2.5  
-**Current Loop:** Loop 08 ✅ Completed — Instructor Management  
-**Current Phase:** Post-MVP / Ready for Loop 09 or PR merge  
+**Current Loop:** Loop 09 — Instructor Assignment & Availability（`feature/loop-09-instructor-assignment`）  
+**Current Phase:** Post-MVP / Schedule-lite（イベント担当講師・稼働）  
 **Date:** 2026-08-12
 
 MinSuke（みんスケ）は、家庭・講師・スケジュール・イベント等を管理するための新規システムとして開発する。
@@ -233,11 +233,43 @@ Loop 08で実施する。
 - InstructorServiceTest / InstructorControllerSecurityTest
 - ローカル動作確認 ✅
 
-**Loop 09 へ持ち越し（Confirmed）**
+**Loop 09 へ持ち越し（Confirmed）** — → **Loop 09 開始**（下記 §4.7）
 
-- FR-I05 イベント／スケジュールへの担当講師
-- FR-I06 講師稼働状況の可視化
-- OQ-03（イベントとスケジュールの関係）の確定
+---
+
+## 4.7 Current Loop — Loop 09
+
+Loop 09の目的は、
+
+**イベントへの担当講師設定（FR-I05）と、講師稼働状況の可視化（FR-I06）** を設計・実装すること
+
+である。
+
+Loop 09で実施する。
+
+**フェーズ A（設計 — 現在）**
+
+- **OQ-03**（スケジュールとイベントの関係）の確定案提示
+- FR-I05 / FR-I06 のスコープ確定
+- DB・画面・認可の設計案 → 人間承認
+
+**フェーズ B（実装 — 承認後）**
+
+- Flyway（events.instructor_id 等）
+- イベント作成・詳細への担当講師
+- 講師詳細での稼働（担当イベント一覧・集計）
+- テスト・Consistency Review
+
+**Loop 09 フェーズ A ではコードを書かない**（マイグレーション適用・Entity 変更は承認後）。
+
+### Loop 09 推奨方針（Proposed）
+
+| 項目 | 推奨 |
+|---|---|
+| OQ-03 | **イベント中心** — 独立 `schedules` テーブルは作らない。定期スケジュール（FR-S01）は後続 |
+| FR-I05 | `events.instructor_id`（任意・単一講師） |
+| FR-I06 | 割当イベントの集計・一覧（専用稼働テーブルは作らない） |
+| FR-S01〜S04 | Loop 09 では本格スケジュール CRUD は対象外 |
 
 ## 5. Loop 01 Investigation
 

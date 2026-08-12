@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +23,8 @@ import com.minsuke.auth.domain.Role;
 import com.minsuke.auth.entity.User;
 import com.minsuke.auth.repository.UserRepository;
 import com.minsuke.auth.security.MinsukeUserDetails;
+import com.minsuke.event.entity.Event;
+import com.minsuke.event.repository.EventRepository;
 import com.minsuke.family.entity.Household;
 import com.minsuke.family.repository.HouseholdRepository;
 import com.minsuke.instructor.dto.InstructorForm;
@@ -58,6 +62,9 @@ class InstructorServiceTest {
 
     @Autowired
     private HouseholdRepository householdRepository;
+
+    @Autowired
+    private EventRepository eventRepository;
 
     private MinsukeUserDetails adminUser;
     private MinsukeUserDetails parentUser;
@@ -133,6 +140,41 @@ class InstructorServiceTest {
 
         instructorService.delete(adminUser, id);
         assertThat(instructorRepository.findById(id)).isEmpty();
+    }
+
+    @Test
+    void detailShowsWorkloadFromAssignedEvents() {
+        Long instructorId = instructorService.create(adminUser, sampleForm());
+        Instant now = Instant.now();
+
+        Event upcoming = new Event();
+        upcoming.setTitle("夏祭り");
+        upcoming.setDescription("説明");
+        upcoming.setEventDate(LocalDate.now().plusDays(7));
+        upcoming.setStartTime(LocalTime.of(10, 0));
+        upcoming.setEndTime(LocalTime.of(12, 0));
+        upcoming.setInstructorId(instructorId);
+        upcoming.setCreatedByUserId(adminUser.getUser().getId());
+        upcoming.setCreatedAt(now);
+        upcoming.setUpdatedAt(now);
+        eventRepository.save(upcoming);
+
+        Event past = new Event();
+        past.setTitle("春の会");
+        past.setDescription("説明");
+        past.setEventDate(LocalDate.now().minusMonths(1));
+        past.setInstructorId(instructorId);
+        past.setCreatedByUserId(adminUser.getUser().getId());
+        past.setCreatedAt(now);
+        past.setUpdatedAt(now);
+        eventRepository.save(past);
+
+        var detail = instructorService.getInstructor(instructorId, adminUser);
+        assertThat(detail.getWorkload()).isNotNull();
+        assertThat(detail.getWorkload().getTotalAssignedCount()).isEqualTo(2);
+        assertThat(detail.getWorkload().getUpcomingEvents()).hasSize(1);
+        assertThat(detail.getWorkload().getUpcomingEvents().get(0).getTitle()).isEqualTo("夏祭り");
+        assertThat(detail.getWorkload().getMonthlyCounts()).isNotEmpty();
     }
 
     private InstructorForm sampleForm() {
