@@ -16,8 +16,8 @@
 ## Current Loop
 
 **MVP（Loop 04〜07）完了** — 統合レビュー済（2026-08-11）  
-**Loop 08 / 09 完了** — PR #1 / #2 を `main` へ merge 済  
-**Current Loop:** Loop 10 — Notification（`feature/loop-10-notification`）
+**Loop 08 / 09 / 10 完了** — PR #1 / #2 / #4 を `main` へ merge 済  
+**Current Loop:** 次 Loop 未定（Post-MVP）
 
 ## Date
 
@@ -29,7 +29,7 @@
 
 ## Current State
 
-**Loop 10 ローカル確認済**（2026-08-13）。次: commit / PR → merge。
+**Loop 10 完了**（2026-08-13）。PR #4 を `main` へ merge 済。
 
 ## Loop 10 Progress
 
@@ -40,8 +40,8 @@
 | 人間承認（推奨案） | ✅ |
 | Flyway V6 + お知らせ UI | ✅ |
 | 既読・未読表示 | ✅ |
-| テスト・ローカル確認 | ✅ **2026-08-13** |
-| Loop 10 完了（PR / merge） | ⏳ |
+| ローカル確認（既存 PG / profile=`local`） | ✅ **2026-08-13** |
+| Loop 10 完了（PR #4 / merge） | ✅ **2026-08-13** |
 
 ## Loop 09 Progress
 
@@ -491,9 +491,7 @@ MVP は **認証 + ADMIN によるイベント管理 + 家庭管理 + 保護者�
 
 # 16. Next Loop
 
-**Loop 08 / 09** merged。  
-**Loop 10 — Notification**（ブランチ: `feature/loop-10-notification`）  
-設計中。次アクション: OQ-08 / DD-11 / DD-12 の人間承認 → 実装。
+**Loop 08 / 09 / 10** merged。次 Loop 未定（候補: FR-S01 スケジュール、メール配信、Mobile UI 等）。
 
 ---
 
@@ -572,7 +570,7 @@ MVP は **認証 + ADMIN によるイベント管理 + 家庭管理 + 保護者�
 
 ## 次アクション
 
-テスト・ローカル確認済。次: PR / merge
+テスト・ローカル確認済。PR #4 merge 済。
 
 ## 参照
 
@@ -879,11 +877,12 @@ docker compose up -d
 
 ## Loop 10
 
-- **Status:** **IN PROGRESS**（ローカル確認済）
+- **Status:** **COMPLETED**
 - **Started:** 2026-08-13
-- **Branch:** `feature/loop-10-notification`
-- **Last Updated:** 2026-08-13 — 既存 PG でローカル確認済
-- **Next Action:** PR / merge
+- **Completed:** 2026-08-13
+- **Branch:** `feature/loop-10-notification`（merged to main via PR #4）
+- **Last Updated:** 2026-08-13 — main へ merge 済
+- **Next Action:** —
 
 ## Loop 09
 

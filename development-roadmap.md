@@ -1,8 +1,8 @@
 # MinSuke — Development Roadmap
 
-**Status:** Loop 10 **In Progress**（`feature/loop-10-notification`）— ローカル確認済
+**Status:** Loop 10 **Completed**（PR #4 merged to `main`）— next Loop TBD  
 **Date:** 2026-08-13  
-**Version:** 1.6
+**Version:** 1.7
 
 ---
 
@@ -163,9 +163,9 @@ Loop 02 で決定すべき事項：
 
 ---
 
-## 8. Next Actions（Loop 10）
+## 8. Next Actions
 
-1. PR / merge → `main`
+1. 次 Loop のスコープ決定（候補: FR-S01 スケジュール、メール配信、Mobile UI、Testing & Security）
 2. FR-S01 本格スケジュール・外部通知（メール等）は後続 Loop に残す
 
 ---

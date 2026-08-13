@@ -10,7 +10,7 @@ Greenfield / New Development
 
 ## Current Loop
 
-Loop 10 — Notification（`feature/loop-10-notification`）— ローカル確認済
+Loop 10 ✅ Completed — next Loop TBD
 
 ## Date
 
