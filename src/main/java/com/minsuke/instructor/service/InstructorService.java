@@ -1,16 +1,26 @@
 package com.minsuke.instructor.service;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.minsuke.auth.domain.Role;
 import com.minsuke.auth.security.MinsukeUserDetails;
+import com.minsuke.event.entity.Event;
+import com.minsuke.event.repository.EventRepository;
 import com.minsuke.instructor.dto.InstructorCardDTO;
 import com.minsuke.instructor.dto.InstructorDetailDTO;
 import com.minsuke.instructor.dto.InstructorForm;
+import com.minsuke.instructor.dto.InstructorWorkloadDTO;
 import com.minsuke.instructor.entity.Instructor;
 import com.minsuke.instructor.exception.InstructorAccessDeniedException;
 import com.minsuke.instructor.exception.InstructorNotFoundException;
@@ -19,10 +29,16 @@ import com.minsuke.instructor.repository.InstructorRepository;
 @Service
 public class InstructorService {
 
-    private final InstructorRepository instructorRepository;
+    private static final ZoneId ZONE = ZoneId.of("Asia/Tokyo");
+    private static final DateTimeFormatter MONTH_LABEL =
+            DateTimeFormatter.ofPattern("yyyy年M月", Locale.JAPAN);
 
-    public InstructorService(InstructorRepository instructorRepository) {
+    private final InstructorRepository instructorRepository;
+    private final EventRepository eventRepository;
+
+    public InstructorService(InstructorRepository instructorRepository, EventRepository eventRepository) {
         this.instructorRepository = instructorRepository;
+        this.eventRepository = eventRepository;
     }
 
     @Transactional(readOnly = true)
@@ -34,12 +50,21 @@ public class InstructorService {
     }
 
     @Transactional(readOnly = true)
+    public List<InstructorCardDTO> listActiveInstructors() {
+        return instructorRepository.findByActiveTrueOrderByNameKanaAscIdAsc().stream()
+                .map(this::toCard)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
     public InstructorDetailDTO getInstructor(Long id, MinsukeUserDetails user) {
         Instructor instructor = findOrThrow(id);
         if (!isAdmin(user) && !instructor.isActive()) {
             throw new InstructorNotFoundException();
         }
-        return toDetail(instructor);
+        InstructorDetailDTO dto = toDetail(instructor);
+        dto.setWorkload(buildWorkload(id));
+        return dto;
     }
 
     @Transactional(readOnly = true)
@@ -80,8 +105,41 @@ public class InstructorService {
     public void delete(MinsukeUserDetails user, Long id) {
         requireAdmin(user);
         Instructor instructor = findOrThrow(id);
-        // Loop 09 で割当 FK が入ったら参照チェックを追加する
+        // events.instructor_id is ON DELETE SET NULL
         instructorRepository.delete(instructor);
+    }
+
+    private InstructorWorkloadDTO buildWorkload(Long instructorId) {
+        LocalDate today = LocalDate.now(ZONE);
+        List<Event> upcoming = eventRepository
+                .findByInstructorIdAndEventDateGreaterThanEqualOrderByEventDateAscStartTimeAscIdAsc(
+                        instructorId, today);
+        List<Event> allAssigned = eventRepository
+                .findByInstructorIdOrderByEventDateAscStartTimeAscIdAsc(instructorId);
+
+        InstructorWorkloadDTO workload = new InstructorWorkloadDTO();
+        workload.setTotalAssignedCount(allAssigned.size());
+        for (Event event : upcoming) {
+            InstructorWorkloadDTO.AssignedEventDTO row = new InstructorWorkloadDTO.AssignedEventDTO();
+            row.setId(event.getId());
+            row.setTitle(event.getTitle());
+            row.setEventDate(event.getEventDate());
+            row.setStartTime(event.getStartTime());
+            row.setEndTime(event.getEndTime());
+            workload.getUpcomingEvents().add(row);
+        }
+
+        Map<YearMonth, Long> counts = allAssigned.stream()
+                .collect(Collectors.groupingBy(e -> YearMonth.from(e.getEventDate()), Collectors.counting()));
+        counts.entrySet().stream()
+                .sorted(Map.Entry.<YearMonth, Long>comparingByKey().reversed())
+                .forEach(entry -> {
+                    InstructorWorkloadDTO.MonthlyCountDTO row = new InstructorWorkloadDTO.MonthlyCountDTO();
+                    row.setYearMonthLabel(entry.getKey().format(MONTH_LABEL));
+                    row.setCount(entry.getValue());
+                    workload.getMonthlyCounts().add(row);
+                });
+        return workload;
     }
 
     private Instructor findOrThrow(Long id) {

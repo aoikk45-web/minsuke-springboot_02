@@ -228,7 +228,10 @@ com.minsuke
 | リソース詳細 | `GET /families/{id}` |
 | 作成フォーム | `GET /events/new` |
 | 作成 POST | `POST /events` |
+| 編集フォーム | `GET /events/{id}/edit`（Loop 09 案） |
+| 編集 POST | `POST /events/{id}/edit`（Loop 09 案） |
 | 参加登録 | `POST /events/{id}/attend` |
+| 講師稼働 | 講師詳細内セクション（追加 URL なし案） |
 | 講師一覧 | `GET /instructors`（Loop 08） |
 | 講師作成 | `GET/POST /instructors/new`（ADMIN） |
 | 講師編集 | `GET/POST /instructors/{id}/edit`（ADMIN） |

@@ -34,6 +34,8 @@ import com.minsuke.family.entity.Household;
 import com.minsuke.family.repository.HouseholdRepository;
 import com.minsuke.family.repository.ParentRepository;
 import com.minsuke.family.service.FamilyService;
+import com.minsuke.instructor.entity.Instructor;
+import com.minsuke.instructor.repository.InstructorRepository;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -74,6 +76,9 @@ class EventServiceTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private InstructorRepository instructorRepository;
 
     private MinsukeUserDetails adminUser;
     private MinsukeUserDetails parentUser;
@@ -211,6 +216,39 @@ class EventServiceTest {
     }
 
     @Test
+    void adminCanAssignAndUpdateInstructor() {
+        Long instructorId = createActiveInstructor("山田 講師");
+        EventForm form = sampleEventForm();
+        form.setInstructorId(instructorId);
+
+        Long eventId = eventService.createEvent(adminUser, form);
+        var detail = eventService.getEventDetail(eventId, adminUser);
+        assertThat(detail.getInstructorId()).isEqualTo(instructorId);
+        assertThat(detail.getInstructorName()).isEqualTo("山田 講師");
+
+        form.setInstructorId(null);
+        eventService.updateEvent(adminUser, eventId, form);
+        detail = eventService.getEventDetail(eventId, adminUser);
+        assertThat(detail.getInstructorId()).isNull();
+        assertThat(detail.getInstructorName()).isNull();
+    }
+
+    @Test
+    void cannotAssignInactiveInstructor() {
+        Long instructorId = createActiveInstructor("無効予定");
+        var instructor = instructorRepository.findById(instructorId).orElseThrow();
+        instructor.setActive(false);
+        instructorRepository.save(instructor);
+
+        EventForm form = sampleEventForm();
+        form.setInstructorId(instructorId);
+
+        assertThatThrownBy(() -> eventService.createEvent(adminUser, form))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("無効");
+    }
+
+    @Test
     void invalidTimeRangeRejected() {
         EventForm form = sampleEventForm();
         form.setStartTime(LocalTime.of(18, 0));
@@ -229,5 +267,16 @@ class EventServiceTest {
         form.setEndTime(LocalTime.of(12, 0));
         form.setCapacity(null);
         return form;
+    }
+
+    private Long createActiveInstructor(String name) {
+        Instant now = Instant.now();
+        Instructor instructor = new Instructor();
+        instructor.setName(name);
+        instructor.setNameKana("やまだ");
+        instructor.setActive(true);
+        instructor.setCreatedAt(now);
+        instructor.setUpdatedAt(now);
+        return instructorRepository.save(instructor).getId();
     }
 }

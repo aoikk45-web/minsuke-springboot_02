@@ -16,7 +16,7 @@
 ## Current Loop
 
 **MVP（Loop 04〜07）完了** — 統合レビュー済（2026-08-11）  
-**Current Loop:** Loop 08 — Instructor Management ✅ 完了（`feature/loop-08-instructor`）
+**Current Loop:** Loop 09 — Instructor Assignment & Availability（`feature/loop-09-instructor-assignment`）
 
 ## Date
 
@@ -28,7 +28,20 @@
 
 ## Current State
 
-**Loop 08 完了**（2026-08-12）。講師マスタ CRUD を実装し、ローカル画面確認まで完了。次は Loop 09（割当・稼働）または PR merge。
+**Loop 09 ローカル確認済**（2026-08-12）。既存 PG（`local` プロファイル）で担当講師・稼働表示を確認。次は commit / PR。
+
+## Loop 09 Progress
+
+| 作業 | 状態 |
+|---|---|
+| ブランチ作成 `feature/loop-09-instructor-assignment` | ✅ |
+| OQ-03 / FR-I05 / FR-I06 設計草案 | ✅ |
+| 人間承認（推奨案） | ✅ |
+| Flyway V5 + Event 担当講師 UI | ✅ |
+| 講師稼働表示 | ✅ |
+| ローカル確認（既存 PG / profile=`local`） | ✅ |
+| Testcontainers | ⏭ Docker Desktop パイプ不整合のためスキップ |
+| Loop 09 完了（PR / merge） | ⏳ |
 
 ## Loop 08 Progress
 
@@ -280,7 +293,7 @@ MVP は **認証 + ADMIN によるイベント管理 + 家庭管理 + 保護者�
 | OQ-01 | 利用シーン | ✅ 汎用 |
 | OQ-02 | ADMIN in MVP | ✅ 含む |
 | OQ-05 | 個人情報保持・削除 | ✅ **選択肢 B（標準保持）** |
-| OQ-03 | スケジュールとイベントの関係 | Open |
+| OQ-03 | スケジュールとイベントの関係 | Closed — イベント中心（案 A） |
 | OQ-04 | 子どもの直接ログイン | Open |
 | OQ-06 | 同時利用規模 | Open |
 | OQ-07 | 本番デプロイ | Open |
@@ -465,8 +478,53 @@ MVP は **認証 + ADMIN によるイベント管理 + 家庭管理 + 保護者�
 
 # 16. Next Loop
 
-**Loop 08 — Instructor Management**（ブランチ: `feature/loop-08-instructor`）  
-**Loop 08 完了。** 次は `main` への PR / merge、または Loop 09（担当講師・稼働）。
+**Loop 08 — Instructor Management**（merged）  
+**Loop 09 実装中。** OQ-03 / DD-09 / DD-10 承認済（推奨案）。
+
+---
+
+# 25. Loop 09 — Instructor Assignment & Availability（2026-08-12）
+
+## 目的
+
+イベントに担当講師を設定し（FR-I05）、講師の稼働状況を可視化する（FR-I06）。
+
+## スコープ（Approved）
+
+| 含む | 含まない |
+|---|---|
+| OQ-03 = **イベント中心（案 A）** | 独立 `schedules`（FR-S01 本格化） |
+| `events.instructor_id`（任意・単一） | 複数講師同時担当 |
+| イベント作成・編集・詳細での担当講師 | INSTRUCTOR ログイン |
+| 講師詳細の稼働（一覧・月次件数） | FR-S03/S04 |
+
+## 承認事項（2026-08-12 — 推奨案で承認）
+
+| ID | 質問 | 決定 |
+|---|---|---|
+| **OQ-03** | スケジュールとイベントの関係 | **案 A: イベント中心**（独立 schedules は後続） |
+| **DD-09** | `events.instructor_id` NULL FK、ON DELETE SET NULL | **Approved** |
+| **DD-10** | 稼働は events 集計のみ（専用テーブルなし） | **Approved** |
+| **単一講師** | 1 イベント = 最大 1 講師 | **Approved** |
+| **S17** | イベント編集画面を追加して担当変更 | **Approved** |
+
+## 設計サマリー
+
+| 領域 | 内容 |
+|---|---|
+| DB | `V5__events_instructor.sql` |
+| UI | S10/S11 拡張 + S17 編集 + S14 稼働セクション |
+| 稼働 | 今後の担当イベント一覧、月次件数 |
+
+## 次アクション
+
+ローカル確認済。次: commit / PR → merge
+
+## 参照
+
+- `Composer.md` §4.7
+- `requirements.md` §6.4 Loop 09
+- `database.md` §15
 
 ---
 
@@ -765,14 +823,22 @@ docker compose up -d
 
 # 18. Loop History
 
+## Loop 09
+
+- **Status:** **IN PROGRESS**（ローカル確認済）
+- **Started:** 2026-08-12
+- **Branch:** `feature/loop-09-instructor-assignment`
+- **Last Updated:** 2026-08-12 — 既存 PG でローカル確認済（Testcontainers はスキップ）
+- **Next Action:** commit / PR → merge
+
 ## Loop 08
 
 - **Status:** **COMPLETED**
 - **Started:** 2026-08-12
 - **Completed:** 2026-08-12
-- **Branch:** `feature/loop-08-instructor`
-- **Last Updated:** 2026-08-12 — ローカル画面確認完了（ユーザー承認）
-- **Next Action:** PR merge to `main`、または **Loop 09 開始**
+- **Branch:** `feature/loop-08-instructor`（merged to main via PR #1）
+- **Last Updated:** 2026-08-12 — main へ merge 済
+- **Next Action:** —
 
 ## Loop 07
 

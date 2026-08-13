@@ -31,6 +31,14 @@
   <p th:text="${event.description}">説明</p>
 
   <p class="hint">
+    担当講師:
+    <a th:if="${event.instructorId != null}"
+       th:href="@{/instructors/{id}(id=${event.instructorId})}"
+       th:text="${event.instructorName}">講師</a>
+    <span th:if="${event.instructorId == null}">未設定</span>
+  </p>
+
+  <p class="hint">
     参加者:
     <span th:text="${event.registeredCount}">0</span>
     <span th:if="${!event.unlimitedCapacity}" th:text="' / ' + ${event.capacity}">/ 定員</span>
@@ -93,6 +101,9 @@
   <p th:if="${event.registeredParticipants.isEmpty()}" class="hint">まだ参加者はいません。</p>
 
   <div class="form-actions">
+    <a sec:authorize="hasRole('ADMIN')"
+       th:href="@{/events/{id}/edit(id=${event.id})}"
+       class="btn btn-secondary">編集</a>
     <a th:href="@{/calendar}" class="btn btn-secondary">カレンダーへ戻る</a>
   </div>
 </main>

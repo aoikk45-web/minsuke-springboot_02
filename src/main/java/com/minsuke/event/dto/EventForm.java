@@ -35,4 +35,7 @@ public class EventForm {
 
     @Positive(message = "定員は1以上で入力してください")
     private Integer capacity;
+
+    /** 担当講師（任意）。未選択は null */
+    private Long instructorId;
 }

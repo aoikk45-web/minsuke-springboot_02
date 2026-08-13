@@ -43,6 +43,9 @@ public class Event {
     @Column
     private Integer capacity;
 
+    @Column(name = "instructor_id")
+    private Long instructorId;
+
     @Column(name = "created_by_user_id", nullable = false)
     private Long createdByUserId;
 

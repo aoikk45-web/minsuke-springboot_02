@@ -29,6 +29,56 @@
        class="hint">連絡先・備考は未登録です。</p>
   </section>
 
+  <section class="section" th:if="${instructor.workload != null}">
+    <h2>稼働状況</h2>
+    <p class="hint">
+      担当イベント合計:
+      <span th:text="${instructor.workload.totalAssignedCount}">0</span> 件
+    </p>
+
+    <h3>今後の担当イベント</h3>
+    <table class="data-table" th:if="${!instructor.workload.upcomingEvents.isEmpty()}">
+      <thead>
+      <tr>
+        <th>日付</th>
+        <th>時間</th>
+        <th>タイトル</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="ev : ${instructor.workload.upcomingEvents}">
+        <td th:text="${#temporals.format(ev.eventDate, 'yyyy年M月d日')}">日付</td>
+        <td>
+          <span th:if="${ev.startTime != null}" th:text="${#temporals.format(ev.startTime, 'HH:mm')}">開始</span>
+          <span th:if="${ev.endTime != null}" th:text="' 〜 ' + ${#temporals.format(ev.endTime, 'HH:mm')}">終了</span>
+          <span th:if="${ev.startTime == null and ev.endTime == null}">—</span>
+        </td>
+        <td>
+          <a th:href="@{/events/{id}(id=${ev.id})}" th:text="${ev.title}">タイトル</a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <p th:if="${instructor.workload.upcomingEvents.isEmpty()}" class="hint">今後の担当イベントはありません。</p>
+
+    <h3>月別担当件数</h3>
+    <table class="data-table" th:if="${!instructor.workload.monthlyCounts.isEmpty()}">
+      <thead>
+      <tr>
+        <th>月</th>
+        <th>件数</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="row : ${instructor.workload.monthlyCounts}">
+        <td th:text="${row.yearMonthLabel}">月</td>
+        <td th:text="${row.count}">0</td>
+      </tr>
+      </tbody>
+    </table>
+    <p th:if="${instructor.workload.monthlyCounts.isEmpty()}" class="hint">担当履歴はありません。</p>
+  </section>
+
   <div class="form-actions" sec:authorize="hasRole('ADMIN')">
     <a th:href="@{/instructors/{id}/edit(id=${instructor.id})}" class="btn btn-secondary">編集</a>
     <form th:if="${instructor.active}" th:action="@{/instructors/{id}/deactivate(id=${instructor.id})}"
