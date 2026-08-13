@@ -16,11 +16,12 @@
 ## Current Loop
 
 **MVP（Loop 04〜07）完了** — 統合レビュー済（2026-08-11）  
-**Current Loop:** Loop 09 — Instructor Assignment & Availability（`feature/loop-09-instructor-assignment`）
+**Loop 08 / 09 完了** — PR #1 / #2 を `main` へ merge 済  
+**Current Loop:** Loop 10 — Notification（`feature/loop-10-notification`）
 
 ## Date
 
-**2026-08-12**（最終更新）
+**2026-08-13**（最終更新）
 
 ---
 
@@ -28,7 +29,19 @@
 
 ## Current State
 
-**Loop 09 ローカル確認済**（2026-08-12）。既存 PG（`local` プロファイル）で担当講師・稼働表示を確認。次は commit / PR。
+**Loop 10 ローカル確認済**（2026-08-13）。次: commit / PR → merge。
+
+## Loop 10 Progress
+
+| 作業 | 状態 |
+|---|---|
+| ブランチ作成 `feature/loop-10-notification` | ✅ |
+| FR-N01〜N03 / OQ-08 設計草案 | ✅ |
+| 人間承認（推奨案） | ✅ |
+| Flyway V6 + お知らせ UI | ✅ |
+| 既読・未読表示 | ✅ |
+| テスト・ローカル確認 | ✅ **2026-08-13** |
+| Loop 10 完了（PR / merge） | ⏳ |
 
 ## Loop 09 Progress
 
@@ -41,7 +54,7 @@
 | 講師稼働表示 | ✅ |
 | ローカル確認（既存 PG / profile=`local`） | ✅ |
 | Testcontainers | ⏭ Docker Desktop パイプ不整合のためスキップ |
-| Loop 09 完了（PR / merge） | ⏳ |
+| Loop 09 完了（PR #2 / merge） | ✅ **2026-08-13** |
 
 ## Loop 08 Progress
 
@@ -478,8 +491,9 @@ MVP は **認証 + ADMIN によるイベント管理 + 家庭管理 + 保護者�
 
 # 16. Next Loop
 
-**Loop 08 — Instructor Management**（merged）  
-**Loop 09 実装中。** OQ-03 / DD-09 / DD-10 承認済（推奨案）。
+**Loop 08 / 09** merged。  
+**Loop 10 — Notification**（ブランチ: `feature/loop-10-notification`）  
+設計中。次アクション: OQ-08 / DD-11 / DD-12 の人間承認 → 実装。
 
 ---
 
@@ -518,13 +532,53 @@ MVP は **認証 + ADMIN によるイベント管理 + 家庭管理 + 保護者�
 
 ## 次アクション
 
-ローカル確認済。次: commit / PR → merge
+完了（PR #2 merge 済）。  
+**Loop 10 設計中。** 次アクション: OQ-08 / DD-11 / DD-12 の人間承認 → 実装。
+
+---
+
+# 26. Loop 10 — Notification（設計草案 2026-08-13）
+
+## 目的
+
+アプリ内お知らせを作成・配信し、既読を管理する（FR-N01〜N03）。
+
+## スコープ（Approved）
+
+| 含む | 含まない |
+|---|---|
+| アプリ内お知らせ（作成・一覧・詳細） | メール／プッシュ（将来 Loop） |
+| 配信対象 = 認証済み全員 | 家庭単位・ロール別の細かい配信 |
+| ユーザー単位の既読 | 下書きフロー |
+| ヘッダー未読件数 | FR-S01 本格スケジュール |
+
+## 承認事項（2026-08-13 — 推奨案で承認）
+
+| ID | 質問 | 決定 |
+|---|---|---|
+| **OQ-08** | お知らせの配信チャネル | **アプリ内のみ**（メールは将来 Loop） |
+| **DD-11** | `announcements` + `announcement_reads` | **Approved** |
+| **DD-12** | 配信対象は認証済み全員（絞り込みなし） | **Approved** |
+| **公開モデル** | 作成即公開・下書きなし | **Approved** |
+| **編集・削除** | ADMIN のみ編集・削除可 | **Approved** |
+
+## 設計サマリー
+
+| 領域 | 内容 |
+|---|---|
+| DB | `V6__create_announcements.sql` |
+| UI | S18 一覧 / S19 詳細（閲覧で既読）/ S20 作成・編集 |
+| 認可 | 作成・編集・削除 = ADMIN、閲覧 = 認証済み |
+
+## 次アクション
+
+テスト・ローカル確認済。次: PR / merge
 
 ## 参照
 
-- `Composer.md` §4.7
-- `requirements.md` §6.4 Loop 09
-- `database.md` §15
+- `Composer.md` §4.8
+- `requirements.md` §6.5
+- `database.md` §16
 
 ---
 
@@ -823,13 +877,22 @@ docker compose up -d
 
 # 18. Loop History
 
-## Loop 09
+## Loop 10
 
 - **Status:** **IN PROGRESS**（ローカル確認済）
+- **Started:** 2026-08-13
+- **Branch:** `feature/loop-10-notification`
+- **Last Updated:** 2026-08-13 — 既存 PG でローカル確認済
+- **Next Action:** PR / merge
+
+## Loop 09
+
+- **Status:** **COMPLETED**
 - **Started:** 2026-08-12
-- **Branch:** `feature/loop-09-instructor-assignment`
-- **Last Updated:** 2026-08-12 — 既存 PG でローカル確認済（Testcontainers はスキップ）
-- **Next Action:** commit / PR → merge
+- **Completed:** 2026-08-13
+- **Branch:** `feature/loop-09-instructor-assignment`（merged to main via PR #2）
+- **Last Updated:** 2026-08-13 — main へ merge 済
+- **Next Action:** —
 
 ## Loop 08
 

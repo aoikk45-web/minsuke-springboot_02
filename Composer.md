@@ -5,9 +5,9 @@
 **Project Name:** MinSuke（みんスケ）  
 **Development Model:** Greenfield / New Development  
 **Development Environment:** Cursor + Composer 2.5  
-**Current Loop:** Loop 09 — Instructor Assignment & Availability（`feature/loop-09-instructor-assignment`）  
-**Current Phase:** Post-MVP / Schedule-lite（イベント担当講師・稼働）  
-**Date:** 2026-08-12
+**Current Loop:** Loop 10 — Notification（`feature/loop-10-notification`）  
+**Current Phase:** Post-MVP / 実装（承認済）  
+**Date:** 2026-08-13
 
 MinSuke（みんスケ）は、家庭・講師・スケジュール・イベント等を管理するための新規システムとして開発する。
 
@@ -270,6 +270,43 @@ Loop 09で実施する。
 | FR-I05 | `events.instructor_id`（任意・単一講師） |
 | FR-I06 | 割当イベントの集計・一覧（専用稼働テーブルは作らない） |
 | FR-S01〜S04 | Loop 09 では本格スケジュール CRUD は対象外 |
+
+---
+
+## 4.8 Current Loop — Loop 10
+
+Loop 10の目的は、
+
+**アプリ内お知らせの作成・配信・既読管理（FR-N01〜N03）** を設計・実装すること
+
+である。
+
+Loop 10で実施する。
+
+**フェーズ A（設計 — 現在）**
+
+- OQ-08 / 配信対象 / 公開モデルの確定案提示
+- FR-N01〜N03 のスコープ確定
+- DB・画面・認可の設計案 → 人間承認
+
+**フェーズ B（実装 — 承認後）**
+
+- Flyway（`announcements` / `announcement_reads`）
+- ADMIN 作成・認証済み閲覧・既読
+- ヘッダー未読表示（任意）
+- テスト・Consistency Review
+
+**Loop 10 フェーズ A ではコードを書かない**（マイグレーション適用・Entity 変更は承認後）。
+
+### Loop 10 推奨方針（Proposed）
+
+| 項目 | 推奨 |
+|---|---|
+| OQ-08 | **アプリ内のみ**（メールは将来 Loop）— **Confirmed 2026-08-13** |
+| 配信対象 | **認証済み全員**（ロールで絞らない） |
+| 公開 | 作成と同時に公開（下書きなし） |
+| 既読 | ユーザー単位（`announcement_reads`） |
+| FR-S01 | Loop 10 でも対象外（スケジュール本格化は別 Loop） |
 
 ## 5. Loop 01 Investigation
 

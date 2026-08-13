@@ -454,6 +454,48 @@ erDiagram
 - 一覧: `event_date >= today` AND `instructor_id = :id` ORDER BY event_date
 - 月次: `GROUP BY year, month` WHERE instructor_id = :id
 
+---
+
+## 16. Loop 10 — Announcements（Proposed）
+
+> SQL 草案: `docs/database/V6__create_announcements.sql`（承認後に `src/.../migration` へ配置）
+
+### 16.1 ER
+
+```mermaid
+erDiagram
+    users ||--o{ announcements : creates
+    announcements ||--o{ announcement_reads : "read by"
+    users ||--o{ announcement_reads : reads
+    announcements {
+        bigint id PK
+        varchar title
+        text body
+        bigint created_by_user_id FK
+        timestamptz published_at
+    }
+    announcement_reads {
+        bigint id PK
+        bigint announcement_id FK
+        bigint user_id FK
+        timestamptz read_at
+    }
+```
+
+### 16.2 Decision 候補
+
+| ID | 内容 | 状態 |
+|---|---|---|
+| DD-11 | `announcements` + `announcement_reads`（既読はユーザー単位 UNIQUE） | ✅ **Approved** 2026-08-13 |
+| DD-12 | Loop 10 の配信対象は認証済み全員（対象テーブルなし） | ✅ **Approved** 2026-08-13 |
+| DD-13 | お知らせ削除時は reads を CASCADE | ✅ **Approved** 2026-08-13 |
+
+### 16.3 Open
+
+| # | 質問 | 推奨 |
+|---|---|---|
+| OQ-08 | 配信チャネル | アプリ内のみ |
+| DQ-N01 | 下書き | なし（作成即公開） |
 
 ---
 
@@ -462,6 +504,8 @@ erDiagram
 - `docs/database/V1__create_schema.sql` — Flyway 設計 SQL
 - `docs/database/V2__seed_dev.sql` — 開発 seed 設計
 - `docs/database/V3__create_instructors.sql` — Loop 08 草案
+- `docs/database/V5__events_instructor.sql` — Loop 09
+- `docs/database/V6__create_announcements.sql` — Loop 10 草案
 - `requirements.md` — FR 対応
 - `architecture.md` — Flyway / PostgreSQL 方針
 - `security.md` — SD-03 初回 ADMIN seed

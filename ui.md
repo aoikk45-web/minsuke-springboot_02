@@ -49,7 +49,10 @@
 | S14 | 講師詳細 | `/instructors/{id}` | 認証済 | Loop 08 → Loop 09 で稼働セクション |
 | S15 | 講師作成 | `/instructors/new` | **ADMIN** | Loop 08 |
 | S16 | 講師編集 | `/instructors/{id}/edit` | **ADMIN** | Loop 08 |
-| S17 | イベント編集（案） | `/events/{id}/edit` | **ADMIN** | Loop 09（担当講師変更用） |
+| S17 | イベント編集 | `/events/{id}/edit` | **ADMIN** | Loop 09 |
+| S18 | お知らせ一覧 | `/announcements` | 認証済 | Loop 10 |
+| S19 | お知らせ詳細 | `/announcements/{id}` | 認証済 | Loop 10（閲覧で既読） |
+| S20 | お知らせ作成 | `/announcements/new` | **ADMIN** | Loop 10 |
 
 > S13〜S14 の閲覧は **認証済み全員**（OQ-I02 ✅）。
 
@@ -133,11 +136,21 @@ flowchart TD
 
 | 機能 | 画面 |
 |---|---|
-| 講師ダッシュボード | 担当・稼働状況（FR-I06、Loop 09 以降） |
-| イベント／スケジュール詳細 | 担当講師表示（FR-I05、Loop 09） |
-| お知らせ | 一覧・詳細・既読 |
+| 講師ダッシュボード | 担当・稼働状況（FR-I06） |
+| イベント／スケジュール詳細 | 担当講師表示（FR-I05） |
+| お知らせ | 一覧・詳細・既読（**Loop 10**） |
 | 管理者 | ユーザー管理、一括登録 |
-| 通知バッジ | 未読お知らせ数 |
+| 通知バッジ | 未読お知らせ数（**Loop 10 任意**） |
+
+### Loop 10 画面フロー（Proposed）
+
+```mermaid
+flowchart TD
+    Calendar[カレンダー] --> List[お知らせ一覧 S18]
+    List --> Detail[お知らせ詳細 S19]
+    List --> Create[お知らせ作成 S20]
+    Header[ヘッダー未読] --> List
+```
 
 ### Loop 08 画面フロー（Proposed）
 
