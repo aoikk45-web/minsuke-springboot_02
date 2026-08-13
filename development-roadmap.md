@@ -1,6 +1,6 @@
 # MinSuke — Development Roadmap
 
-**Status:** Loop 11 **In Progress**（`feature/loop-11-schedule`）— 設計草案  
+**Status:** Loop 11 **In Progress**（`feature/loop-11-schedule`）— 実装・Consistency Review  
 **Date:** 2026-08-13  
 **Version:** 1.8
 
@@ -165,10 +165,12 @@ Loop 02 で決定すべき事項：
 
 ## 8. Next Actions（Loop 11）
 
-1. **人間承認:** OQ-S01 / DD-14〜17 / Loop 11 スコープ（`minutes.md` §27）
-2. 承認後: Flyway V7 → スケジュール CRUD → イベント生成 → テスト
-3. FR-S03/S04・複雑 RRULE は後続 Loop に残す
-4. **FR-S03:** スケジュールごとの参加登録単位（家庭/保護者/子ども）— 2026-08-13 要望
+1. ✅ OQ-S01 / DD-14〜17 承認（2026-08-13）
+2. ✅ Flyway V7 → スケジュール CRUD → イベント生成 → テスト追加
+3. ✅ DD-18 WEEKLY 複数曜日（V8 `schedule_weekdays`）
+4. ✅ UI ローカル確認（2026-08-13）
+5. ⏳ コミット → PR → merge
+6. FR-S03/S04・複雑 RRULE は後続 Loop に残す（**FR-S03 参加登録単位**含む）
 
 ---
 

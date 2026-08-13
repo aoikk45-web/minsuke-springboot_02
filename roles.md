@@ -10,7 +10,7 @@ Greenfield / New Development
 
 ## Current Loop
 
-Loop 11 — Schedule Management（`feature/loop-11-schedule`）— 設計中
+Loop 11 — Schedule Management（`feature/loop-11-schedule`）— 実装完了・PR 待ち
 
 ## Date
 
@@ -22,11 +22,13 @@ Loop 11 — Schedule Management（`feature/loop-11-schedule`）— 設計中
 
 AI エージェント（Cursor / Composer 2.5）は、必要に応じて以下の専門家の観点を使用する。
 
+**絶対参照（2026-08-13 人間指示）:** 設計・実装・Loop 完了判定の前に、必ず `roles.md` / `minutes.md` / `Composer.md` を読む。記憶だけでスコープや承認状態を決めない。
+
 すべての役割を形式的に順番通り実行する必要はない。
 
 今回のLoopの目的を達成するために必要な専門家を自律的に選択する。
 
-実装 Loop（Loop 04 以降）では、**Consistency Engineer（整合性エンジニア）** を Loop 完了前に必ず通すことを推奨する。
+実装 Loop（Loop 04 以降）では、**Consistency Engineer（整合性エンジニア）** を Loop 完了前に**必ず**通す。
 
 ---
 
@@ -438,7 +440,7 @@ Reviewer が「設計の妥当性」を見るのに対し、本役割は**実際
 
 ## Loop 04 以降
 
-Backend / Security / DB / Frontend の実装 Loop では、**Recorder が Loop を完了にする前に**本役割のレポートを 1 回以上残すことを推奨する。
+Backend / Security / DB / Frontend の実装 Loop では、**Recorder が Loop を完了にする前に**本役割のレポートを 1 回以上残すこと（必須）。
 
 ---
 

@@ -6,7 +6,7 @@
 **Development Model:** Greenfield / New Development  
 **Development Environment:** Cursor + Composer 2.5  
 **Current Loop:** Loop 11 — Schedule Management（`feature/loop-11-schedule`）  
-**Current Phase:** Post-MVP / 設計（フェーズ A — 承認前はコード実装しない）  
+**Current Phase:** Post-MVP / 実装完了・PR 待ち（OQ-S01 / DD-14〜18 承認済）  
 **Date:** 2026-08-13
 
 MinSuke（みんスケ）は、家庭・講師・スケジュール・イベント等を管理するための新規システムとして開発する。
@@ -320,28 +320,26 @@ Loop 11の目的は、
 
 Loop 11で実施する。
 
-**フェーズ A（設計 — 現在）**
+**フェーズ A（設計）** ✅ 2026-08-13 承認済
 
-- **OQ-S01**（スケジュールとイベントの関係 — 本格化）の確定案提示
+- **OQ-S01** / DD-14〜17 を推奨案のまま承認
 - FR-S01 スコープ確定（FR-S03/S04 は後続）
-- DB・画面・認可の設計案 → 人間承認
 
-**フェーズ B（実装 — 承認後）**
+**フェーズ B（実装 — 現在）**
 
-- Flyway（`schedules` + `events.schedule_id`）
-- スケジュール CRUD（ADMIN）
-- スケジュールからイベント生成（カレンダー連携）
-- テスト・Consistency Review
+- Flyway（`schedules` + `events.schedule_id`）✅
+- スケジュール CRUD（ADMIN）✅
+- WEEKLY 複数曜日（`schedule_weekdays` / DD-18）✅
+- スケジュールからイベント生成（カレンダー連携）✅
+- テスト・Consistency Review ← **必須**（`roles.md` §12）
 
-**Loop 11 フェーズ A ではコードを書かない**（マイグレーション適用・Entity 変更は承認後）。
+### Loop 11 確定方針（Approved 2026-08-13）
 
-### Loop 11 推奨方針（Proposed）
-
-| 項目 | 推奨 |
+| 項目 | 確定 |
 |---|---|
-| OQ-S01 | **テンプレート + インスタンス** — `schedules` マスタ + `events.schedule_id`（既存イベントはそのまま） |
-| 繰り返し | MVP = **ONE_OFF + WEEKLY**（曜日固定） |
-| 生成 | ADMIN が「今後 N 週分を生成」。同一 schedule + 日付の重複はスキップ |
+| OQ-S01 | **テンプレート + インスタンス** — `schedules` マスタ + `events.schedule_id` |
+| 繰り返し | MVP = **ONE_OFF + WEEKLY**（曜日 1=月…7=日、**複数指定可** — DD-18） |
+| 生成 | ADMIN が「今後 N 週分を生成」（既定 4 週）。同一 schedule + 日付はスキップ |
 | 講師 | スケジュールの `instructor_id` を生成イベントへコピー（FR-S02 の最小） |
 | FR-S03/S04 | Loop 11 では対象外 |
 | **FR-S03** | **参加登録単位（家庭/保護者/子ども）** — 後続 Loop（2026-08-13 要望） |
@@ -617,7 +615,7 @@ Impact
 
 Loop 01終了後、次のLoopを決定する。
 
-例（`development-roadmap.md` と同期 — 2026-08-11）:
+例（初期ロードマップ案 — 実際の実行順は下記と異なる）:
 
 Loop 02 — Architecture & Technology Selection
 Loop 03 — Database Design
@@ -626,11 +624,13 @@ Loop 05 — Authentication & Authorization
 Loop 06 — Family Management
 Loop 07 — Event Management
 Loop 08 — Instructor Management
-Loop 09 — Schedule Management
+Loop 09 — Schedule Management（初期案名。実施は Instructor Assignment）
 Loop 10 — Notification
-Loop 11 — Mobile UI
+Loop 11 — Mobile UI（初期案名。**現行 Loop 11 は Schedule Management**）
 Loop 12 — Testing & Security
 Loop 13 — Integration Review
+
+**現行確定順序（2026-08-13）:** Loop 08 Instructor → Loop 09 Instructor Assignment → Loop 10 Notification → **Loop 11 Schedule Management**（FR-S01）。Mobile UI は後続。
 
 実際の順番は Loop 01 の結果から決定する。上記が現行の確定順序である。
 

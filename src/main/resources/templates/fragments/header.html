@@ -8,6 +8,7 @@
         <a th:href="@{/calendar}">カレンダー</a>
         <a th:href="@{/families}">家族一覧</a>
         <a th:href="@{/instructors}">講師一覧</a>
+        <a th:href="@{/schedules}" sec:authorize="hasRole('ADMIN')">スケジュール</a>
         <a th:href="@{/announcements}">
           お知らせ
           <span th:if="${unreadAnnouncementCount > 0}"

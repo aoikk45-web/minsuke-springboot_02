@@ -1,0 +1,23 @@
+---
+description: Always consult roles.md, minutes.md, Composer.md; run Consistency Engineer before Loop completion
+alwaysApply: true
+---
+
+# MinSuke — Absolute Document Reference
+
+Before design, implementation, or Loop completion in this repository:
+
+1. **Always read and follow** (絶対参照):
+   - `roles.md` — roles, especially Consistency Engineer (§12) for implementation Loops
+   - `minutes.md` — current Loop status, decisions, approvals, Consistency Reports
+   - `Composer.md` — current Loop purpose, phase, completion criteria
+
+2. Do **not** implement from memory alone when these files define scope, phase, or approvals.
+
+3. **Consistency Engineer (`roles.md` §12)** must run before marking an implementation Loop complete:
+   - Check A–F checklist with evidence
+   - Classify Blocker / Warning
+   - Fix Blockers; sync or record Warnings
+   - Write a Consistency Report into `minutes.md`
+
+4. Keep `minutes.md` ↔ `Composer.md` Loop status in sync when phase changes.

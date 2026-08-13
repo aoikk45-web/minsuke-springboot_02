@@ -16,4 +16,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             Long instructorId, LocalDate fromInclusive);
 
     List<Event> findByInstructorIdOrderByEventDateAscStartTimeAscIdAsc(Long instructorId);
+
+    boolean existsByScheduleIdAndEventDate(Long scheduleId, LocalDate eventDate);
+
+    List<Event> findByScheduleIdOrderByEventDateAscStartTimeAscIdAsc(Long scheduleId);
 }

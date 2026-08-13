@@ -46,6 +46,9 @@ public class Event {
     @Column(name = "instructor_id")
     private Long instructorId;
 
+    @Column(name = "schedule_id")
+    private Long scheduleId;
+
     @Column(name = "created_by_user_id", nullable = false)
     private Long createdByUserId;
 

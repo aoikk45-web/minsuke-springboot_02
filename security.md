@@ -72,12 +72,12 @@
 | 作成・編集・削除 | **ADMIN のみ** | Service + SecurityConfig |
 | 外部メール配信 | 導入しない（Loop 10） | **OQ-08 推奨** |
 
-### Loop 11 認可方針（Proposed）
+### Loop 11 認可方針（Approved 2026-08-13）
 
 | 操作 | ロール | 備考 |
 |---|---|---|
-| スケジュール一覧・詳細・CRUD | **ADMIN のみ** | Service + SecurityConfig |
-| イベント生成 | **ADMIN のみ** | 詳細画面から POST |
+| スケジュール一覧・詳細・CRUD | **ADMIN のみ** | `SecurityConfig` `/schedules/**` + Service |
+| イベント生成 | **ADMIN のみ** | `POST /schedules/{id}/generate` |
 | カレンダー（events） | 認証済み全員 | 既存のまま |
 
 ### Confirmed（2026-08-10）

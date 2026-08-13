@@ -155,8 +155,8 @@ flowchart LR
 
 | ID | 要件 | 区分 | MVP |
 |---|---|---|---|
-| FR-S01 | 定期・単発スケジュールの登録 | **Proposed（Loop 11）** | **Yes（案）** |
-| FR-S02 | 講師割当 | **Proposed（Loop 11）** | **Yes（案）** — schedule.instructor_id + 生成イベントへコピー |
+| FR-S01 | 定期・単発スケジュールの登録 | **Approved（Loop 11）** | **Yes** |
+| FR-S02 | 講師割当 | **Approved（Loop 11・最小）** | **Yes** — schedule.instructor_id + 生成イベントへコピー |
 | FR-S03 | スケジュール／イベントごとの**参加登録単位**の設定 | **Future Consideration** | No | 後続 Loop（Loop 11 対象外） |
 | FR-S04 | 一括登録 | Proposed | No |
 
@@ -173,11 +173,11 @@ flowchart LR
 - 現状（MVP / Loop 07〜10）: イベントごとの単位設定はなく、**保護者・子ども個別**の両方が常に選択可能（OQ-10）。
 - **Loop 11 では実装しない。** スケジュール／イベント生成の後続 Loop で `schedules.participation_unit`（案）等を検討。
 
-### Loop 11 スコープ案（Proposed — 2026-08-13）
+### Loop 11 スコープ（Approved — 2026-08-13）
 
 | 含む | 含まない |
 |---|---|
-| `schedules` CRUD（ONE_OFF / WEEKLY） | **FR-S03 参加登録単位の設定**（後続 Loop） |
+| `schedules` CRUD（ONE_OFF / WEEKLY・複数曜日） | **FR-S03 参加登録単位の設定**（後続 Loop） |
 | `events.schedule_id` で紐づけ | FR-S04 一括登録 |
 | ADMIN によるイベント生成（N 週） | 複雑 RRULE |
 | 講師・定員等のコピー | INSTRUCTOR ログイン |
@@ -463,7 +463,7 @@ MinSuke は氏名・ふりがな・連絡先・生年月日等の **個人情報
 | OQ-01 | 主たる利用シーン | ✅ **汎用** | 全体要件 |
 | OQ-02 | MVP に ADMIN を含むか | ✅ **含む（イベント作成は ADMIN のみ）** | MVP 範囲 |
 | OQ-03 | スケジュールとイベントの関係 | **Closed（Loop 09）** — イベント中心。本格化は **OQ-S01** | データモデル |
-| OQ-S01 | スケジュール本格化時の event 関係 | Open — **Loop 11 推奨: テンプレート + インスタンス** | データモデル |
+| OQ-S01 | スケジュール本格化時の event 関係 | ✅ **Approved** — テンプレート + インスタンス | データモデル |
 | OQ-S02 | スケジュールごとの参加登録単位（家庭/保護者/子ども） | **Future** — Loop 11 以降（FR-S03） | DB・UI・EventService |
 | OQ-04 | 子どもの直接ログイン要否 | Open | 認証・UI |
 | OQ-05 | 個人情報の保持期間・削除ポリシー | ✅ **選択肢 B（標準保持）** | セキュリティ・DB |

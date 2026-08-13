@@ -29,7 +29,7 @@
 
 ## Current State
 
-**Loop 11 設計中**（2026-08-13）。FR-S01（スケジュール本格化）の草案を提示。人間承認待ち。
+**Loop 11 実装完了・PR 待ち**（2026-08-13）。OQ-S01 / DD-14〜18 承認済。UI ローカル確認済。
 
 ## Loop 11 Progress
 
@@ -37,11 +37,14 @@
 |---|---|
 | ブランチ作成 `feature/loop-11-schedule` | ✅ |
 | FR-S01 / OQ-S01 設計草案 | ✅ |
-| 人間承認 | ⏳ **承認待ち** |
-| Flyway V7 + スケジュール UI | ⏳ 承認後 |
-| イベント生成 | ⏳ 承認後 |
-| テスト・ローカル確認 | ⏳ |
-| Loop 11 完了 | ⏳ |
+| 人間承認（推奨案） | ✅ **2026-08-13** |
+| Flyway V7 + スケジュール UI | ✅ |
+| WEEKLY 複数曜日（V8 / DD-18） | ✅ |
+| イベント生成 | ✅ |
+| テスト | ✅（Testcontainers は Docker 依存でスキップ可） |
+| Consistency Review（`roles.md` §12） | ✅ **2026-08-13** |
+| UI ローカル確認 | ✅ **2026-08-13** |
+| Loop 11 完了 | ⏳ PR → merge |
 
 ## Loop 10 Progress
 
@@ -505,7 +508,7 @@ MVP は **認証 + ADMIN によるイベント管理 + 家庭管理 + 保護者�
 
 **Loop 08 / 09 / 10** merged。  
 **Loop 11 — Schedule Management**（ブランチ: `feature/loop-11-schedule`）  
-設計中。次アクション: OQ-S01 / DD-14〜17 の人間承認 → 実装。
+実装完了・ローカル確認済。次: PR → merge。
 
 ---
 
@@ -585,7 +588,7 @@ MVP は **認証 + ADMIN によるイベント管理 + 家庭管理 + 保護者�
 ## 次アクション
 
 テスト・ローカル確認済。PR #4 merge 済。  
-**Loop 11 設計中。** 次アクション: OQ-S01 / DD-14〜17 の人間承認 → 実装。
+**Loop 11 実装中**（承認済）。次: ローカル確認 → PR。
 
 ---
 
@@ -617,15 +620,23 @@ MVP は **認証 + ADMIN によるイベント管理 + 家庭管理 + 保護者�
 | **OQ-S01** | スケジュールとイベント（本格化） | **テンプレート + インスタンス**（`schedules` + `events.schedule_id`） |
 | **DD-14** | `schedules` テーブル追加 | **Approve** |
 | **DD-15** | 繰り返し MVP = ONE_OFF + WEEKLY | **Approve** |
+| **DD-18** | WEEKLY 複数曜日 | **Approve** ✅ **2026-08-13**（人間要望） |
 | **DD-16** | `events.schedule_id` NULL FK、ON DELETE SET NULL | **Approve** |
 | **DD-17** | 生成イベントへ schedule の講師・定員等をコピー | **Approve** |
-| **生成単位** | デフォルト 4 週、ADMIN が実行 | **Approve** |
+| **生成単位** | デフォルト 4 週、ADMIN が実行 | **Approve** ✅ **2026-08-13** |
+
+## 承認記録
+
+| 日付 | 内容 |
+|---|---|
+| 2026-08-13 | OQ-S01 / DD-14〜17 を推奨案のまま承認。FR-S03 参加登録単位は後続 Loop へ延期。 |
+| 2026-08-13 | **DD-18** WEEKLY 複数曜日指定を承認（実装依頼）。 |
 
 ## 設計サマリー
 
 | 領域 | 案 |
 |---|---|
-| DB | `docs/database/V7__create_schedules.sql` |
+| DB | `docs/database/V7__create_schedules.sql` + `V8__schedule_weekdays.sql` |
 | UI | S21 一覧 / S22 詳細 / S23 作成・編集 / 詳細から「イベント生成」 |
 | カレンダー | 既存 `events` 表示のまま（生成されたイベントが出る） |
 
@@ -646,13 +657,79 @@ MVP は **認証 + ADMIN によるイベント管理 + 家庭管理 + 保護者�
 
 ## 次アクション
 
-人間承認 → 実装フェーズ
+PR 作成 → merge
 
 ## 参照
 
 - `Composer.md` §4.9
 - `requirements.md` §6.3 Loop 11
 - `database.md` §17
+- `roles.md` §12 Consistency Engineer
+
+---
+
+# 27.1 Consistency Report — Loop 11（2026-08-13）
+
+Consistency Engineer（`roles.md` §12）による横断確認。
+
+| 区分 | 件数 |
+|---|---|
+| Blocker | 0（是正済 1 件含む） |
+| Warning | 0（是正済 7 件） |
+
+### Blockers（是正済）
+
+| ID | 内容 | 状態 |
+|---|---|---|
+| CON-L11-01 | Hibernate validate: `schedules.day_of_week` DB=`SMALLINT` / Entity=`Integer`→`INTEGER` 期待で起動失敗 | ✅ `@JdbcTypeCode(SqlTypes.SMALLINT)` で是正。起動確認済（`Started MinsukeApplication`） |
+
+### Warnings（是正済）
+
+| ID | 内容 | 状態 |
+|---|---|---|
+| CON-L11-02 | `Composer.md` がフェーズ A / Proposed のまま | ✅ フェーズ B / Approved に更新 |
+| CON-L11-03 | `database.md` DD-14〜17 が Proposed、V7 未配置表記 | ✅ Approved、migration 適用済と明記 |
+| CON-L11-04 | `requirements.md` FR-S01/S02・OQ-S01 が Proposed/Open | ✅ Approved |
+| CON-L11-05 | `security.md` Loop 11 認可が Proposed | ✅ Approved |
+| CON-L11-06 | `development-roadmap.md` / `minutes.md` §16・§18 が「設計中」 | ✅ 実装中に同期 |
+| CON-L11-07 | `Composer.md` §17 例示で Loop 11=Mobile UI（初期案名） | ✅ 現行 Loop 11=Schedule と注記 |
+
+### Verified ✅
+
+| 観点 | 結果 |
+|---|---|
+| A. 設計書 ↔ 設計書 | OQ-S01 / DD-14〜17 / FR-S03 後続 — `Composer` / `minutes` / `requirements` / `database` / `security` / `ui` 一致 |
+| B. DB ↔ Entity | `schedules` 全列 + `events.schedule_id` ↔ `Schedule` / `Event`。Flyway V7 success。docs↔src V7 バイナリ一致 |
+| C. Security ↔ URL | `/schedules/**` ADMIN。Service `requireAdmin`。PARENT 403 テストあり |
+| D. 環境 | PG `5433` healthy、profile=`local`、port `8081` |
+| E. 画面 ↔ Controller | `schedule/list|detail|form` 存在。header「スケジュール」ADMIN。イベント詳細に元スケジュールリンク |
+| F. テスト | `ScheduleServiceTest` / `ScheduleControllerSecurityTest`。compile OK。Testcontainers は Docker パイプ不整合時スキップ可 |
+| スコープ外 | FR-S03 参加登録単位 — 未実装（意図どおり） |
+
+### エージェント運用ルール（人間指示 2026-08-13）
+
+以降の開発では **`roles.md` / `minutes.md` / `Composer.md` を絶対参照**する。実装 Loop 完了前に Consistency Engineer（§12）を必ず通す。
+
+---
+
+# 27.2 Consistency Report — Loop 11 DD-18 複数曜日（2026-08-13）
+
+人間要望により WEEKLY の曜日を複数指定可能にした。V7 は immutable のため **V8** で移行。
+
+| 区分 | 件数 |
+|---|---|
+| Blocker | 0 |
+| Warning | 0 |
+
+### Verified ✅
+
+| 観点 | 結果 |
+|---|---|
+| A. 設計書 | DD-18 を `Composer.md` / `minutes.md` / `database.md` / `requirements.md` に記録 |
+| B. DB ↔ Entity | Flyway V8 適用成功。`schedule_weekdays` ↔ `@ElementCollection`。Hibernate validate 通過 |
+| C. 生成 | 選択した全曜日の日付でイベント生成。重複日付は従来どおりスキップ |
+| E. 画面 | フォームはチェックボックス。詳細は「月曜日・水曜日」形式 |
+| F. テスト | `weeklyScheduleGeneratesEventsForAllSelectedDays` を追加 |
 
 ---
 
@@ -953,11 +1030,11 @@ docker compose up -d
 
 ## Loop 11
 
-- **Status:** **IN PROGRESS**（設計）
+- **Status:** **IN PROGRESS**（実装・ローカル確認済・PR 待ち）
 - **Started:** 2026-08-13
 - **Branch:** `feature/loop-11-schedule`
-- **Last Updated:** 2026-08-13 — 設計草案・承認待ち
-- **Next Action:** **人間承認**（OQ-S01 / DD-14〜17）→ 実装
+- **Last Updated:** 2026-08-13 — UI ローカル確認済
+- **Next Action:** PR → merge
 
 ## Loop 10
 

@@ -38,6 +38,12 @@
     <span th:if="${event.instructorId == null}">未設定</span>
   </p>
 
+  <p class="hint" sec:authorize="hasRole('ADMIN')" th:if="${event.scheduleId != null}">
+    元スケジュール:
+    <a th:href="@{/schedules/{id}(id=${event.scheduleId})}"
+       th:text="${event.scheduleTitle}">スケジュール</a>
+  </p>
+
   <p class="hint">
     参加者:
     <span th:text="${event.registeredCount}">0</span>

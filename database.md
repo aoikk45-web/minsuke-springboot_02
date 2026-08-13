@@ -499,27 +499,32 @@ erDiagram
 
 ---
 
-## 17. Loop 11 — Schedules（Proposed）
+## 17. Loop 11 — Schedules（Approved 2026-08-13）
 
-> SQL 草案: `docs/database/V7__create_schedules.sql`（承認後に `src/.../migration` へ配置）
+> SQL: `docs/database/V7__create_schedules.sql` → migration 適用済  
+> SQL: `docs/database/V8__schedule_weekdays.sql` — WEEKLY 複数曜日（DD-18）
 
 ### 17.1 ER（案 A: テンプレート + インスタンス）
 
 ```mermaid
 erDiagram
     schedules ||--o{ events : generates
+    schedules ||--o{ schedule_weekdays : weekdays
     instructors ||--o{ schedules : "default instructor"
     schedules {
         bigint id PK
         varchar title
         text description
         varchar schedule_type
-        smallint day_of_week
         date one_off_date
         date valid_from
         date valid_until
         bigint instructor_id FK
         boolean active
+    }
+    schedule_weekdays {
+        bigint schedule_id FK
+        smallint day_of_week
     }
     events {
         bigint schedule_id FK
@@ -530,16 +535,17 @@ erDiagram
 
 | ID | 内容 | 状態 |
 |---|---|---|
-| DD-14 | `schedules` テーブル追加 | Proposed |
-| DD-15 | 繰り返し MVP = ONE_OFF + WEEKLY | Proposed |
-| DD-16 | `events.schedule_id` NULL FK、ON DELETE SET NULL | Proposed |
-| DD-17 | 生成イベントへ schedule の title/description/capacity/instructor をコピー | Proposed |
+| DD-14 | `schedules` テーブル追加 | **Approved** |
+| DD-15 | 繰り返し MVP = ONE_OFF + WEEKLY | **Approved** |
+| DD-16 | `events.schedule_id` NULL FK、ON DELETE SET NULL | **Approved** |
+| DD-17 | 生成イベントへ schedule の title/description/capacity/instructor をコピー | **Approved** |
+| DD-18 | WEEKLY は複数曜日可（`schedule_weekdays`） | **Approved**（2026-08-13 人間要望） |
 
 ### 17.3 Open
 
 | # | 質問 | 推奨 |
 |---|---|---|
-| OQ-S01 | 本格化時の schedule/event 関係 | テンプレート + インスタンス |
+| OQ-S01 | 本格化時の schedule/event 関係 | ✅ テンプレート + インスタンス |
 | DQ-S01 | 生成 horizon | 4 週、ADMIN 手動実行 |
 | **OQ-S02** | 参加登録単位（家庭/保護者/子ども） | **Future** — `participation_unit` 列は Loop 11 では追加しない |
 
@@ -552,7 +558,8 @@ erDiagram
 - `docs/database/V3__create_instructors.sql` — Loop 08 草案
 - `docs/database/V5__events_instructor.sql` — Loop 09
 - `docs/database/V6__create_announcements.sql` — Loop 10
-- `docs/database/V7__create_schedules.sql` — Loop 11 草案
+- `docs/database/V7__create_schedules.sql` — Loop 11
+- `docs/database/V8__schedule_weekdays.sql` — Loop 11（複数曜日）
 - `requirements.md` — FR 対応
 - `architecture.md` — Flyway / PostgreSQL 方針
 - `security.md` — SD-03 初回 ADMIN seed
