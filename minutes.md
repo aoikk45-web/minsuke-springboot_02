@@ -16,8 +16,8 @@
 ## Current Loop
 
 **MVP（Loop 04〜07）完了** — 統合レビュー済（2026-08-11）  
-**Loop 08 / 09 完了** — PR #1 / #2 を `main` へ merge 済  
-**Current Loop:** Loop 10 — Notification（`feature/loop-10-notification`）
+**Loop 08 / 09 / 10 完了** — PR #1 / #2 / #4 を `main` へ merge 済  
+**Current Loop:** Loop 11 — Schedule Management（`feature/loop-11-schedule`）
 
 ## Date
 
@@ -29,7 +29,19 @@
 
 ## Current State
 
-**Loop 10 ローカル確認済**（2026-08-13）。次: commit / PR → merge。
+**Loop 11 設計中**（2026-08-13）。FR-S01（スケジュール本格化）の草案を提示。人間承認待ち。
+
+## Loop 11 Progress
+
+| 作業 | 状態 |
+|---|---|
+| ブランチ作成 `feature/loop-11-schedule` | ✅ |
+| FR-S01 / OQ-S01 設計草案 | ✅ |
+| 人間承認 | ⏳ **承認待ち** |
+| Flyway V7 + スケジュール UI | ⏳ 承認後 |
+| イベント生成 | ⏳ 承認後 |
+| テスト・ローカル確認 | ⏳ |
+| Loop 11 完了 | ⏳ |
 
 ## Loop 10 Progress
 
@@ -40,8 +52,8 @@
 | 人間承認（推奨案） | ✅ |
 | Flyway V6 + お知らせ UI | ✅ |
 | 既読・未読表示 | ✅ |
-| テスト・ローカル確認 | ✅ **2026-08-13** |
-| Loop 10 完了（PR / merge） | ⏳ |
+| ローカル確認 | ✅ **2026-08-13** |
+| Loop 10 完了（PR #4 / merge） | ✅ **2026-08-13** |
 
 ## Loop 09 Progress
 
@@ -491,9 +503,9 @@ MVP は **認証 + ADMIN によるイベント管理 + 家庭管理 + 保護者�
 
 # 16. Next Loop
 
-**Loop 08 / 09** merged。  
-**Loop 10 — Notification**（ブランチ: `feature/loop-10-notification`）  
-設計中。次アクション: OQ-08 / DD-11 / DD-12 の人間承認 → 実装。
+**Loop 08 / 09 / 10** merged。  
+**Loop 11 — Schedule Management**（ブランチ: `feature/loop-11-schedule`）  
+設計中。次アクション: OQ-S01 / DD-14〜17 の人間承認 → 実装。
 
 ---
 
@@ -572,13 +584,60 @@ MVP は **認証 + ADMIN によるイベント管理 + 家庭管理 + 保護者�
 
 ## 次アクション
 
-テスト・ローカル確認済。次: PR / merge
+テスト・ローカル確認済。PR #4 merge 済。  
+**Loop 11 設計中。** 次アクション: OQ-S01 / DD-14〜17 の人間承認 → 実装。
+
+---
+
+# 27. Loop 11 — Schedule Management（設計草案 2026-08-13）
+
+## 目的
+
+定期・単発スケジュールを本格管理し（FR-S01）、必要に応じてイベント（参加単位）を生成する。
+
+## 背景
+
+- Loop 09（OQ-03）で **イベント中心** を採用。担当講師は `events.instructor_id`。
+- FR-S01 本格化のタイミングで **独立 `schedules` テーブル** を導入し、テンプレートとインスタンスを分離する。
+
+## スコープ案（Proposed）
+
+| 含む | 含まない |
+|---|---|
+| `schedules` マスタ CRUD（ADMIN） | FR-S03 家庭・子どもの参加設定 |
+| 種別: **ONE_OFF / WEEKLY** | FR-S04 一括登録 |
+| `events.schedule_id`（任意） | 複雑な RRULE（毎月第2火曜等） |
+| スケジュールからイベント生成（N 週） | INSTRUCTOR ログイン |
+| 生成時に講師・定員等をコピー | 自動バッチ（cron） |
+
+## 承認が必要な事項
+
+| ID | 質問 | 推奨案 |
+|---|---|---|
+| **OQ-S01** | スケジュールとイベント（本格化） | **テンプレート + インスタンス**（`schedules` + `events.schedule_id`） |
+| **DD-14** | `schedules` テーブル追加 | **Approve** |
+| **DD-15** | 繰り返し MVP = ONE_OFF + WEEKLY | **Approve** |
+| **DD-16** | `events.schedule_id` NULL FK、ON DELETE SET NULL | **Approve** |
+| **DD-17** | 生成イベントへ schedule の講師・定員等をコピー | **Approve** |
+| **生成単位** | デフォルト 4 週、ADMIN が実行 | **Approve** |
+
+## 設計サマリー
+
+| 領域 | 案 |
+|---|---|
+| DB | `docs/database/V7__create_schedules.sql` |
+| UI | S21 一覧 / S22 詳細 / S23 作成・編集 / 詳細から「イベント生成」 |
+| カレンダー | 既存 `events` 表示のまま（生成されたイベントが出る） |
+
+## 次アクション
+
+人間承認 → 実装フェーズ
 
 ## 参照
 
-- `Composer.md` §4.8
-- `requirements.md` §6.5
-- `database.md` §16
+- `Composer.md` §4.9
+- `requirements.md` §6.3 Loop 11
+- `database.md` §17
 
 ---
 
@@ -877,13 +936,22 @@ docker compose up -d
 
 # 18. Loop History
 
+## Loop 11
+
+- **Status:** **IN PROGRESS**（設計）
+- **Started:** 2026-08-13
+- **Branch:** `feature/loop-11-schedule`
+- **Last Updated:** 2026-08-13 — 設計草案・承認待ち
+- **Next Action:** **人間承認**（OQ-S01 / DD-14〜17）→ 実装
+
 ## Loop 10
 
-- **Status:** **IN PROGRESS**（ローカル確認済）
+- **Status:** **COMPLETED**
 - **Started:** 2026-08-13
-- **Branch:** `feature/loop-10-notification`
-- **Last Updated:** 2026-08-13 — 既存 PG でローカル確認済
-- **Next Action:** PR / merge
+- **Completed:** 2026-08-13
+- **Branch:** `feature/loop-10-notification`（merged to main via PR #4）
+- **Last Updated:** 2026-08-13 — main へ merge 済
+- **Next Action:** —
 
 ## Loop 09
 

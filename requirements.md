@@ -155,10 +155,29 @@ flowchart LR
 
 | ID | 要件 | 区分 | MVP |
 |---|---|---|---|
-| FR-S01 | 定期・単発スケジュールの登録 | Proposed | No |
-| FR-S02 | 講師割当 | Proposed | No |
+| FR-S01 | 定期・単発スケジュールの登録 | **Proposed（Loop 11）** | **Yes（案）** |
+| FR-S02 | 講師割当 | **Proposed（Loop 11）** | **Yes（案）** — schedule.instructor_id + 生成イベントへコピー |
 | FR-S03 | 家庭・子どもの参加設定 | Proposed | No |
 | FR-S04 | 一括登録 | Proposed | No |
+
+### Loop 11 スコープ案（Proposed — 2026-08-13）
+
+| 含む | 含まない |
+|---|---|
+| `schedules` CRUD（ONE_OFF / WEEKLY） | FR-S03 参加設定 |
+| `events.schedule_id` で紐づけ | FR-S04 一括登録 |
+| ADMIN によるイベント生成（N 週） | 複雑 RRULE |
+| 講師・定員等のコピー | INSTRUCTOR ログイン |
+
+### OQ-S01 選択肢と推奨（スケジュール本格化）
+
+| 案 | 内容 | 評価 |
+|---|---|---|
+| **A（推奨）** | `schedules` テンプレート + `events` インスタンス（`schedule_id`） | Loop 09 のイベント中心と両立 |
+| B | `schedules` のみ。カレンダーは schedule 表示 | 参加・定員モデルと不整合 |
+| C | events に recurrence 列を追加（schedules なし） | FR-S01「本格化」として弱い |
+
+**推奨: 案 A。** OQ-03（Loop 09）は「割当は events」だったが、FR-S01 でテンプレート層を追加する。
 
 ### 6.4 Instructor Management
 
@@ -420,7 +439,8 @@ MinSuke は氏名・ふりがな・連絡先・生年月日等の **個人情報
 |---|---|---|---|
 | OQ-01 | 主たる利用シーン | ✅ **汎用** | 全体要件 |
 | OQ-02 | MVP に ADMIN を含むか | ✅ **含む（イベント作成は ADMIN のみ）** | MVP 範囲 |
-| OQ-03 | スケジュールとイベントの関係 | **Closed** — イベント中心（案 A）。独立 schedules は後続 | データモデル |
+| OQ-03 | スケジュールとイベントの関係 | **Closed（Loop 09）** — イベント中心。本格化は **OQ-S01** | データモデル |
+| OQ-S01 | スケジュール本格化時の event 関係 | Open — **Loop 11 推奨: テンプレート + インスタンス** | データモデル |
 | OQ-04 | 子どもの直接ログイン要否 | Open | 認証・UI |
 | OQ-05 | 個人情報の保持期間・削除ポリシー | ✅ **選択肢 B（標準保持）** | セキュリティ・DB |
 | OQ-06 | 同時利用規模・可用性要件 | Open | インフラ |

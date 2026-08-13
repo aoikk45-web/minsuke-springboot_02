@@ -499,13 +499,59 @@ erDiagram
 
 ---
 
+## 17. Loop 11 — Schedules（Proposed）
+
+> SQL 草案: `docs/database/V7__create_schedules.sql`（承認後に `src/.../migration` へ配置）
+
+### 17.1 ER（案 A: テンプレート + インスタンス）
+
+```mermaid
+erDiagram
+    schedules ||--o{ events : generates
+    instructors ||--o{ schedules : "default instructor"
+    schedules {
+        bigint id PK
+        varchar title
+        text description
+        varchar schedule_type
+        smallint day_of_week
+        date one_off_date
+        date valid_from
+        date valid_until
+        bigint instructor_id FK
+        boolean active
+    }
+    events {
+        bigint schedule_id FK
+    }
+```
+
+### 17.2 Decision 候補
+
+| ID | 内容 | 状態 |
+|---|---|---|
+| DD-14 | `schedules` テーブル追加 | Proposed |
+| DD-15 | 繰り返し MVP = ONE_OFF + WEEKLY | Proposed |
+| DD-16 | `events.schedule_id` NULL FK、ON DELETE SET NULL | Proposed |
+| DD-17 | 生成イベントへ schedule の title/description/capacity/instructor をコピー | Proposed |
+
+### 17.3 Open
+
+| # | 質問 | 推奨 |
+|---|---|---|
+| OQ-S01 | 本格化時の schedule/event 関係 | テンプレート + インスタンス |
+| DQ-S01 | 生成 horizon | 4 週、ADMIN 手動実行 |
+
+---
+
 ## 14. Reference
 
 - `docs/database/V1__create_schema.sql` — Flyway 設計 SQL
 - `docs/database/V2__seed_dev.sql` — 開発 seed 設計
 - `docs/database/V3__create_instructors.sql` — Loop 08 草案
 - `docs/database/V5__events_instructor.sql` — Loop 09
-- `docs/database/V6__create_announcements.sql` — Loop 10 草案
+- `docs/database/V6__create_announcements.sql` — Loop 10
+- `docs/database/V7__create_schedules.sql` — Loop 11 草案
 - `requirements.md` — FR 対応
 - `architecture.md` — Flyway / PostgreSQL 方針
 - `security.md` — SD-03 初回 ADMIN seed

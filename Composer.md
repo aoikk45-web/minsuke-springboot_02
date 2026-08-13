@@ -5,8 +5,8 @@
 **Project Name:** MinSuke（みんスケ）  
 **Development Model:** Greenfield / New Development  
 **Development Environment:** Cursor + Composer 2.5  
-**Current Loop:** Loop 10 — Notification（`feature/loop-10-notification`）  
-**Current Phase:** Post-MVP / 実装（承認済）  
+**Current Loop:** Loop 11 — Schedule Management（`feature/loop-11-schedule`）  
+**Current Phase:** Post-MVP / 設計（フェーズ A — 承認前はコード実装しない）  
 **Date:** 2026-08-13
 
 MinSuke（みんスケ）は、家庭・講師・スケジュール・イベント等を管理するための新規システムとして開発する。
@@ -307,6 +307,43 @@ Loop 10で実施する。
 | 公開 | 作成と同時に公開（下書きなし） |
 | 既読 | ユーザー単位（`announcement_reads`） |
 | FR-S01 | Loop 10 でも対象外（スケジュール本格化は別 Loop） |
+
+---
+
+## 4.9 Current Loop — Loop 11
+
+Loop 11の目的は、
+
+**定期・単発スケジュールの本格管理（FR-S01）** を設計・実装すること
+
+である。
+
+Loop 11で実施する。
+
+**フェーズ A（設計 — 現在）**
+
+- **OQ-S01**（スケジュールとイベントの関係 — 本格化）の確定案提示
+- FR-S01 スコープ確定（FR-S03/S04 は後続）
+- DB・画面・認可の設計案 → 人間承認
+
+**フェーズ B（実装 — 承認後）**
+
+- Flyway（`schedules` + `events.schedule_id`）
+- スケジュール CRUD（ADMIN）
+- スケジュールからイベント生成（カレンダー連携）
+- テスト・Consistency Review
+
+**Loop 11 フェーズ A ではコードを書かない**（マイグレーション適用・Entity 変更は承認後）。
+
+### Loop 11 推奨方針（Proposed）
+
+| 項目 | 推奨 |
+|---|---|
+| OQ-S01 | **テンプレート + インスタンス** — `schedules` マスタ + `events.schedule_id`（既存イベントはそのまま） |
+| 繰り返し | MVP = **ONE_OFF + WEEKLY**（曜日固定） |
+| 生成 | ADMIN が「今後 N 週分を生成」。同一 schedule + 日付の重複はスキップ |
+| 講師 | スケジュールの `instructor_id` を生成イベントへコピー（FR-S02 の最小） |
+| FR-S03/S04 | Loop 11 では対象外 |
 
 ## 5. Loop 01 Investigation
 

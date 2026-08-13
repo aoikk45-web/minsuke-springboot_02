@@ -1,8 +1,8 @@
 # MinSuke — Development Roadmap
 
-**Status:** Loop 10 **In Progress**（`feature/loop-10-notification`）— ローカル確認済
+**Status:** Loop 11 **In Progress**（`feature/loop-11-schedule`）— 設計草案  
 **Date:** 2026-08-13  
-**Version:** 1.6
+**Version:** 1.8
 
 ---
 
@@ -163,10 +163,11 @@ Loop 02 で決定すべき事項：
 
 ---
 
-## 8. Next Actions（Loop 10）
+## 8. Next Actions（Loop 11）
 
-1. PR / merge → `main`
-2. FR-S01 本格スケジュール・外部通知（メール等）は後続 Loop に残す
+1. **人間承認:** OQ-S01 / DD-14〜17 / Loop 11 スコープ（`minutes.md` §27）
+2. 承認後: Flyway V7 → スケジュール CRUD → イベント生成 → テスト
+3. FR-S03/S04・複雑 RRULE は後続 Loop に残す
 
 ---
 

@@ -10,7 +10,7 @@ Greenfield / New Development
 
 ## Current Loop
 
-Loop 10 — Notification（`feature/loop-10-notification`）— ローカル確認済
+Loop 11 — Schedule Management（`feature/loop-11-schedule`）— 設計中
 
 ## Date
 

@@ -53,6 +53,9 @@
 | S18 | お知らせ一覧 | `/announcements` | 認証済 | Loop 10 |
 | S19 | お知らせ詳細 | `/announcements/{id}` | 認証済 | Loop 10（閲覧で既読） |
 | S20 | お知らせ作成 | `/announcements/new` | **ADMIN** | Loop 10 |
+| S21 | スケジュール一覧 | `/schedules` | **ADMIN** | Loop 11 |
+| S22 | スケジュール詳細 | `/schedules/{id}` | **ADMIN** | Loop 11 |
+| S23 | スケジュール作成・編集 | `/schedules/new`, `/schedules/{id}/edit` | **ADMIN** | Loop 11 |
 
 > S13〜S14 の閲覧は **認証済み全員**（OQ-I02 ✅）。
 
