@@ -443,6 +443,17 @@ a {
     margin-left: 0.35rem;
 }
 
+.badge-unread {
+    background: #dbeafe;
+    color: #1e40af;
+    margin-left: 0.35rem;
+}
+
+.announcement-body {
+    white-space: pre-wrap;
+    line-height: 1.6;
+}
+
 .event-meta {
     color: #475569;
     font-size: 0.95rem;

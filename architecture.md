@@ -236,6 +236,9 @@ com.minsuke
 | 講師作成 | `GET/POST /instructors/new`（ADMIN） |
 | 講師編集 | `GET/POST /instructors/{id}/edit`（ADMIN） |
 | 講師削除 | `POST /instructors/{id}/delete`（ADMIN） |
+| お知らせ一覧 | `GET /announcements`（Loop 10） |
+| お知らせ詳細 | `GET /announcements/{id}`（Loop 10） |
+| お知らせ作成 | `GET/POST /announcements/new`（ADMIN） |
 
 ---
 

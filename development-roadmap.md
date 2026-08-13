@@ -1,8 +1,8 @@
 # MinSuke — Development Roadmap
 
-**Status:** Loop 09 **In Progress**（`feature/loop-09-instructor-assignment`）— ローカル確認済
-**Date:** 2026-08-12  
-**Version:** 1.4
+**Status:** Loop 10 **In Progress**（`feature/loop-10-notification`）— ローカル確認済
+**Date:** 2026-08-13  
+**Version:** 1.6
 
 ---
 
@@ -163,10 +163,10 @@ Loop 02 で決定すべき事項：
 
 ---
 
-## 8. Next Actions（Loop 09）
+## 8. Next Actions（Loop 10）
 
-1. commit / PR → `main` へ merge
-2. FR-S01 本格スケジュールは後続 Loop に残す
+1. PR / merge → `main`
+2. FR-S01 本格スケジュール・外部通知（メール等）は後続 Loop に残す
 
 ---
 

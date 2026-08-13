@@ -8,7 +8,14 @@
         <a th:href="@{/calendar}">カレンダー</a>
         <a th:href="@{/families}">家族一覧</a>
         <a th:href="@{/instructors}">講師一覧</a>
+        <a th:href="@{/announcements}">
+          お知らせ
+          <span th:if="${unreadAnnouncementCount > 0}"
+                class="badge badge-unread"
+                th:text="${unreadAnnouncementCount}">0</span>
+        </a>
         <a th:href="@{/my-family}" sec:authorize="hasRole('PARENT')">マイファミリー</a>
+        <a th:href="@{/announcements/new}" sec:authorize="hasRole('ADMIN')">お知らせ作成</a>
         <a th:href="@{/instructors/new}" sec:authorize="hasRole('ADMIN')">講師追加</a>
         <a th:href="@{/events/new}" sec:authorize="hasRole('ADMIN')">イベント作成</a>
         <form th:action="@{/logout}" method="post" class="logout-form">

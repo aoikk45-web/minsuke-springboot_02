@@ -10,11 +10,11 @@ Greenfield / New Development
 
 ## Current Loop
 
-Loop 09 — Instructor Assignment & Availability（`feature/loop-09-instructor-assignment`）
+Loop 10 — Notification（`feature/loop-10-notification`）— ローカル確認済
 
 ## Date
 
-2026-08-12
+2026-08-13
 
 ---
 

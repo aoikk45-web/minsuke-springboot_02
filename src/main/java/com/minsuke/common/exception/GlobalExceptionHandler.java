@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.minsuke.announcement.exception.AnnouncementAccessDeniedException;
+import com.minsuke.announcement.exception.AnnouncementNotFoundException;
 import com.minsuke.event.exception.EventAccessDeniedException;
 import com.minsuke.event.exception.EventNotFoundException;
 import com.minsuke.family.exception.FamilyAccessDeniedException;
@@ -58,6 +60,20 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InstructorNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleInstructorNotFound(InstructorNotFoundException ex, Model model) {
+        model.addAttribute("message", ex.getMessage());
+        return "error";
+    }
+
+    @ExceptionHandler(AnnouncementAccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public String handleAnnouncementAccessDenied(AnnouncementAccessDeniedException ex, Model model) {
+        model.addAttribute("message", ex.getMessage());
+        return "error/forbidden";
+    }
+
+    @ExceptionHandler(AnnouncementNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleAnnouncementNotFound(AnnouncementNotFoundException ex, Model model) {
         model.addAttribute("message", ex.getMessage());
         return "error";
     }

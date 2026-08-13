@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>お知らせ — MinSuke</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header th:replace="~{fragments/header :: header}"></header>
+<main class="container container-wide">
+  <div class="page-header">
+    <h1>お知らせ</h1>
+    <a th:href="@{/announcements/new}" class="btn btn-primary btn-sm" sec:authorize="hasRole('ADMIN')">作成</a>
+  </div>
+
+  <p th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></p>
+
+  <ul class="member-list" th:if="${!announcements.isEmpty()}">
+    <li th:each="a : ${announcements}">
+      <div class="member-info">
+        <a th:href="@{/announcements/{id}(id=${a.id})}" th:text="${a.title}">タイトル</a>
+        <span th:if="${!a.read}" class="badge badge-unread">未読</span>
+        <span class="member-kana"
+              th:text="${#temporals.format(a.publishedAt, 'yyyy年M月d日 HH:mm')}">日時</span>
+      </div>
+    </li>
+  </ul>
+  <p th:if="${announcements.isEmpty()}" class="hint">お知らせはまだありません。</p>
+</main>
+</body>
+</html>
