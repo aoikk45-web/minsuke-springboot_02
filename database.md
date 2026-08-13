@@ -541,6 +541,7 @@ erDiagram
 |---|---|---|
 | OQ-S01 | 本格化時の schedule/event 関係 | テンプレート + インスタンス |
 | DQ-S01 | 生成 horizon | 4 週、ADMIN 手動実行 |
+| **OQ-S02** | 参加登録単位（家庭/保護者/子ども） | **Future** — `participation_unit` 列は Loop 11 では追加しない |
 
 ---
 
