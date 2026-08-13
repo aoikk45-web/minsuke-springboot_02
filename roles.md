@@ -10,11 +10,11 @@ Greenfield / New Development
 
 ## Current Loop
 
-Loop 09 — Instructor Assignment & Availability（`feature/loop-09-instructor-assignment`）
+Loop 09 ✅ Completed — next Loop TBD
 
 ## Date
 
-2026-08-12
+2026-08-13
 
 ---
 

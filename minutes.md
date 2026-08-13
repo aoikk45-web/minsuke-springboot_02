@@ -16,11 +16,12 @@
 ## Current Loop
 
 **MVP（Loop 04〜07）完了** — 統合レビュー済（2026-08-11）  
-**Current Loop:** Loop 09 — Instructor Assignment & Availability（`feature/loop-09-instructor-assignment`）
+**Loop 08 / 09 完了** — PR #1 / #2 を `main` へ merge 済  
+**Current Loop:** 次 Loop 未定（Post-MVP）
 
 ## Date
 
-**2026-08-12**（最終更新）
+**2026-08-13**（最終更新）
 
 ---
 
@@ -28,7 +29,7 @@
 
 ## Current State
 
-**Loop 09 ローカル確認済**（2026-08-12）。既存 PG（`local` プロファイル）で担当講師・稼働表示を確認。次は commit / PR。
+**Loop 09 完了**（2026-08-13）。PR #2 を `main` へ merge 済。
 
 ## Loop 09 Progress
 
@@ -41,7 +42,7 @@
 | 講師稼働表示 | ✅ |
 | ローカル確認（既存 PG / profile=`local`） | ✅ |
 | Testcontainers | ⏭ Docker Desktop パイプ不整合のためスキップ |
-| Loop 09 完了（PR / merge） | ⏳ |
+| Loop 09 完了（PR #2 / merge） | ✅ **2026-08-13** |
 
 ## Loop 08 Progress
 
@@ -518,7 +519,7 @@ MVP は **認証 + ADMIN によるイベント管理 + 家庭管理 + 保護者�
 
 ## 次アクション
 
-ローカル確認済。次: commit / PR → merge
+完了（PR #2 merge 済）。次 Loop は未定。
 
 ## 参照
 
@@ -825,11 +826,12 @@ docker compose up -d
 
 ## Loop 09
 
-- **Status:** **IN PROGRESS**（ローカル確認済）
+- **Status:** **COMPLETED**
 - **Started:** 2026-08-12
-- **Branch:** `feature/loop-09-instructor-assignment`
-- **Last Updated:** 2026-08-12 — 既存 PG でローカル確認済（Testcontainers はスキップ）
-- **Next Action:** commit / PR → merge
+- **Completed:** 2026-08-13
+- **Branch:** `feature/loop-09-instructor-assignment`（merged to main via PR #2）
+- **Last Updated:** 2026-08-13 — main へ merge 済
+- **Next Action:** —
 
 ## Loop 08
 

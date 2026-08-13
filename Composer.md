@@ -5,9 +5,9 @@
 **Project Name:** MinSuke（みんスケ）  
 **Development Model:** Greenfield / New Development  
 **Development Environment:** Cursor + Composer 2.5  
-**Current Loop:** Loop 09 — Instructor Assignment & Availability（`feature/loop-09-instructor-assignment`）  
-**Current Phase:** Post-MVP / Schedule-lite（イベント担当講師・稼働）  
-**Date:** 2026-08-12
+**Current Loop:** Loop 09 ✅ Completed — Instructor Assignment & Availability  
+**Current Phase:** Post-MVP（次 Loop 未定）  
+**Date:** 2026-08-13
 
 MinSuke（みんスケ）は、家庭・講師・スケジュール・イベント等を管理するための新規システムとして開発する。
 
