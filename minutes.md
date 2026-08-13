@@ -29,7 +29,7 @@
 
 ## Current State
 
-**Loop 11 実装完了・PR 待ち**（2026-08-13）。OQ-S01 / DD-14〜18 承認済。UI ローカル確認済。
+**Loop 11 実装完了・PR #6 待ち**（2026-08-13）。OQ-S01 / DD-14〜18 承認済。UI ローカル確認済。
 
 ## Loop 11 Progress
 
@@ -44,7 +44,7 @@
 | テスト | ✅（Testcontainers は Docker 依存でスキップ可） |
 | Consistency Review（`roles.md` §12） | ✅ **2026-08-13** |
 | UI ローカル確認 | ✅ **2026-08-13** |
-| Loop 11 完了 | ⏳ PR → merge |
+| Loop 11 完了 | ⏳ **PR #6** → merge |
 
 ## Loop 10 Progress
 
@@ -1034,7 +1034,7 @@ docker compose up -d
 - **Started:** 2026-08-13
 - **Branch:** `feature/loop-11-schedule`
 - **Last Updated:** 2026-08-13 — UI ローカル確認済
-- **Next Action:** PR → merge
+- **Next Action:** **PR #6** → merge
 
 ## Loop 10
 
