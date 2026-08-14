@@ -547,7 +547,28 @@ erDiagram
 |---|---|---|
 | OQ-S01 | 本格化時の schedule/event 関係 | ✅ テンプレート + インスタンス |
 | DQ-S01 | 生成 horizon | 4 週、ADMIN 手動実行 |
-| **OQ-S02** | 参加登録単位（家庭/保護者/子ども） | **Future** — `participation_unit` 列は Loop 11 では追加しない |
+| **OQ-S02** | 参加登録単位（家庭/保護者/子ども） | **Loop 12 Proposed** — schedule + event の両方 |
+
+---
+
+## 18. Loop 12 — Participation Unit（Proposed）
+
+> SQL 草案: `docs/database/V9__participation_unit.sql`（承認後に `src/.../migration` へ配置）
+
+### 18.1 方針
+
+- `schedules.participation_unit` / `events.participation_unit`: `HOUSEHOLD` / `PARENT` / `CHILD` / NULL
+- NULL = 現行（保護者・子ども両方）
+- 生成時は schedule → event へコピー
+- HOUSEHOLD 参加は `event_attendances.participant_type = HOUSEHOLD`（1 家庭 = 定員 1）
+
+### 18.2 Decision 候補
+
+| ID | 内容 | 状態 |
+|---|---|---|
+| DD-19 | `participation_unit` 列（schedules / events） | Proposed |
+| DD-20 | NULL = 後方互換（PARENT+CHILD） | Proposed |
+| DD-21 | HOUSEHOLD attendance + 定員 1 家庭 = 1 | Proposed |
 
 ---
 
@@ -560,6 +581,7 @@ erDiagram
 - `docs/database/V6__create_announcements.sql` — Loop 10
 - `docs/database/V7__create_schedules.sql` — Loop 11
 - `docs/database/V8__schedule_weekdays.sql` — Loop 11（複数曜日）
+- `docs/database/V9__participation_unit.sql` — Loop 12 草案
 - `requirements.md` — FR 対応
 - `architecture.md` — Flyway / PostgreSQL 方針
 - `security.md` — SD-03 初回 ADMIN seed

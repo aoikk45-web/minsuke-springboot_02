@@ -1,8 +1,8 @@
 # MinSuke — Development Roadmap
 
-**Status:** Loop 11 **In Progress**（`feature/loop-11-schedule`）— 実装・Consistency Review  
-**Date:** 2026-08-13  
-**Version:** 1.8
+**Status:** Loop 12 **In Progress**（`feature/loop-12-participation-unit`）— 設計草案  
+**Date:** 2026-08-14  
+**Version:** 1.9
 
 ---
 
@@ -51,8 +51,8 @@ gantt
 | **08** | Instructor Management | 講師マスタ | あり |
 | **09** | Schedule Management | スケジュール・割当・**イベント講師・稼働可視化**（FR-I05/I06, OQ-03） | あり |
 | **10** | Notification | お知らせ・配信 | あり |
-| **11** | Mobile UI | レスポンシブ改善 | あり |
-| **12** | Testing & Security | テスト整備・セキュリティ強化 | あり |
+| **11** | Schedule Management | 定期・単発スケジュール（FR-S01）・複数曜日 | あり |
+| **12** | Participation Unit | 参加登録単位（FR-S03: 家庭/保護者/子ども） | あり |
 | **13** | Integration Review | 結合・レビュー・リリース準備 | あり |
 
 ---
@@ -163,14 +163,11 @@ Loop 02 で決定すべき事項：
 
 ---
 
-## 8. Next Actions（Loop 11）
+## 8. Next Actions（Loop 12）
 
-1. ✅ OQ-S01 / DD-14〜17 承認（2026-08-13）
-2. ✅ Flyway V7 → スケジュール CRUD → イベント生成 → テスト追加
-3. ✅ DD-18 WEEKLY 複数曜日（V8 `schedule_weekdays`）
-4. ✅ UI ローカル確認（2026-08-13）
-5. ⏳ コミット → PR → merge
-6. FR-S03/S04・複雑 RRULE は後続 Loop に残す（**FR-S03 参加登録単位**含む）
+1. **人間承認:** OQ-S02 / DD-19〜21 / Loop 12 スコープ（`minutes.md` §28）
+2. 承認後: Flyway V9 → スケジュール／イベント UI → 参加登録制限 → テスト
+3. FR-S04・Mobile UI・Testing は後続 Loop に残す
 
 ---
 

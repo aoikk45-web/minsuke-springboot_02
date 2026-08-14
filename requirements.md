@@ -157,10 +157,10 @@ flowchart LR
 |---|---|---|---|
 | FR-S01 | 定期・単発スケジュールの登録 | **Approved（Loop 11）** | **Yes** |
 | FR-S02 | 講師割当 | **Approved（Loop 11・最小）** | **Yes** — schedule.instructor_id + 生成イベントへコピー |
-| FR-S03 | スケジュール／イベントごとの**参加登録単位**の設定 | **Future Consideration** | No | 後続 Loop（Loop 11 対象外） |
+| FR-S03 | スケジュール／イベントごとの**参加登録単位**の設定 | **Proposed（Loop 12）** | No |
 | FR-S04 | 一括登録 | Proposed | No |
 
-#### FR-S03 詳細（Future — 2026-08-13 要望）
+#### FR-S03 詳細（Loop 12 Proposed — 2026-08-14）
 
 スケジュール作成時に、参加登録を受け付ける単位を設定する。
 
@@ -171,7 +171,7 @@ flowchart LR
 | **子ども（CHILD）** | 子どものみ | 保護者の参加登録は不可 |
 
 - 現状（MVP / Loop 07〜10）: イベントごとの単位設定はなく、**保護者・子ども個別**の両方が常に選択可能（OQ-10）。
-- **Loop 11 では実装しない。** スケジュール／イベント生成の後続 Loop で `schedules.participation_unit`（案）等を検討。
+- **Loop 12 で実装する（草案）。** `schedules.participation_unit` → 生成 `events` へコピー。手作りイベントは `events.participation_unit` を直接設定。
 
 ### Loop 11 スコープ（Approved — 2026-08-13）
 
@@ -192,14 +192,15 @@ flowchart LR
 
 **推奨: 案 A。** OQ-03（Loop 09）は「割当は events」だったが、FR-S01 でテンプレート層を追加する。
 
-### OQ-S02 参加登録単位（Future — Loop 11 以降）
+### OQ-S02 参加登録単位（Loop 12 Proposed）
 
 | 案 | 内容 | 備考 |
 |---|---|---|
-| **A（案）** | `schedules.participation_unit` → 生成 `events` にコピー | FR-S03 と一体 |
-| B | `events` のみに設定（手作りイベントも同様） | スケジュール未使用イベントとの整合が必要 |
+| **A+B（推奨）** | `schedules.participation_unit` → 生成 `events` にコピー。手作りイベントも `events` に設定 | スケジュール未使用イベントとも整合 |
+| A のみ | schedule だけ。手作りイベントは現行のまま | 手作りと生成で挙動が割れる |
+| B のみ | `events` のみ | スケジュール側で単位を忘れやすい |
 
-**状態:** Future Consideration（2026-08-13 人間要望）。Loop 11 では列追加・UI ともに見送り。
+**状態:** Loop 12 草案（2026-08-14）。人間承認待ち。
 
 ### 6.4 Instructor Management
 
@@ -464,7 +465,7 @@ MinSuke は氏名・ふりがな・連絡先・生年月日等の **個人情報
 | OQ-02 | MVP に ADMIN を含むか | ✅ **含む（イベント作成は ADMIN のみ）** | MVP 範囲 |
 | OQ-03 | スケジュールとイベントの関係 | **Closed（Loop 09）** — イベント中心。本格化は **OQ-S01** | データモデル |
 | OQ-S01 | スケジュール本格化時の event 関係 | ✅ **Approved** — テンプレート + インスタンス | データモデル |
-| OQ-S02 | スケジュールごとの参加登録単位（家庭/保護者/子ども） | **Future** — Loop 11 以降（FR-S03） | DB・UI・EventService |
+| OQ-S02 | スケジュールごとの参加登録単位（家庭/保護者/子ども） | **Loop 12 Proposed** — schedule + event（FR-S03） | DB・UI・EventService |
 | OQ-04 | 子どもの直接ログイン要否 | Open | 認証・UI |
 | OQ-05 | 個人情報の保持期間・削除ポリシー | ✅ **選択肢 B（標準保持）** | セキュリティ・DB |
 | OQ-06 | 同時利用規模・可用性要件 | Open | インフラ |
