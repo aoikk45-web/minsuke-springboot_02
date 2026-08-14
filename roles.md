@@ -10,7 +10,7 @@ Greenfield / New Development
 
 ## Current Loop
 
-Loop 11 — Schedule Management（完了）— **現行 Loop 12 は Participation Unit（FR-S03）**
+Loop 11 — Schedule Management（完了）— **現行 Loop 12 は Participation Unit（ローカル確認済・PR 待ち）**
 
 ## Date
 

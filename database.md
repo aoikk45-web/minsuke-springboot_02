@@ -547,13 +547,13 @@ erDiagram
 |---|---|---|
 | OQ-S01 | 本格化時の schedule/event 関係 | ✅ テンプレート + インスタンス |
 | DQ-S01 | 生成 horizon | 4 週、ADMIN 手動実行 |
-| **OQ-S02** | 参加登録単位（家庭/保護者/子ども） | **Loop 12 Proposed** — schedule + event の両方 |
+| **OQ-S02** | 参加登録単位（家庭/保護者/子ども） | ✅ **Approved** — schedule + event の両方 |
 
 ---
 
-## 18. Loop 12 — Participation Unit（Proposed）
+## 18. Loop 12 — Participation Unit（Approved 2026-08-14）
 
-> SQL 草案: `docs/database/V9__participation_unit.sql`（承認後に `src/.../migration` へ配置）
+> SQL: `docs/database/V9__participation_unit.sql` → `src/main/resources/db/migration/V9__participation_unit.sql`
 
 ### 18.1 方針
 
@@ -566,9 +566,9 @@ erDiagram
 
 | ID | 内容 | 状態 |
 |---|---|---|
-| DD-19 | `participation_unit` 列（schedules / events） | Proposed |
-| DD-20 | NULL = 後方互換（PARENT+CHILD） | Proposed |
-| DD-21 | HOUSEHOLD attendance + 定員 1 家庭 = 1 | Proposed |
+| DD-19 | `participation_unit` 列（schedules / events） | **Approved** |
+| DD-20 | NULL = 後方互換（PARENT+CHILD） | **Approved** |
+| DD-21 | HOUSEHOLD attendance + 定員 1 家庭 = 1 | **Approved** |
 
 ---
 
@@ -581,7 +581,7 @@ erDiagram
 - `docs/database/V6__create_announcements.sql` — Loop 10
 - `docs/database/V7__create_schedules.sql` — Loop 11
 - `docs/database/V8__schedule_weekdays.sql` — Loop 11（複数曜日）
-- `docs/database/V9__participation_unit.sql` — Loop 12 草案
+- `docs/database/V9__participation_unit.sql` — Loop 12（FR-S03）
 - `requirements.md` — FR 対応
 - `architecture.md` — Flyway / PostgreSQL 方針
 - `security.md` — SD-03 初回 ADMIN seed

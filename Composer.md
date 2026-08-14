@@ -6,7 +6,7 @@
 **Development Model:** Greenfield / New Development  
 **Development Environment:** Cursor + Composer 2.5  
 **Current Loop:** Loop 12 — Participation Unit（`feature/loop-12-participation-unit`）  
-**Current Phase:** Post-MVP / 設計（フェーズ A — 承認前はコード実装しない）  
+**Current Phase:** Post-MVP / ローカル確認済・commit/PR 待ち（フェーズ B — OQ-S02 / DD-19〜21 承認済）  
 **Date:** 2026-08-14
 
 MinSuke（みんスケ）は、家庭・講師・スケジュール・イベント等を管理するための新規システムとして開発する。
@@ -345,22 +345,18 @@ Loop 12の目的は、
 
 Loop 12で実施する。
 
-**フェーズ A（設計 — 現在）**
+**フェーズ A（設計）** ✅ 2026-08-14 承認済
 
-- **OQ-S02**（参加登録単位の持ち方）の確定案提示
-- HOUSEHOLD 参加の定員・データモデル確定
-- DB・画面・認可の設計案 → 人間承認
+- **OQ-S02** / DD-19〜21 を推奨案のまま承認
 
-**フェーズ B（実装 — 承認後）**
+**フェーズ B（実装）** ✅ コード完了。Consistency Review 済。ローカル画面確認済（2026-08-14）。commit / PR 待ち。
 
-- Flyway（`schedules` / `events` の `participation_unit`、必要なら `event_attendances` 拡張）
-- スケジュール／イベント作成・編集 UI
-- 参加登録 UI を単位に合わせて制限
-- テスト・Consistency Review ← **必須**（`roles.md` §12）
+- Flyway V9（`schedules` / `events` の `participation_unit`、`event_attendances` 拡張）✅
+- スケジュール／イベント作成・編集 UI ✅
+- 参加登録 UI を単位に合わせて制限 ✅
+- テスト（Testcontainers は Docker 未起動でスキップ）・Consistency Review ✅
 
-**Loop 12 フェーズ A ではコードを書かない**（マイグレーション適用・Entity 変更は承認後）。
-
-### Loop 12 推奨方針（Proposed）
+### Loop 12 確定方針（Approved 2026-08-14）
 
 | 項目 | 推奨 |
 |---|---|
@@ -381,6 +377,27 @@ Loop 12で実施する。
 | 講師 | スケジュールの `instructor_id` を生成イベントへコピー（FR-S02 の最小） |
 | FR-S03/S04 | Loop 11 では対象外 |
 | **FR-S03** | **参加登録単位（家庭/保護者/子ども）** — 後続 Loop（2026-08-13 要望） |
+
+## 4.11 Next Loop — Loop 13
+
+Loop 13の目的は、
+
+**自家庭が参加しているイベントをカレンダーで識別すること（FR-E06）**
+
+である。
+
+**フェーズ A（設計）** ✅ 2026-08-14 承認済（OQ-E01 / DD-22）
+
+**フェーズ B（実装）** — Loop 12 merge 後。本 PR ではコードを書かない。
+
+### Loop 13 確定方針（Approved 2026-08-14）
+
+| 項目 | 確定 |
+|---|---|
+| OQ-E01 | **両方** — カレンダーで参加中の色分け + 本日の参加一覧 |
+| DD-22 | 自家庭の REGISTERED が 1 件以上なら参加中 |
+| ADMIN | 色分け・本日参加は出さない |
+| 含まない | 他家庭の可視化、FR-E05 履歴ページ、Mobile UI、FR-S04 |
 
 ## 5. Loop 01 Investigation
 
@@ -668,7 +685,7 @@ Loop 11 — Mobile UI（初期案名。**現行 Loop 11 は Schedule Management*
 Loop 12 — Testing & Security
 Loop 13 — Integration Review
 
-**現行確定順序（2026-08-14）:** Loop 08 Instructor → Loop 09 Instructor Assignment → Loop 10 Notification → Loop 11 Schedule Management → **Loop 12 Participation Unit（FR-S03）**。Mobile UI / Testing は後続。
+**現行確定順序（2026-08-14）:** Loop 08 Instructor → Loop 09 Instructor Assignment → Loop 10 Notification → Loop 11 Schedule Management → Loop 12 Participation Unit（FR-S03）→ **Loop 13 自家庭の参加可視化（FR-E06 / OQ-E01 承認済）**。Mobile UI / Testing / FR-S04 は後続。
 
 実際の順番は Loop 01 の結果から決定する。上記が現行の確定順序である。
 

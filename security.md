@@ -80,7 +80,7 @@
 | イベント生成 | **ADMIN のみ** | `POST /schedules/{id}/generate` |
 | カレンダー（events） | 認証済み全員 | 既存のまま |
 
-### Loop 12 認可方針（Proposed）
+### Loop 12 認可方針（Approved 2026-08-14）
 
 | 操作 | ロール | 備考 |
 |---|---|---|

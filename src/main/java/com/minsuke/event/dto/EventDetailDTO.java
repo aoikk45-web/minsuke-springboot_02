@@ -5,6 +5,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.minsuke.event.domain.ParticipationUnit;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,6 +28,8 @@ public class EventDetailDTO {
     private boolean unlimitedCapacity;
     private Long scheduleId;
     private String scheduleTitle;
+    private ParticipationUnit participationUnit;
+    private String participationUnitLabel;
     private List<ParticipantOptionDTO> participantOptions = new ArrayList<>();
     private List<RegisteredParticipantDTO> registeredParticipants = new ArrayList<>();
 
@@ -36,6 +40,7 @@ public class EventDetailDTO {
         private ParticipantType type;
         private Long parentId;
         private Long childId;
+        private Long householdId;
         private String name;
         private boolean registered;
         private boolean canRegister;
@@ -51,6 +56,7 @@ public class EventDetailDTO {
 
     public enum ParticipantType {
         PARENT,
-        CHILD
+        CHILD,
+        HOUSEHOLD
     }
 }

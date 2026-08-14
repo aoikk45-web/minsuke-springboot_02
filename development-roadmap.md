@@ -1,6 +1,6 @@
 # MinSuke — Development Roadmap
 
-**Status:** Loop 12 **In Progress**（`feature/loop-12-participation-unit`）— 設計草案  
+**Status:** Loop 12 **In Progress**（`feature/loop-12-participation-unit`）— ローカル確認済・commit/PR 待ち  
 **Date:** 2026-08-14  
 **Version:** 1.9
 
@@ -53,7 +53,7 @@ gantt
 | **10** | Notification | お知らせ・配信 | あり |
 | **11** | Schedule Management | 定期・単発スケジュール（FR-S01）・複数曜日 | あり |
 | **12** | Participation Unit | 参加登録単位（FR-S03: 家庭/保護者/子ども） | あり |
-| **13** | Integration Review | 結合・レビュー・リリース準備 | あり |
+| **13** | My Participation | 自家庭の参加可視化（FR-E06: カレンダー色・本日参加） | あり |
 
 ---
 
@@ -165,9 +165,9 @@ Loop 02 で決定すべき事項：
 
 ## 8. Next Actions（Loop 12）
 
-1. **人間承認:** OQ-S02 / DD-19〜21 / Loop 12 スコープ（`minutes.md` §28）
-2. 承認後: Flyway V9 → スケジュール／イベント UI → 参加登録制限 → テスト
-3. FR-S04・Mobile UI・Testing は後続 Loop に残す
+1. ~~ローカル確認~~ ✅ 2026-08-14
+2. commit / PR（人間指示）
+3. **Loop 13（承認済）:** 自家庭の参加可視化（FR-E06）。実装は Loop 12 merge 後。FR-S04・Mobile UI・Testing は後続
 
 ---
 

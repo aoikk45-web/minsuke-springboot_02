@@ -5,6 +5,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.minsuke.event.domain.ParticipationUnit;
 import com.minsuke.schedule.domain.ScheduleType;
 
 import lombok.Getter;
@@ -29,6 +30,8 @@ public class ScheduleDetailDTO {
     private Integer capacity;
     private Long instructorId;
     private String instructorName;
+    private ParticipationUnit participationUnit;
+    private String participationUnitLabel;
     private boolean active;
     private List<GeneratedEventDTO> generatedEvents = new ArrayList<>();
 
