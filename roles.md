@@ -10,11 +10,11 @@ Greenfield / New Development
 
 ## Current Loop
 
-Loop 11 — Schedule Management（`feature/loop-11-schedule`）— 実装完了・PR 待ち
+Loop 11 — Schedule Management（完了）— **現行 Loop 12 は Participation Unit（ローカル確認済・PR 待ち）**
 
 ## Date
 
-2026-08-13
+2026-08-14
 
 ---
 

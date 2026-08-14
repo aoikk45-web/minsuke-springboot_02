@@ -84,6 +84,15 @@
     </div>
 
     <div class="form-group">
+      <label for="participationUnit">参加登録単位 *</label>
+      <select id="participationUnit" th:field="*{participationUnit}" required>
+        <option value="">選択してください</option>
+        <option th:each="u : ${participationUnits}" th:value="${u}" th:text="${u.label()}">単位</option>
+      </select>
+      <span class="field-error" th:if="${#fields.hasErrors('participationUnit')}" th:errors="*{participationUnit}"></span>
+    </div>
+
+    <div class="form-group">
       <label for="instructorId">担当講師（任意）</label>
       <select id="instructorId" th:field="*{instructorId}">
         <option value="">未設定</option>

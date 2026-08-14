@@ -21,6 +21,7 @@ import com.minsuke.auth.domain.Role;
 import com.minsuke.auth.security.MinsukeUserDetails;
 import com.minsuke.event.domain.AttendanceStatus;
 import com.minsuke.event.domain.ParticipantType;
+import com.minsuke.event.domain.ParticipationUnit;
 import com.minsuke.event.dto.CalendarViewDTO;
 import com.minsuke.event.dto.EventDetailDTO;
 import com.minsuke.event.dto.EventForm;
@@ -76,7 +77,7 @@ public class EventService {
     @Transactional
     public Long createEvent(MinsukeUserDetails user, EventForm form) {
         requireAdmin(user);
-        validateTimeRange(form);
+        validateEventForm(form);
         Instant now = Instant.now();
         Event event = new Event();
         applyForm(event, form);
@@ -89,7 +90,7 @@ public class EventService {
     @Transactional
     public void updateEvent(MinsukeUserDetails user, Long eventId, EventForm form) {
         requireAdmin(user);
-        validateTimeRange(form);
+        validateEventForm(form);
         Event event = findEventOrThrow(eventId);
         applyForm(event, form);
         event.setUpdatedAt(Instant.now());
@@ -107,6 +108,7 @@ public class EventService {
         form.setEndTime(event.getEndTime());
         form.setCapacity(event.getCapacity());
         form.setInstructorId(event.getInstructorId());
+        form.setParticipationUnit(event.getParticipationUnit());
         return form;
     }
 
@@ -171,6 +173,7 @@ public class EventService {
     public void registerParent(MinsukeUserDetails user, Long eventId, Long parentId) {
         Long householdId = requireParentHouseholdId(user);
         Event event = findEventOrThrow(eventId);
+        requireUnitAllows(event, ParticipantType.PARENT);
         Parent parent = parentRepository.findByIdAndHouseholdId(parentId, householdId)
                 .orElseThrow(EventAccessDeniedException::new);
         registerParticipant(user, event, ParticipantType.PARENT, parent.getId(), null, householdId);
@@ -180,9 +183,18 @@ public class EventService {
     public void registerChild(MinsukeUserDetails user, Long eventId, Long childId) {
         Long householdId = requireParentHouseholdId(user);
         Event event = findEventOrThrow(eventId);
+        requireUnitAllows(event, ParticipantType.CHILD);
         Child child = childRepository.findByIdAndHouseholdId(childId, householdId)
                 .orElseThrow(EventAccessDeniedException::new);
         registerParticipant(user, event, ParticipantType.CHILD, null, child.getId(), householdId);
+    }
+
+    @Transactional
+    public void registerHousehold(MinsukeUserDetails user, Long eventId) {
+        Long householdId = requireParentHouseholdId(user);
+        Event event = findEventOrThrow(eventId);
+        requireUnitAllows(event, ParticipantType.HOUSEHOLD);
+        registerParticipant(user, event, ParticipantType.HOUSEHOLD, null, null, householdId);
     }
 
     @Transactional
@@ -190,7 +202,7 @@ public class EventService {
         Long householdId = requireParentHouseholdId(user);
         parentRepository.findByIdAndHouseholdId(parentId, householdId)
                 .orElseThrow(EventAccessDeniedException::new);
-        cancelParticipant(eventId, parentId, null);
+        cancelParticipant(eventId, parentId, null, null);
     }
 
     @Transactional
@@ -198,7 +210,13 @@ public class EventService {
         Long householdId = requireParentHouseholdId(user);
         childRepository.findByIdAndHouseholdId(childId, householdId)
                 .orElseThrow(EventAccessDeniedException::new);
-        cancelParticipant(eventId, null, childId);
+        cancelParticipant(eventId, null, childId, null);
+    }
+
+    @Transactional
+    public void cancelHousehold(MinsukeUserDetails user, Long eventId) {
+        Long householdId = requireParentHouseholdId(user);
+        cancelParticipant(eventId, null, null, householdId);
     }
 
     private void registerParticipant(
@@ -210,7 +228,7 @@ public class EventService {
             Long householdId) {
         ensureCapacityAvailable(event);
         Instant now = Instant.now();
-        OptionalAttendance existing = findExistingAttendance(event.getId(), parentId, childId);
+        OptionalAttendance existing = findExistingAttendance(event.getId(), parentId, childId, householdId);
         if (existing.isRegistered()) {
             return;
         }
@@ -234,8 +252,8 @@ public class EventService {
         attendanceRepository.save(attendance);
     }
 
-    private void cancelParticipant(Long eventId, Long parentId, Long childId) {
-        OptionalAttendance existing = findExistingAttendance(eventId, parentId, childId);
+    private void cancelParticipant(Long eventId, Long parentId, Long childId, Long householdId) {
+        OptionalAttendance existing = findExistingAttendance(eventId, parentId, childId, householdId);
         if (!existing.isRegistered() || existing.attendance() == null) {
             return;
         }
@@ -245,17 +263,39 @@ public class EventService {
         attendanceRepository.save(attendance);
     }
 
-    private OptionalAttendance findExistingAttendance(Long eventId, Long parentId, Long childId) {
+    private OptionalAttendance findExistingAttendance(Long eventId, Long parentId, Long childId, Long householdId) {
         EventAttendance attendance;
         if (parentId != null) {
             attendance = attendanceRepository.findFirstByEventIdAndParentIdOrderByIdDesc(eventId, parentId)
                     .orElse(null);
-        } else {
+        } else if (childId != null) {
             attendance = attendanceRepository.findFirstByEventIdAndChildIdOrderByIdDesc(eventId, childId)
+                    .orElse(null);
+        } else {
+            attendance = attendanceRepository.findFirstByEventIdAndHouseholdIdAndParticipantTypeOrderByIdDesc(
+                            eventId, householdId, ParticipantType.HOUSEHOLD)
                     .orElse(null);
         }
         boolean registered = attendance != null && attendance.getStatus() == AttendanceStatus.REGISTERED;
         return new OptionalAttendance(attendance, registered);
+    }
+
+    private void requireUnitAllows(Event event, ParticipantType type) {
+        ParticipationUnit unit = event.getParticipationUnit();
+        if (unit == null) {
+            if (type == ParticipantType.HOUSEHOLD) {
+                throw new IllegalArgumentException("このイベントは家庭単位では参加登録できません");
+            }
+            return;
+        }
+        boolean allowed = switch (unit) {
+            case PARENT -> type == ParticipantType.PARENT;
+            case CHILD -> type == ParticipantType.CHILD;
+            case HOUSEHOLD -> type == ParticipantType.HOUSEHOLD;
+        };
+        if (!allowed) {
+            throw new IllegalArgumentException("このイベントは" + unit.label() + "単位でのみ参加登録できます");
+        }
     }
 
     private void ensureCapacityAvailable(Event event) {
@@ -277,28 +317,51 @@ public class EventService {
         Long householdId = user.getHouseholdId();
         boolean eventFull = event.getCapacity() != null && registeredCount >= event.getCapacity();
         List<EventDetailDTO.ParticipantOptionDTO> options = new ArrayList<>();
+        ParticipationUnit unit = event.getParticipationUnit();
 
-        for (Parent parent : parentRepository.findByHouseholdIdOrderByIdAsc(householdId)) {
-            boolean registered = isRegistered(event.getId(), parent.getId(), null);
-            options.add(buildOption(
-                    "parent-" + parent.getId(),
-                    EventDetailDTO.ParticipantType.PARENT,
-                    parent.getId(),
+        if (unit == ParticipationUnit.HOUSEHOLD) {
+            boolean registered = isRegistered(event.getId(), null, null, householdId);
+            String householdName = householdRepository.findById(householdId)
+                    .map(Household::getName)
+                    .orElse("マイファミリー");
+            EventDetailDTO.ParticipantOptionDTO option = buildOption(
+                    "household-" + householdId,
+                    EventDetailDTO.ParticipantType.HOUSEHOLD,
                     null,
-                    parent.getName(),
+                    null,
+                    householdName,
                     registered,
-                    !registered && !eventFull));
+                    !registered && !eventFull);
+            option.setHouseholdId(householdId);
+            options.add(option);
+            return options;
         }
-        for (Child child : childRepository.findByHouseholdIdOrderByIdAsc(householdId)) {
-            boolean registered = isRegistered(event.getId(), null, child.getId());
-            options.add(buildOption(
-                    "child-" + child.getId(),
-                    EventDetailDTO.ParticipantType.CHILD,
-                    null,
-                    child.getId(),
-                    child.getName(),
-                    registered,
-                    !registered && !eventFull));
+
+        if (unit == null || unit == ParticipationUnit.PARENT) {
+            for (Parent parent : parentRepository.findByHouseholdIdOrderByIdAsc(householdId)) {
+                boolean registered = isRegistered(event.getId(), parent.getId(), null, null);
+                options.add(buildOption(
+                        "parent-" + parent.getId(),
+                        EventDetailDTO.ParticipantType.PARENT,
+                        parent.getId(),
+                        null,
+                        parent.getName(),
+                        registered,
+                        !registered && !eventFull));
+            }
+        }
+        if (unit == null || unit == ParticipationUnit.CHILD) {
+            for (Child child : childRepository.findByHouseholdIdOrderByIdAsc(householdId)) {
+                boolean registered = isRegistered(event.getId(), null, child.getId(), null);
+                options.add(buildOption(
+                        "child-" + child.getId(),
+                        EventDetailDTO.ParticipantType.CHILD,
+                        null,
+                        child.getId(),
+                        child.getName(),
+                        registered,
+                        !registered && !eventFull));
+            }
         }
         return options;
     }
@@ -322,8 +385,8 @@ public class EventService {
         return option;
     }
 
-    private boolean isRegistered(Long eventId, Long parentId, Long childId) {
-        return findExistingAttendance(eventId, parentId, childId).isRegistered();
+    private boolean isRegistered(Long eventId, Long parentId, Long childId, Long householdId) {
+        return findExistingAttendance(eventId, parentId, childId, householdId).isRegistered();
     }
 
     private List<EventDetailDTO.RegisteredParticipantDTO> buildRegisteredParticipants(Long eventId) {
@@ -343,10 +406,13 @@ public class EventService {
                 Parent parent = parents.get(attendance.getParentId());
                 row.setName(parent != null ? parent.getName() : "—");
                 row.setTypeLabel("保護者");
-            } else {
+            } else if (attendance.getParticipantType() == ParticipantType.CHILD) {
                 Child child = children.get(attendance.getChildId());
                 row.setName(child != null ? child.getName() : "—");
                 row.setTypeLabel("子ども");
+            } else {
+                row.setName(householdNames.getOrDefault(attendance.getHouseholdId(), "—"));
+                row.setTypeLabel("家庭");
             }
             result.add(row);
         }
@@ -398,6 +464,10 @@ public class EventService {
             scheduleRepository.findById(event.getScheduleId())
                     .ifPresent(schedule -> dto.setScheduleTitle(schedule.getTitle()));
         }
+        dto.setParticipationUnit(event.getParticipationUnit());
+        if (event.getParticipationUnit() != null) {
+            dto.setParticipationUnitLabel(event.getParticipationUnit().label());
+        }
         return dto;
     }
 
@@ -409,6 +479,7 @@ public class EventService {
         event.setEndTime(form.getEndTime());
         event.setCapacity(form.getCapacity());
         event.setInstructorId(resolveInstructorId(form.getInstructorId()));
+        event.setParticipationUnit(form.getParticipationUnit());
     }
 
     private Long resolveInstructorId(Long instructorId) {
@@ -423,10 +494,13 @@ public class EventService {
         return instructor.getId();
     }
 
-    private void validateTimeRange(EventForm form) {
+    private void validateEventForm(EventForm form) {
         if (form.getStartTime() != null && form.getEndTime() != null
                 && form.getStartTime().isAfter(form.getEndTime())) {
             throw new IllegalArgumentException("終了時刻は開始時刻以降にしてください");
+        }
+        if (form.getParticipationUnit() == null) {
+            throw new IllegalArgumentException("参加登録単位を選択してください");
         }
     }
 

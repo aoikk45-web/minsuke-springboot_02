@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.minsuke.auth.security.MinsukeUserDetails;
+import com.minsuke.event.domain.ParticipationUnit;
 import com.minsuke.event.dto.AttendanceForm;
 import com.minsuke.event.dto.EventForm;
 import com.minsuke.event.exception.EventCapacityFullException;
@@ -32,8 +33,7 @@ public class EventController {
 
     @GetMapping("/events/new")
     public String createForm(Model model) {
-        model.addAttribute("eventForm", new EventForm());
-        model.addAttribute("instructors", instructorService.listActiveInstructors());
+        prepareEventForm(model, new EventForm(), null);
         return "event/create";
     }
 
@@ -44,7 +44,7 @@ public class EventController {
             BindingResult bindingResult,
             Model model) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("instructors", instructorService.listActiveInstructors());
+            prepareEventForm(model, form, null);
             return "event/create";
         }
         try {
@@ -52,16 +52,14 @@ public class EventController {
             return "redirect:/events/" + eventId;
         } catch (IllegalArgumentException ex) {
             bindingResult.reject("eventForm", ex.getMessage());
-            model.addAttribute("instructors", instructorService.listActiveInstructors());
+            prepareEventForm(model, form, null);
             return "event/create";
         }
     }
 
     @GetMapping("/events/{id}/edit")
     public String editForm(@PathVariable Long id, Model model) {
-        model.addAttribute("eventForm", eventService.toEventForm(id));
-        model.addAttribute("eventId", id);
-        model.addAttribute("instructors", instructorService.listActiveInstructors());
+        prepareEventForm(model, eventService.toEventForm(id), id);
         return "event/edit";
     }
 
@@ -73,8 +71,7 @@ public class EventController {
             BindingResult bindingResult,
             Model model) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("eventId", id);
-            model.addAttribute("instructors", instructorService.listActiveInstructors());
+            prepareEventForm(model, form, id);
             return "event/edit";
         }
         try {
@@ -82,8 +79,7 @@ public class EventController {
             return "redirect:/events/" + id;
         } catch (IllegalArgumentException ex) {
             bindingResult.reject("eventForm", ex.getMessage());
-            model.addAttribute("eventId", id);
-            model.addAttribute("instructors", instructorService.listActiveInstructors());
+            prepareEventForm(model, form, id);
             return "event/edit";
         }
     }
@@ -107,6 +103,8 @@ public class EventController {
             if ("cancel".equals(form.getAction())) {
                 if ("PARENT".equals(form.getParticipantType())) {
                     eventService.cancelParent(user, id, form.getParentId());
+                } else if ("HOUSEHOLD".equals(form.getParticipantType())) {
+                    eventService.cancelHousehold(user, id);
                 } else {
                     eventService.cancelChild(user, id, form.getChildId());
                 }
@@ -114,14 +112,23 @@ public class EventController {
             } else {
                 if ("PARENT".equals(form.getParticipantType())) {
                     eventService.registerParent(user, id, form.getParentId());
+                } else if ("HOUSEHOLD".equals(form.getParticipantType())) {
+                    eventService.registerHousehold(user, id);
                 } else {
                     eventService.registerChild(user, id, form.getChildId());
                 }
                 redirectAttributes.addFlashAttribute("successMessage", "参加登録しました。");
             }
-        } catch (EventCapacityFullException ex) {
+        } catch (EventCapacityFullException | IllegalArgumentException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
         }
         return "redirect:/events/" + id;
+    }
+
+    private void prepareEventForm(Model model, EventForm form, Long eventId) {
+        model.addAttribute("eventForm", form);
+        model.addAttribute("eventId", eventId);
+        model.addAttribute("instructors", instructorService.listActiveInstructors());
+        model.addAttribute("participationUnits", ParticipationUnit.values());
     }
 }

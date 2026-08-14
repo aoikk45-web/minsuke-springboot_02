@@ -42,20 +42,20 @@
 | S07 | マイファミリー編集 | `/my-family/edit` | PARENT | Yes |
 | S08 | 保護者追加/編集 | `/my-family/parents/...` | PARENT | Yes |
 | S09 | 子ども追加/編集 | `/my-family/children/...` | PARENT | Yes |
-| S10 | イベント作成 | `/events/new` | **ADMIN** | Yes → Loop 09 で担当講師欄追加 |
-| S11 | イベント詳細（**個別参加選択**） | `/events/{id}` | 認証済 | Yes → Loop 09 で担当講師表示 |
+| S10 | イベント作成 | `/events/new` | **ADMIN** | Yes → Loop 12 で参加登録単位 |
+| S11 | イベント詳細（**個別参加選択**） | `/events/{id}` | 認証済 | Yes → Loop 12 で単位に応じて選択肢を制限 |
 | S12 | ログアウト | POST `/logout` | 認証済 | Yes |
 | S13 | 講師一覧 | `/instructors` | 認証済 | Loop 08 |
 | S14 | 講師詳細 | `/instructors/{id}` | 認証済 | Loop 08 → Loop 09 で稼働セクション |
 | S15 | 講師作成 | `/instructors/new` | **ADMIN** | Loop 08 |
 | S16 | 講師編集 | `/instructors/{id}/edit` | **ADMIN** | Loop 08 |
-| S17 | イベント編集 | `/events/{id}/edit` | **ADMIN** | Loop 09 |
+| S17 | イベント編集 | `/events/{id}/edit` | **ADMIN** | Loop 09 → Loop 12 で参加登録単位 |
 | S18 | お知らせ一覧 | `/announcements` | 認証済 | Loop 10 |
 | S19 | お知らせ詳細 | `/announcements/{id}` | 認証済 | Loop 10（閲覧で既読） |
 | S20 | お知らせ作成 | `/announcements/new` | **ADMIN** | Loop 10 |
 | S21 | スケジュール一覧 | `/schedules` | **ADMIN** | Loop 11 |
-| S22 | スケジュール詳細 | `/schedules/{id}` | **ADMIN** | Loop 11 |
-| S23 | スケジュール作成・編集 | `/schedules/new`, `/schedules/{id}/edit` | **ADMIN** | Loop 11 |
+| S22 | スケジュール詳細 | `/schedules/{id}` | **ADMIN** | Loop 11 → Loop 12 で単位表示 |
+| S23 | スケジュール作成・編集 | `/schedules/new`, `/schedules/{id}/edit` | **ADMIN** | Loop 11 → Loop 12 で参加登録単位 |
 
 > S13〜S14 の閲覧は **認証済み全員**（OQ-I02 ✅）。
 
@@ -142,7 +142,8 @@ flowchart TD
 | 講師ダッシュボード | 担当・稼働状況（FR-I06） |
 | イベント／スケジュール詳細 | 担当講師表示（FR-I05） |
 | お知らせ | 一覧・詳細・既読（**Loop 10**） |
-| 参加登録単位 | スケジュール設定に応じた家庭/保護者/子ども（**FR-S03 — 後続 Loop**） |
+| 参加登録単位 | スケジュール／イベント設定に応じた家庭/保護者/子ども（**FR-S03 — Loop 12 実装**） |
+| 自家庭の参加可視化 | カレンダー色分け・本日参加一覧（**FR-E06 — Loop 13 Approved**） |
 | 管理者 | ユーザー管理、一括登録 |
 | 通知バッジ | 未読お知らせ数（**Loop 10 任意**） |
 

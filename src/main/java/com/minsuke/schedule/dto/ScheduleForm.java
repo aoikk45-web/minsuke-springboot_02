@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.minsuke.event.domain.ParticipationUnit;
 import com.minsuke.schedule.domain.ScheduleType;
 
 import jakarta.validation.constraints.NotBlank;
@@ -52,6 +53,9 @@ public class ScheduleForm {
     private Integer capacity;
 
     private Long instructorId;
+
+    @NotNull(message = "参加登録単位を選択してください")
+    private ParticipationUnit participationUnit;
 
     private boolean active = true;
 }

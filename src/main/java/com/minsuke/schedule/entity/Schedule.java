@@ -9,6 +9,7 @@ import java.util.Set;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import com.minsuke.event.domain.ParticipationUnit;
 import com.minsuke.schedule.domain.ScheduleType;
 
 import jakarta.persistence.CollectionTable;
@@ -74,6 +75,10 @@ public class Schedule {
 
     @Column(name = "instructor_id")
     private Long instructorId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "participation_unit", length = 20)
+    private ParticipationUnit participationUnit;
 
     @Column(nullable = false)
     private boolean active = true;

@@ -28,6 +28,7 @@ import com.minsuke.auth.domain.Role;
 import com.minsuke.auth.entity.User;
 import com.minsuke.auth.repository.UserRepository;
 import com.minsuke.auth.security.MinsukeUserDetails;
+import com.minsuke.event.domain.ParticipationUnit;
 import com.minsuke.event.repository.EventRepository;
 import com.minsuke.family.entity.Household;
 import com.minsuke.family.repository.HouseholdRepository;
@@ -159,6 +160,18 @@ class ScheduleServiceTest {
     }
 
     @Test
+    void generateCopiesParticipationUnitToEvents() {
+        ScheduleForm form = oneOffForm(LocalDate.now(ZONE).plusDays(5));
+        form.setParticipationUnit(ParticipationUnit.HOUSEHOLD);
+        Long id = scheduleService.create(adminUser, form);
+        scheduleService.generateEvents(adminUser, id, 4);
+
+        assertThat(eventRepository.findByScheduleIdOrderByEventDateAscStartTimeAscIdAsc(id))
+                .isNotEmpty()
+                .allMatch(event -> event.getParticipationUnit() == ParticipationUnit.HOUSEHOLD);
+    }
+
+    @Test
     void parentCannotAccessSchedules() {
         assertThatThrownBy(() -> scheduleService.list(parentUser))
                 .isInstanceOf(ScheduleAccessDeniedException.class);
@@ -173,6 +186,7 @@ class ScheduleServiceTest {
         form.setStartTime(LocalTime.of(10, 0));
         form.setEndTime(LocalTime.of(11, 0));
         form.setCapacity(10);
+        form.setParticipationUnit(ParticipationUnit.CHILD);
         form.setActive(true);
         return form;
     }
@@ -186,6 +200,7 @@ class ScheduleServiceTest {
         form.setValidFrom(LocalDate.now(ZONE));
         form.setStartTime(LocalTime.of(14, 0));
         form.setEndTime(LocalTime.of(15, 0));
+        form.setParticipationUnit(ParticipationUnit.PARENT);
         form.setActive(true);
         return form;
     }

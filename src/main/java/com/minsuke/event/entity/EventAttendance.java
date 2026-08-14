@@ -32,7 +32,7 @@ public class EventAttendance {
     private Long eventId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "participant_type", nullable = false, length = 10)
+    @Column(name = "participant_type", nullable = false, length = 20)
     private ParticipantType participantType;
 
     @Column(name = "parent_id")

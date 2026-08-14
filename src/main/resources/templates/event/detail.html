@@ -50,6 +50,8 @@
     <span th:if="${!event.unlimitedCapacity}" th:text="' / ' + ${event.capacity}">/ 定員</span>
     <span th:if="${event.unlimitedCapacity}">（定員なし）</span>
   </p>
+  <p class="hint"
+     th:text="'参加登録単位: ' + (${event.participationUnitLabel != null} ? ${event.participationUnitLabel} : '制限なし（保護者・子ども）')">単位</p>
 
   <section class="section" sec:authorize="hasRole('PARENT')" th:if="${!event.participantOptions.isEmpty()}">
     <h2>参加登録（マイファミリー）</h2>
@@ -57,7 +59,8 @@
       <li th:each="option : ${event.participantOptions}">
         <div class="member-info">
           <span th:text="${option.name}">名前</span>
-          <span class="member-kana" th:text="${option.type.name() == 'PARENT'} ? '（保護者）' : '（子ども）'"></span>
+          <span class="member-kana"
+                th:text="${option.type.name() == 'PARENT'} ? '（保護者）' : (${option.type.name() == 'CHILD'} ? '（子ども）' : '（家庭）')"></span>
           <span th:if="${option.registered}" class="badge badge-registered">参加中</span>
         </div>
         <div class="member-actions">

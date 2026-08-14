@@ -40,6 +40,7 @@
     </p>
     <p th:if="${schedule.capacity != null}" th:text="'定員: ' + ${schedule.capacity}">定員</p>
     <p th:if="${schedule.capacity == null}" class="hint">定員: なし</p>
+    <p th:text="'参加登録単位: ' + (${schedule.participationUnitLabel != null} ? ${schedule.participationUnitLabel} : '制限なし（保護者・子ども）')">単位</p>
     <p class="hint">
       担当講師:
       <a th:if="${schedule.instructorId != null}"

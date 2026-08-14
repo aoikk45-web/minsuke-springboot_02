@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.minsuke.auth.security.MinsukeUserDetails;
+import com.minsuke.event.domain.ParticipationUnit;
 import com.minsuke.instructor.service.InstructorService;
 import com.minsuke.schedule.domain.ScheduleType;
 import com.minsuke.schedule.dto.ScheduleForm;
@@ -132,6 +133,7 @@ public class ScheduleController {
         model.addAttribute("scheduleId", scheduleId);
         model.addAttribute("isEdit", isEdit);
         model.addAttribute("scheduleTypes", ScheduleType.values());
+        model.addAttribute("participationUnits", ParticipationUnit.values());
         model.addAttribute("instructors", instructorService.listActiveInstructors());
     }
 }

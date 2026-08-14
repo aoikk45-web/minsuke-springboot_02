@@ -137,6 +137,7 @@ public class ScheduleService {
             event.setCapacity(schedule.getCapacity());
             event.setInstructorId(schedule.getInstructorId());
             event.setScheduleId(scheduleId);
+            event.setParticipationUnit(schedule.getParticipationUnit());
             event.setCreatedByUserId(user.getUser().getId());
             event.setCreatedAt(now);
             event.setUpdatedAt(now);
@@ -196,6 +197,9 @@ public class ScheduleService {
             }
         }
         resolveInstructorId(form.getInstructorId());
+        if (form.getParticipationUnit() == null) {
+            throw new IllegalArgumentException("参加登録単位を選択してください");
+        }
     }
 
     private void applyForm(Schedule schedule, ScheduleForm form) {
@@ -206,6 +210,7 @@ public class ScheduleService {
         schedule.setEndTime(form.getEndTime());
         schedule.setCapacity(form.getCapacity());
         schedule.setInstructorId(resolveInstructorId(form.getInstructorId()));
+        schedule.setParticipationUnit(form.getParticipationUnit());
         schedule.setActive(form.isActive());
         if (form.getScheduleType() == ScheduleType.ONE_OFF) {
             schedule.setOneOffDate(form.getOneOffDate());
@@ -265,6 +270,7 @@ public class ScheduleService {
         form.setEndTime(schedule.getEndTime());
         form.setCapacity(schedule.getCapacity());
         form.setInstructorId(schedule.getInstructorId());
+        form.setParticipationUnit(schedule.getParticipationUnit());
         form.setActive(schedule.isActive());
         return form;
     }
@@ -301,6 +307,10 @@ public class ScheduleService {
         if (schedule.getInstructorId() != null) {
             instructorRepository.findById(schedule.getInstructorId())
                     .ifPresent(i -> dto.setInstructorName(i.getName()));
+        }
+        dto.setParticipationUnit(schedule.getParticipationUnit());
+        if (schedule.getParticipationUnit() != null) {
+            dto.setParticipationUnitLabel(schedule.getParticipationUnit().label());
         }
         dto.setActive(schedule.isActive());
         return dto;

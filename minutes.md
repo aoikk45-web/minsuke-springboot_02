@@ -16,12 +16,12 @@
 ## Current Loop
 
 **MVP（Loop 04〜07）完了** — 統合レビュー済（2026-08-11）  
-**Loop 08 / 09 / 10 完了** — PR #1 / #2 / #4 を `main` へ merge 済  
-**Current Loop:** Loop 11 — Schedule Management（`feature/loop-11-schedule`）
+**Loop 08 / 09 / 10 / 11 完了** — PR #1 / #2 / #4 / **#6** を `main` へ merge 済  
+**Current Loop:** Loop 12 — Participation Unit（`feature/loop-12-participation-unit`）
 
 ## Date
 
-**2026-08-13**（最終更新）
+**2026-08-14**（最終更新）
 
 ---
 
@@ -29,7 +29,21 @@
 
 ## Current State
 
-**Loop 11 実装完了・PR #6 待ち**（2026-08-13）。OQ-S01 / DD-14〜18 承認済。UI ローカル確認済。
+**Loop 12 ローカル確認済**（2026-08-14）。次アクション: commit / PR。  
+**Loop 13:** 自家庭の参加可視化（FR-E06 / OQ-E01）— 推奨案を **2026-08-14 承認**。実装は Loop 12 merge 後。
+
+## Loop 12 Progress
+
+| 作業 | 状態 |
+|---|---|
+| ブランチ作成 `feature/loop-12-participation-unit` | ✅ |
+| FR-S03 / OQ-S02 設計草案 | ✅ |
+| 人間承認（推奨案） | ✅ **2026-08-14** |
+| Flyway V9 + 参加登録 UI | ✅ |
+| テスト（Testcontainers） | ⏭ Docker Desktop 未起動のためスキップ |
+| Consistency Review（`roles.md` §12） | ✅ **2026-08-14** |
+| UI ローカル確認 | ✅ **2026-08-14**（人間確認） |
+| Loop 12 完了 | ⏳ commit / PR 待ち |
 
 ## Loop 11 Progress
 
@@ -44,7 +58,7 @@
 | テスト | ✅（Testcontainers は Docker 依存でスキップ可） |
 | Consistency Review（`roles.md` §12） | ✅ **2026-08-13** |
 | UI ローカル確認 | ✅ **2026-08-13** |
-| Loop 11 完了 | ⏳ **PR #6** → merge |
+| Loop 11 完了（PR #6 / merge） | ✅ **2026-08-14** |
 
 ## Loop 10 Progress
 
@@ -506,9 +520,10 @@ MVP は **認証 + ADMIN によるイベント管理 + 家庭管理 + 保護者�
 
 # 16. Next Loop
 
-**Loop 08 / 09 / 10** merged。  
-**Loop 11 — Schedule Management**（ブランチ: `feature/loop-11-schedule`）  
-実装完了・ローカル確認済。次: PR → merge。
+**Loop 08 / 09 / 10 / 11** merged。  
+**Loop 12 — Participation Unit**（ブランチ: `feature/loop-12-participation-unit`）  
+ローカル確認済。次アクション: commit / PR（人間指示）。  
+**次 Loop:** 自家庭の参加可視化（FR-E06）— `minutes.md` §29。OQ-E01 / DD-22 承認済（2026-08-14）。実装は Loop 12 merge 後。
 
 ---
 
@@ -657,7 +672,7 @@ MVP は **認証 + ADMIN によるイベント管理 + 家庭管理 + 保護者�
 
 ## 次アクション
 
-PR 作成 → merge
+**完了**（PR #6 merge 2026-08-14）。続きは Loop 12（FR-S03）。
 
 ## 参照
 
@@ -730,6 +745,168 @@ Consistency Engineer（`roles.md` §12）による横断確認。
 | C. 生成 | 選択した全曜日の日付でイベント生成。重複日付は従来どおりスキップ |
 | E. 画面 | フォームはチェックボックス。詳細は「月曜日・水曜日」形式 |
 | F. テスト | `weeklyScheduleGeneratesEventsForAllSelectedDays` を追加 |
+
+---
+
+# 28. Loop 12 — Participation Unit（承認済 2026-08-14）
+
+## 目的
+
+スケジュール／イベントごとに参加登録単位を **家庭 / 保護者 / 子ども** のいずれかへ制限する（FR-S03 / OQ-S02）。
+
+## 背景
+
+- Loop 07〜11: 全イベントで保護者・子ども個別の両方が選択可能（OQ-10）。
+- Loop 11: スケジュール本格化。FR-S03 は延期。
+- 2026-08-13 人間要望: 単位を設定し、UI ではその単位のみ選択可能にする。
+
+## スコープ（Approved）
+
+| 含む | 含まない |
+|---|---|
+| `schedules.participation_unit` / `events.participation_unit` | FR-S04 一括登録 |
+| 生成時に単位をコピー | 複雑 RRULE |
+| 参加登録 UI の制限（表示 + Service 拒否） | Mobile UI |
+| HOUSEHOLD 参加（1 家庭 = 定員 1） | INSTRUCTOR ログイン |
+
+## 承認が必要な事項
+
+| ID | 質問 | 推奨案 |
+|---|---|---|
+| **OQ-S02** | 単位をどこに持つか | **両方** — schedule に持ち、生成イベントへコピー。手作りイベントは event に直接 |
+| **DD-19** | 列 `participation_unit`（HOUSEHOLD / PARENT / CHILD、NULL 可） | **Approve** |
+| **DD-20** | 既存・NULL は現行どおり PARENT+CHILD | **Approve**（後方互換） |
+| **DD-21** | HOUSEHOLD = `event_attendances.participant_type=HOUSEHOLD`、定員 1 家庭 = 1 | **Approve** |
+| **新規必須** | 新規スケジュール／イベントは単位を必須選択 | **Approve** ✅ **2026-08-14** |
+
+## 承認記録
+
+| 日付 | 内容 |
+|---|---|
+| 2026-08-14 | OQ-S02 / DD-19〜21 を推奨案のまま承認。 |
+
+## 設計サマリー
+
+| 領域 | 案 |
+|---|---|
+| DB | `docs/database/V9__participation_unit.sql` → `src/main/resources/db/migration/V9__participation_unit.sql` |
+| UI | S23 / S10 / S17 に単位選択。S11 は単位に応じて選択肢を絞る |
+| 認可 | 単位外の POST `/events/{id}/attend` は Service で拒否 |
+
+## 次アクション
+
+実装完了。ローカル画面確認後に Loop 12 完了とする。
+
+## 参照
+
+- `Composer.md` §4.10
+- `requirements.md` §6.3 FR-S03
+- `database.md` §18
+
+---
+
+# 28.1 Consistency Report — Loop 12（2026-08-14）
+
+Consistency Engineer（`roles.md` §12）による横断確認。
+
+| 区分 | 件数 |
+|---|---|
+| Blocker | 0 |
+| Warning | 1（残） / 是正済 6 |
+
+### Blockers
+
+（なし）
+
+### Warnings（是正済）
+
+| ID | 内容 | 状態 |
+|---|---|---|
+| CON-L12-01 | `requirements.md` FR-S03 詳細 / OQ-S02 が Proposed | ✅ Approved に更新 |
+| CON-L12-02 | `database.md` OQ-S02 が Proposed、V9 が草案表記 | ✅ Approved、migration 適用対象と明記 |
+| CON-L12-03 | `minutes.md` §16・§18・§28 が「設計中」 | ✅ 実装完了・ローカル確認待ちに同期 |
+| CON-L12-04 | `development-roadmap.md` / `Composer.md` がフェーズ A 表現 | ✅ フェーズ B 完了・確認待ちに更新 |
+| CON-L12-05 | `ui.md` S10/S11/S17/S23 に単位未記載 | ✅ Loop 12 注記を追加 |
+| CON-L12-07 | UI ローカル確認 | ✅ **2026-08-14** 人間確認で解消 |
+
+### Warnings（残）
+
+| ID | 内容 | 扱い |
+|---|---|---|
+| CON-L12-06 | Testcontainers: Docker Desktop 未起動のため `EventServiceTest` / `ScheduleServiceTest` 等スキップ | 従来どおり。ローカル確認で代替 |
+
+### Verified ✅
+
+| 観点 | 結果 |
+|---|---|
+| A. 設計書 ↔ 設計書 | OQ-S02 / DD-19〜21 / FR-S03 — `Composer` / `minutes` / `requirements` / `database` / `security` / `ui` 一致 |
+| B. DB ↔ Entity | `schedules.participation_unit` / `events.participation_unit` VARCHAR(20) ↔ `@Enumerated(STRING)`。`participant_type` length 20 + HOUSEHOLD CHECK。docs↔src V9 一致 |
+| C. Security ↔ URL | 単位設定は既存 ADMIN URL（`/events/**` create/edit、`/schedules/**`）。単位外参加は `EventService.requireUnitAllows`。CSRF は attend フォームに `_csrf` |
+| D. 環境 | ポート方針は従来どおり（PG `5433`、app `8081`、profile=`local`）。本確認時 Docker 未起動 |
+| E. 画面 ↔ Controller | `event/create|edit|detail`、`schedule/form|detail` に単位。HOUSEHOLD は `participantType=HOUSEHOLD` で POST |
+| F. テスト | `EventServiceTest`（CHILD 拒否・HOUSEHOLD 1 slot）/ `ScheduleServiceTest`（generate copy）。`mvnw compile test-compile` 成功。実行は Docker 依存でスキップ |
+| スコープ外 | FR-S04・RRULE・Mobile UI・INSTRUCTOR ログイン — 未実装（意図どおり） |
+
+---
+
+# 29. Loop 13 — 自家庭の参加可視化（承認済 2026-08-14）
+
+## 目的
+
+保護者が、自分の家族が参加しているイベントをカレンダー上で判別できるようにする（FR-E06 / OQ-E01）。
+
+## 背景
+
+- 現行カレンダー（S03）は全イベント同一色。満員のみ赤。
+- `buildCalendarView` はユーザー／家庭を見ない。参加情報はイベント詳細（S11）まで分からない。
+- 2026-08-14 人間要望: カレンダーの色を変える、本日の参加イベントを表示する、など。後続 Loop でよい。
+
+## 現状
+
+- イベントチップ: 青（通常）/ 赤（満員）
+- データ: `event_attendances`（household_id + REGISTERED）で自家庭の参加は既に取れる
+- **新テーブル不要**
+
+## スコープ（Approved）
+
+| 含む | 含まない |
+|---|---|
+| カレンダーで「自家庭が参加中」の色分け | 他家庭の参加の可視化 |
+| カレンダー上部に「本日の参加」一覧 | FR-E05 履歴ページ |
+| PARENT（household あり）向け | Mobile UI 専用画面 |
+| 満員表示の維持（参加中+満員は参加色+「満」） | FR-S04 一括登録 |
+
+## 承認が必要な事項
+
+| ID | 質問 | 推奨案 |
+|---|---|---|
+| **OQ-E01** | どう見せるか | **両方** — カレンダー色 + 本日の参加一覧 |
+| **DD-22** | 参加の定義 | 自家庭の REGISTERED が 1 件以上（単位は問わない） |
+| **対象ロール** | ADMIN も色分けするか | **しない**（ADMIN は household なし。現状どおり全イベント表示） |
+
+## 承認記録
+
+| 日付 | 内容 |
+|---|---|
+| 2026-08-14 | OQ-E01 / DD-22 を推奨案のまま承認。Loop 12 の PR とは分離し、merge 後に実装。 |
+
+## 設計サマリー（Approved）
+
+| 領域 | 案 |
+|---|---|
+| DB | 変更なし。月内 event_id × household の REGISTERED を 1 クエリ |
+| DTO | `CalendarEventDTO.participating`、任意で `todayParticipations` |
+| UI | S03。凡例（通常 / 参加中 / 満員）。本日一覧は当日かつ participating |
+| 認可 | 自 household のみ。他家庭の出席は読まない |
+
+## 次アクション
+
+Loop 12 merge 後に Loop 13 実装（フェーズ B）。コードはこの PR に含めない。
+
+## 参照
+
+- `requirements.md` FR-E06 / OQ-E01
+- `ui.md` Future UI
 
 ---
 
@@ -1030,11 +1207,27 @@ docker compose up -d
 
 ## Loop 11
 
-- **Status:** **IN PROGRESS**（実装・ローカル確認済・PR 待ち）
+- **Status:** **COMPLETED**
 - **Started:** 2026-08-13
-- **Branch:** `feature/loop-11-schedule`
-- **Last Updated:** 2026-08-13 — UI ローカル確認済
-- **Next Action:** **PR #6** → merge
+- **Completed:** 2026-08-14
+- **Branch:** `feature/loop-11-schedule`（merged to main via PR #6）
+- **Last Updated:** 2026-08-14 — main へ merge 済
+- **Next Action:** —
+
+## Loop 12
+
+- **Status:** **IN PROGRESS**（ローカル確認済・commit/PR 待ち）
+- **Started:** 2026-08-14
+- **Branch:** `feature/loop-12-participation-unit`
+- **Last Updated:** 2026-08-14 — 人間による UI 確認済
+- **Next Action:** commit / PR
+
+## Loop 13
+
+- **Status:** **DESIGN APPROVED**（実装は Loop 12 merge 後）
+- **Started:** —
+- **Last Updated:** 2026-08-14 — OQ-E01 / DD-22 承認
+- **Next Action:** Loop 12 merge 後にブランチ作成・実装
 
 ## Loop 10
 

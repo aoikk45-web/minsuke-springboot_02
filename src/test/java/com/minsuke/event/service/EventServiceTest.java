@@ -23,14 +23,17 @@ import com.minsuke.auth.domain.Role;
 import com.minsuke.auth.entity.User;
 import com.minsuke.auth.repository.UserRepository;
 import com.minsuke.auth.security.MinsukeUserDetails;
+import com.minsuke.event.domain.ParticipationUnit;
 import com.minsuke.event.dto.EventForm;
 import com.minsuke.event.exception.EventAccessDeniedException;
 import com.minsuke.event.exception.EventCapacityFullException;
 import com.minsuke.event.exception.EventNotFoundException;
 import com.minsuke.event.repository.EventAttendanceRepository;
 import com.minsuke.event.repository.EventRepository;
+import com.minsuke.family.dto.ChildForm;
 import com.minsuke.family.dto.ParentForm;
 import com.minsuke.family.entity.Household;
+import com.minsuke.family.repository.ChildRepository;
 import com.minsuke.family.repository.HouseholdRepository;
 import com.minsuke.family.repository.ParentRepository;
 import com.minsuke.family.service.FamilyService;
@@ -75,6 +78,9 @@ class EventServiceTest {
     private ParentRepository parentRepository;
 
     @Autowired
+    private ChildRepository childRepository;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -83,6 +89,7 @@ class EventServiceTest {
     private MinsukeUserDetails adminUser;
     private MinsukeUserDetails parentUser;
     private Long parentId;
+    private Long childId;
 
     @BeforeEach
     void setUp() {
@@ -119,6 +126,12 @@ class EventServiceTest {
         parentForm.setNameKana("たろう");
         familyService.createParent(parentUser, parentForm);
         parentId = parentRepository.findByHouseholdIdOrderByIdAsc(household.getId()).get(0).getId();
+
+        ChildForm childForm = new ChildForm();
+        childForm.setName("花子");
+        childForm.setNameKana("はなこ");
+        familyService.createChild(parentUser, childForm);
+        childId = childRepository.findByHouseholdIdOrderByIdAsc(household.getId()).get(0).getId();
     }
 
     @Test
@@ -258,6 +271,37 @@ class EventServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    @Test
+    void childOnlyEventRejectsParentRegistration() {
+        EventForm form = sampleEventForm();
+        form.setParticipationUnit(ParticipationUnit.CHILD);
+        Long eventId = eventService.createEvent(adminUser, form);
+
+        assertThatThrownBy(() -> eventService.registerParent(parentUser, eventId, parentId))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("子ども");
+        eventService.registerChild(parentUser, eventId, childId);
+        assertThat(eventService.getEventDetail(eventId, parentUser).getRegisteredCount()).isEqualTo(1);
+    }
+
+    @Test
+    void householdUnitRegistersOneSlotPerFamily() {
+        EventForm form = sampleEventForm();
+        form.setParticipationUnit(ParticipationUnit.HOUSEHOLD);
+        form.setCapacity(1);
+        Long eventId = eventService.createEvent(adminUser, form);
+
+        eventService.registerHousehold(parentUser, eventId);
+        var detail = eventService.getEventDetail(eventId, parentUser);
+        assertThat(detail.getRegisteredCount()).isEqualTo(1);
+        assertThat(detail.getParticipantOptions()).hasSize(1);
+        assertThat(detail.getParticipantOptions().get(0).isRegistered()).isTrue();
+
+        assertThatThrownBy(() -> eventService.registerParent(parentUser, eventId, parentId))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("家庭");
+    }
+
     private EventForm sampleEventForm() {
         EventForm form = new EventForm();
         form.setTitle("運動会");
@@ -266,6 +310,7 @@ class EventServiceTest {
         form.setStartTime(LocalTime.of(10, 0));
         form.setEndTime(LocalTime.of(12, 0));
         form.setCapacity(null);
+        form.setParticipationUnit(ParticipationUnit.PARENT);
         return form;
     }
 

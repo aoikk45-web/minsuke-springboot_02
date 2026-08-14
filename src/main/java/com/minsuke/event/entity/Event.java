@@ -4,8 +4,12 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import com.minsuke.event.domain.ParticipationUnit;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -48,6 +52,10 @@ public class Event {
 
     @Column(name = "schedule_id")
     private Long scheduleId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "participation_unit", length = 20)
+    private ParticipationUnit participationUnit;
 
     @Column(name = "created_by_user_id", nullable = false)
     private Long createdByUserId;
