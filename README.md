@@ -126,8 +126,8 @@ DB 連携テストは Testcontainers（PostgreSQL）を使用します。Docker 
 1. `main` … 公開・安定（MVP）
 2. 機能は `feature/loop-XX-...` ブランチで実装 → PR → merge
 
-完了: Loop 08〜12（PR #1 / #2 / #4 / #6 / **#7**）。  
-進行中: **Loop 13 — My Participation（FR-E06）**
+完了: Loop 08〜13（PR #1 / #2 / #4 / #6 / #7 / **#8**）。  
+進行中: **Loop 14 — Mobile UI（NFR-02）**
 
 ---
 
