@@ -9,9 +9,11 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -125,7 +127,7 @@ public class EventService {
     }
 
     @Transactional(readOnly = true)
-    public CalendarViewDTO buildCalendarView(Integer year, Integer month) {
+    public CalendarViewDTO buildCalendarView(Integer year, Integer month, MinsukeUserDetails user) {
         LocalDate today = LocalDate.now(ZONE);
         YearMonth target = resolveYearMonth(year, month, today);
         LocalDate start = target.atDay(1);
@@ -140,10 +142,21 @@ public class EventService {
             registeredCounts.put(event.getId(), countRegistered(event.getId()));
         }
 
+        Long householdId = user != null ? user.getHouseholdId() : null;
+        boolean showHouseholdParticipation = householdId != null;
+        List<Event> todayEvents = showHouseholdParticipation
+                ? eventRepository.findByEventDateOrderByStartTimeAscIdAsc(today)
+                : List.of();
+        for (Event event : todayEvents) {
+            registeredCounts.putIfAbsent(event.getId(), countRegistered(event.getId()));
+        }
+        Set<Long> participatingEventIds = findParticipatingEventIds(householdId, events, todayEvents);
+
         CalendarViewDTO view = new CalendarViewDTO();
         view.setYear(target.getYear());
         view.setMonth(target.getMonthValue());
         view.setMonthLabel(target.format(MONTH_LABEL));
+        view.setShowHouseholdParticipation(showHouseholdParticipation);
 
         YearMonth previous = target.minusMonths(1);
         YearMonth next = target.plusMonths(1);
@@ -151,6 +164,15 @@ public class EventService {
         view.setPreviousMonth(previous.getMonthValue());
         view.setNextYear(next.getYear());
         view.setNextMonth(next.getMonthValue());
+
+        if (showHouseholdParticipation) {
+            for (Event event : todayEvents) {
+                if (participatingEventIds.contains(event.getId())) {
+                    view.getTodayParticipations().add(
+                            toCalendarEvent(event, registeredCounts, participatingEventIds));
+                }
+            }
+        }
 
         LocalDate gridStart = start.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
         LocalDate gridEnd = end.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY));
@@ -161,7 +183,8 @@ public class EventService {
                 view.getWeeks().add(week);
                 week = new CalendarViewDTO.CalendarWeekDTO();
             }
-            week.getDays().add(toCalendarDay(date, target, today, eventsByDate, registeredCounts));
+            week.getDays().add(toCalendarDay(
+                    date, target, today, eventsByDate, registeredCounts, participatingEventIds));
         }
         if (!week.getDays().isEmpty()) {
             view.getWeeks().add(week);
@@ -424,7 +447,8 @@ public class EventService {
             YearMonth target,
             LocalDate today,
             Map<LocalDate, List<Event>> eventsByDate,
-            Map<Long, Long> registeredCounts) {
+            Map<Long, Long> registeredCounts,
+            Set<Long> participatingEventIds) {
         CalendarViewDTO.CalendarDayDTO day = new CalendarViewDTO.CalendarDayDTO();
         day.setDate(date);
         day.setDayOfMonth(date.getDayOfMonth());
@@ -432,14 +456,44 @@ public class EventService {
         day.setToday(date.equals(today));
         List<Event> dayEvents = eventsByDate.getOrDefault(date, List.of());
         for (Event event : dayEvents) {
-            CalendarViewDTO.CalendarEventDTO item = new CalendarViewDTO.CalendarEventDTO();
-            item.setId(event.getId());
-            item.setTitle(event.getTitle());
-            long registered = registeredCounts.getOrDefault(event.getId(), 0L);
-            item.setFull(event.getCapacity() != null && registered >= event.getCapacity());
-            day.getEvents().add(item);
+            day.getEvents().add(toCalendarEvent(event, registeredCounts, participatingEventIds));
         }
         return day;
+    }
+
+    private CalendarViewDTO.CalendarEventDTO toCalendarEvent(
+            Event event,
+            Map<Long, Long> registeredCounts,
+            Set<Long> participatingEventIds) {
+        CalendarViewDTO.CalendarEventDTO item = new CalendarViewDTO.CalendarEventDTO();
+        item.setId(event.getId());
+        item.setTitle(event.getTitle());
+        item.setStartTime(event.getStartTime());
+        long registered = registeredCounts.getOrDefault(event.getId(), 0L);
+        item.setFull(event.getCapacity() != null && registered >= event.getCapacity());
+        item.setParticipating(participatingEventIds.contains(event.getId()));
+        return item;
+    }
+
+    private Set<Long> findParticipatingEventIds(Long householdId, List<Event> monthEvents, List<Event> todayEvents) {
+        if (householdId == null) {
+            return Set.of();
+        }
+        Set<Long> eventIds = new HashSet<>();
+        for (Event event : monthEvents) {
+            eventIds.add(event.getId());
+        }
+        for (Event event : todayEvents) {
+            eventIds.add(event.getId());
+        }
+        if (eventIds.isEmpty()) {
+            return Set.of();
+        }
+        return attendanceRepository.findByHouseholdIdAndStatusAndEventIdIn(
+                        householdId, AttendanceStatus.REGISTERED, eventIds)
+                .stream()
+                .map(EventAttendance::getEventId)
+                .collect(Collectors.toSet());
     }
 
     private EventDetailDTO toDetail(Event event, long registeredCount) {

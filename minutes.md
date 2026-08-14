@@ -16,8 +16,8 @@
 ## Current Loop
 
 **MVP（Loop 04〜07）完了** — 統合レビュー済（2026-08-11）  
-**Loop 08 / 09 / 10 / 11 完了** — PR #1 / #2 / #4 / **#6** を `main` へ merge 済  
-**Current Loop:** Loop 12 — Participation Unit（`feature/loop-12-participation-unit`）
+**Loop 08 / 09 / 10 / 11 / 12 完了** — PR #1 / #2 / #4 / #6 / **#7** を `main` へ merge 済  
+**Current Loop:** Loop 13 — My Participation（`feature/loop-13-my-participation`）
 
 ## Date
 
@@ -29,8 +29,8 @@
 
 ## Current State
 
-**Loop 12 ローカル確認済**（2026-08-14）。次アクション: commit / PR。  
-**Loop 13:** 自家庭の参加可視化（FR-E06 / OQ-E01）— 推奨案を **2026-08-14 承認**。実装は Loop 12 merge 後。
+**Loop 12 完了**（PR **#7** merge 2026-08-14）。  
+**Loop 13 ローカル確認済**（2026-08-14）。次アクション: commit / PR。
 
 ## Loop 12 Progress
 
@@ -43,7 +43,19 @@
 | テスト（Testcontainers） | ⏭ Docker Desktop 未起動のためスキップ |
 | Consistency Review（`roles.md` §12） | ✅ **2026-08-14** |
 | UI ローカル確認 | ✅ **2026-08-14**（人間確認） |
-| Loop 12 完了 | ⏳ commit / PR 待ち |
+| Loop 12 完了（PR #7 / merge） | ✅ **2026-08-14** |
+
+## Loop 13 Progress
+
+| 作業 | 状態 |
+|---|---|
+| ブランチ作成 `feature/loop-13-my-participation` | ✅ |
+| 人間承認（OQ-E01 / DD-22） | ✅ **2026-08-14** |
+| カレンダー色分け + 本日参加 | ✅ |
+| テスト（Testcontainers） | ⏭ Docker Desktop 未起動のためスキップ |
+| Consistency Review（`roles.md` §12） | ✅ **2026-08-14** |
+| UI ローカル確認 | ✅ **2026-08-14**（人間確認） |
+| Loop 13 完了 | ⏳ commit / PR 待ち |
 
 ## Loop 11 Progress
 
@@ -520,10 +532,9 @@ MVP は **認証 + ADMIN によるイベント管理 + 家庭管理 + 保護者�
 
 # 16. Next Loop
 
-**Loop 08 / 09 / 10 / 11** merged。  
-**Loop 12 — Participation Unit**（ブランチ: `feature/loop-12-participation-unit`）  
-ローカル確認済。次アクション: commit / PR（人間指示）。  
-**次 Loop:** 自家庭の参加可視化（FR-E06）— `minutes.md` §29。OQ-E01 / DD-22 承認済（2026-08-14）。実装は Loop 12 merge 後。
+**Loop 08 / 09 / 10 / 11 / 12** merged（PR #7）。  
+**Loop 13 — My Participation**（ブランチ: `feature/loop-13-my-participation`）  
+実装完了。ローカル確認済。次アクション: commit / PR。
 
 ---
 
@@ -901,12 +912,51 @@ Consistency Engineer（`roles.md` §12）による横断確認。
 
 ## 次アクション
 
-Loop 12 merge 後に Loop 13 実装（フェーズ B）。コードはこの PR に含めない。
+実装完了。ローカル確認済。次アクション: commit / PR。
 
 ## 参照
 
 - `requirements.md` FR-E06 / OQ-E01
-- `ui.md` Future UI
+- `ui.md` S03
+
+---
+
+# 29.1 Consistency Report — Loop 13（2026-08-14）
+
+Consistency Engineer（`roles.md` §12）による横断確認。
+
+| 区分 | 件数 |
+|---|---|
+| Blocker | 0 |
+| Warning | 1（残） / 是正済 1 |
+
+### Blockers
+
+（なし）
+
+### Warnings（是正済）
+
+| ID | 内容 | 状態 |
+|---|---|---|
+| CON-L13-02 | UI ローカル確認 | ✅ **2026-08-14** 人間確認で解消 |
+
+### Warnings（残）
+
+| ID | 内容 | 扱い |
+|---|---|---|
+| CON-L13-01 | Testcontainers 未実行（Docker Desktop 未起動） | 従来どおり。ローカル確認で代替 |
+
+### Verified ✅
+
+| 観点 | 結果 |
+|---|---|
+| A. 設計書 ↔ 設計書 | FR-E06 / OQ-E01 / DD-22 — `Composer` / `minutes` / `requirements` / `security` / `ui` 一致。新テーブルなし |
+| B. DB ↔ 実装 | `event_attendances.household_id` + `REGISTERED` のみ。Flyway 追加なし |
+| C. Security | `/calendar` は認証済み。参加フラグは自 household のみ。ADMIN は household なしで色分けしない |
+| D. 環境 | ポート方針は従来どおり（PG `5433`、app `8081`） |
+| E. 画面 ↔ Controller | `calendar.html`。凡例・本日参加は `showHouseholdParticipation`。参加中は緑、満員は赤（参加中優先） |
+| F. テスト | `EventServiceTest.calendarHighlightsHouseholdParticipationAndListsToday`。`mvnw compile test-compile` 成功 |
+| スコープ外 | FR-E05 履歴、他家庭の可視化、Mobile UI、FR-S04 |
 
 ---
 
@@ -1216,18 +1266,20 @@ docker compose up -d
 
 ## Loop 12
 
-- **Status:** **IN PROGRESS**（ローカル確認済・commit/PR 待ち）
+- **Status:** **COMPLETED**
 - **Started:** 2026-08-14
-- **Branch:** `feature/loop-12-participation-unit`
-- **Last Updated:** 2026-08-14 — 人間による UI 確認済
-- **Next Action:** commit / PR
+- **Completed:** 2026-08-14
+- **Branch:** `feature/loop-12-participation-unit`（merged to main via PR #7）
+- **Last Updated:** 2026-08-14 — main へ merge 済
+- **Next Action:** —
 
 ## Loop 13
 
-- **Status:** **DESIGN APPROVED**（実装は Loop 12 merge 後）
-- **Started:** —
-- **Last Updated:** 2026-08-14 — OQ-E01 / DD-22 承認
-- **Next Action:** Loop 12 merge 後にブランチ作成・実装
+- **Status:** **IN PROGRESS**（ローカル確認済・commit/PR 待ち）
+- **Started:** 2026-08-14
+- **Branch:** `feature/loop-13-my-participation`
+- **Last Updated:** 2026-08-14 — 人間による UI 確認済
+- **Next Action:** commit / PR
 
 ## Loop 10
 

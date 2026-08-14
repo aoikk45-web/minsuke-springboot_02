@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -154,7 +155,8 @@ class EventServiceTest {
         Long eventId = eventService.createEvent(adminUser, sampleEventForm());
         var calendar = eventService.buildCalendarView(
                 sampleEventForm().getEventDate().getYear(),
-                sampleEventForm().getEventDate().getMonthValue());
+                sampleEventForm().getEventDate().getMonthValue(),
+                adminUser);
 
         assertThat(calendar.getWeeks()).isNotEmpty();
         boolean found = calendar.getWeeks().stream()
@@ -300,6 +302,36 @@ class EventServiceTest {
         assertThatThrownBy(() -> eventService.registerParent(parentUser, eventId, parentId))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("家庭");
+    }
+
+    @Test
+    void calendarHighlightsHouseholdParticipationAndListsToday() {
+        EventForm form = sampleEventForm();
+        form.setEventDate(LocalDate.now(ZoneId.of("Asia/Tokyo")));
+        Long eventId = eventService.createEvent(adminUser, form);
+        eventService.registerParent(parentUser, eventId, parentId);
+
+        var parentCalendar = eventService.buildCalendarView(
+                form.getEventDate().getYear(), form.getEventDate().getMonthValue(), parentUser);
+        assertThat(parentCalendar.isShowHouseholdParticipation()).isTrue();
+        assertThat(parentCalendar.getTodayParticipations())
+                .extracting(e -> e.getId())
+                .contains(eventId);
+        boolean participating = parentCalendar.getWeeks().stream()
+                .flatMap(w -> w.getDays().stream())
+                .flatMap(d -> d.getEvents().stream())
+                .anyMatch(e -> e.getId().equals(eventId) && e.isParticipating());
+        assertThat(participating).isTrue();
+
+        var adminCalendar = eventService.buildCalendarView(
+                form.getEventDate().getYear(), form.getEventDate().getMonthValue(), adminUser);
+        assertThat(adminCalendar.isShowHouseholdParticipation()).isFalse();
+        assertThat(adminCalendar.getTodayParticipations()).isEmpty();
+        boolean adminMarked = adminCalendar.getWeeks().stream()
+                .flatMap(w -> w.getDays().stream())
+                .flatMap(d -> d.getEvents().stream())
+                .anyMatch(e -> e.getId().equals(eventId) && e.isParticipating());
+        assertThat(adminMarked).isFalse();
     }
 
     private EventForm sampleEventForm() {

@@ -1,6 +1,7 @@
 package com.minsuke.event.dto;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +19,9 @@ public class CalendarViewDTO {
     private int previousMonth;
     private int nextYear;
     private int nextMonth;
+    /** PARENT で household があるとき true。凡例・本日参加を出す */
+    private boolean showHouseholdParticipation;
+    private List<CalendarEventDTO> todayParticipations = new ArrayList<>();
     private List<CalendarWeekDTO> weeks = new ArrayList<>();
 
     @Getter
@@ -41,6 +45,8 @@ public class CalendarViewDTO {
     public static class CalendarEventDTO {
         private Long id;
         private String title;
+        private LocalTime startTime;
         private boolean full;
+        private boolean participating;
     }
 }

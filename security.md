@@ -88,6 +88,13 @@
 | 単位外の参加登録 | 拒否 | Service で拒否（UI でも非表示） |
 | カレンダー（events） | 認証済み全員 | 既存のまま |
 
+### Loop 13 認可方針（Approved 2026-08-14）
+
+| 操作 | ロール | 備考 |
+|---|---|---|
+| 参加中の色分け・本日参加 | **PARENT（household あり）** | 自 household の REGISTERED のみ |
+| ADMIN カレンダー | 色分けなし | household なし。全イベント表示のまま |
+
 ### Confirmed（2026-08-10）
 
 - MVP に **ADMIN ロールを含む**
