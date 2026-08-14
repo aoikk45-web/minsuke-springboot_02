@@ -39,6 +39,7 @@ import com.minsuke.family.repository.HouseholdRepository;
 import com.minsuke.family.repository.ParentRepository;
 import com.minsuke.instructor.entity.Instructor;
 import com.minsuke.instructor.repository.InstructorRepository;
+import com.minsuke.schedule.repository.ScheduleRepository;
 
 @Service
 public class EventService {
@@ -53,6 +54,7 @@ public class EventService {
     private final ChildRepository childRepository;
     private final HouseholdRepository householdRepository;
     private final InstructorRepository instructorRepository;
+    private final ScheduleRepository scheduleRepository;
 
     public EventService(
             EventRepository eventRepository,
@@ -60,13 +62,15 @@ public class EventService {
             ParentRepository parentRepository,
             ChildRepository childRepository,
             HouseholdRepository householdRepository,
-            InstructorRepository instructorRepository) {
+            InstructorRepository instructorRepository,
+            ScheduleRepository scheduleRepository) {
         this.eventRepository = eventRepository;
         this.attendanceRepository = attendanceRepository;
         this.parentRepository = parentRepository;
         this.childRepository = childRepository;
         this.householdRepository = householdRepository;
         this.instructorRepository = instructorRepository;
+        this.scheduleRepository = scheduleRepository;
     }
 
     @Transactional
@@ -389,6 +393,11 @@ public class EventService {
         dto.setRegisteredCount(registeredCount);
         dto.setUnlimitedCapacity(event.getCapacity() == null);
         dto.setFull(event.getCapacity() != null && registeredCount >= event.getCapacity());
+        dto.setScheduleId(event.getScheduleId());
+        if (event.getScheduleId() != null) {
+            scheduleRepository.findById(event.getScheduleId())
+                    .ifPresent(schedule -> dto.setScheduleTitle(schedule.getTitle()));
+        }
         return dto;
     }
 

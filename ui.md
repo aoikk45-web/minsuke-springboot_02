@@ -53,6 +53,9 @@
 | S18 | お知らせ一覧 | `/announcements` | 認証済 | Loop 10 |
 | S19 | お知らせ詳細 | `/announcements/{id}` | 認証済 | Loop 10（閲覧で既読） |
 | S20 | お知らせ作成 | `/announcements/new` | **ADMIN** | Loop 10 |
+| S21 | スケジュール一覧 | `/schedules` | **ADMIN** | Loop 11 |
+| S22 | スケジュール詳細 | `/schedules/{id}` | **ADMIN** | Loop 11 |
+| S23 | スケジュール作成・編集 | `/schedules/new`, `/schedules/{id}/edit` | **ADMIN** | Loop 11 |
 
 > S13〜S14 の閲覧は **認証済み全員**（OQ-I02 ✅）。
 
@@ -139,6 +142,7 @@ flowchart TD
 | 講師ダッシュボード | 担当・稼働状況（FR-I06） |
 | イベント／スケジュール詳細 | 担当講師表示（FR-I05） |
 | お知らせ | 一覧・詳細・既読（**Loop 10**） |
+| 参加登録単位 | スケジュール設定に応じた家庭/保護者/子ども（**FR-S03 — 後続 Loop**） |
 | 管理者 | ユーザー管理、一括登録 |
 | 通知バッジ | 未読お知らせ数（**Loop 10 任意**） |
 

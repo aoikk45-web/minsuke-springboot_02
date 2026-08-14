@@ -24,6 +24,8 @@ public class EventDetailDTO {
     private long registeredCount;
     private boolean full;
     private boolean unlimitedCapacity;
+    private Long scheduleId;
+    private String scheduleTitle;
     private List<ParticipantOptionDTO> participantOptions = new ArrayList<>();
     private List<RegisteredParticipantDTO> registeredParticipants = new ArrayList<>();
 

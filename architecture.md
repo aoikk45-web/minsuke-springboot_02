@@ -239,6 +239,9 @@ com.minsuke
 | お知らせ一覧 | `GET /announcements`（Loop 10） |
 | お知らせ詳細 | `GET /announcements/{id}`（Loop 10） |
 | お知らせ作成 | `GET/POST /announcements/new`（ADMIN） |
+| スケジュール一覧 | `GET /schedules`（ADMIN, Loop 11） |
+| スケジュール作成 | `GET/POST /schedules/new`（ADMIN） |
+| イベント生成 | `POST /schedules/{id}/generate`（ADMIN） |
 
 ---
 

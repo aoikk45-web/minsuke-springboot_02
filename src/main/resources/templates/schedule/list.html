@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>スケジュール — MinSuke</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header th:replace="~{fragments/header :: header}"></header>
+<main class="container container-wide">
+  <div class="page-header">
+    <h1>スケジュール</h1>
+    <a th:href="@{/schedules/new}" class="btn btn-primary btn-sm">作成</a>
+  </div>
+
+  <p th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></p>
+
+  <table class="data-table" th:if="${!schedules.isEmpty()}">
+    <thead>
+    <tr>
+      <th>タイトル</th>
+      <th>種別</th>
+      <th>状態</th>
+      <th>生成済みイベント</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="s : ${schedules}">
+      <td><a th:href="@{/schedules/{id}(id=${s.id})}" th:text="${s.title}">タイトル</a></td>
+      <td th:text="${s.scheduleTypeLabel}">種別</td>
+      <td>
+        <span th:if="${s.active}" class="badge badge-registered">有効</span>
+        <span th:if="${!s.active}" class="badge badge-inactive">無効</span>
+      </td>
+      <td th:text="${s.generatedEventCount} + ' 件'">0 件</td>
+    </tr>
+    </tbody>
+  </table>
+  <p th:if="${schedules.isEmpty()}" class="hint">スケジュールはまだありません。</p>
+</main>
+</body>
+</html>

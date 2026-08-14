@@ -47,6 +47,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/announcements/new").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/announcements/*/edit").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/announcements/*/delete").hasRole("ADMIN")
+                        .requestMatchers("/schedules/**").hasRole("ADMIN")
                         .requestMatchers("/my-family/**").hasRole("PARENT")
                         .anyRequest().authenticated())
                 .userDetailsService(userDetailsService)

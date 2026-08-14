@@ -16,6 +16,8 @@ import com.minsuke.family.exception.FamilyAccessDeniedException;
 import com.minsuke.family.exception.FamilyNotFoundException;
 import com.minsuke.instructor.exception.InstructorAccessDeniedException;
 import com.minsuke.instructor.exception.InstructorNotFoundException;
+import com.minsuke.schedule.exception.ScheduleAccessDeniedException;
+import com.minsuke.schedule.exception.ScheduleNotFoundException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -74,6 +76,20 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AnnouncementNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleAnnouncementNotFound(AnnouncementNotFoundException ex, Model model) {
+        model.addAttribute("message", ex.getMessage());
+        return "error";
+    }
+
+    @ExceptionHandler(ScheduleAccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public String handleScheduleAccessDenied(ScheduleAccessDeniedException ex, Model model) {
+        model.addAttribute("message", ex.getMessage());
+        return "error/forbidden";
+    }
+
+    @ExceptionHandler(ScheduleNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleScheduleNotFound(ScheduleNotFoundException ex, Model model) {
         model.addAttribute("message", ex.getMessage());
         return "error";
     }
