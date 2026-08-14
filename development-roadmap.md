@@ -1,6 +1,6 @@
 # MinSuke — Development Roadmap
 
-**Status:** Loop 12 **In Progress**（`feature/loop-12-participation-unit`）— ローカル確認済・commit/PR 待ち  
+**Status:** Loop 13 **In Progress**（`feature/loop-13-my-participation`）— ローカル確認済・commit/PR 待ち  
 **Date:** 2026-08-14  
 **Version:** 1.9
 
@@ -163,11 +163,11 @@ Loop 02 で決定すべき事項：
 
 ---
 
-## 8. Next Actions（Loop 12）
+## 8. Next Actions（Loop 13）
 
-1. ~~ローカル確認~~ ✅ 2026-08-14
-2. commit / PR（人間指示）
-3. **Loop 13（承認済）:** 自家庭の参加可視化（FR-E06）。実装は Loop 12 merge 後。FR-S04・Mobile UI・Testing は後続
+1. ~~カレンダー色分け + 本日の参加一覧~~ ✅
+2. ~~ローカル確認~~ ✅ 2026-08-14
+3. commit / PR（人間指示）。FR-S04・Mobile UI・Testing は後続
 
 ---
 

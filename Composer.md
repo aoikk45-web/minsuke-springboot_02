@@ -5,8 +5,8 @@
 **Project Name:** MinSuke（みんスケ）  
 **Development Model:** Greenfield / New Development  
 **Development Environment:** Cursor + Composer 2.5  
-**Current Loop:** Loop 12 — Participation Unit（`feature/loop-12-participation-unit`）  
-**Current Phase:** Post-MVP / ローカル確認済・commit/PR 待ち（フェーズ B — OQ-S02 / DD-19〜21 承認済）  
+**Current Loop:** Loop 13 — My Participation（`feature/loop-13-my-participation`）  
+**Current Phase:** Post-MVP / ローカル確認済・commit/PR 待ち（フェーズ B — OQ-E01 / DD-22 承認済）  
 **Date:** 2026-08-14
 
 MinSuke（みんスケ）は、家庭・講師・スケジュール・イベント等を管理するための新規システムとして開発する。
@@ -349,7 +349,7 @@ Loop 12で実施する。
 
 - **OQ-S02** / DD-19〜21 を推奨案のまま承認
 
-**フェーズ B（実装）** ✅ コード完了。Consistency Review 済。ローカル画面確認済（2026-08-14）。commit / PR 待ち。
+**フェーズ B（実装）** ✅ コード完了。Consistency Review 済。ローカル画面確認済（2026-08-14）。PR **#7** merge 済。
 
 - Flyway V9（`schedules` / `events` の `participation_unit`、`event_attendances` 拡張）✅
 - スケジュール／イベント作成・編集 UI ✅
@@ -378,7 +378,7 @@ Loop 12で実施する。
 | FR-S03/S04 | Loop 11 では対象外 |
 | **FR-S03** | **参加登録単位（家庭/保護者/子ども）** — 後続 Loop（2026-08-13 要望） |
 
-## 4.11 Next Loop — Loop 13
+## 4.11 Current Loop — Loop 13
 
 Loop 13の目的は、
 
@@ -388,7 +388,7 @@ Loop 13の目的は、
 
 **フェーズ A（設計）** ✅ 2026-08-14 承認済（OQ-E01 / DD-22）
 
-**フェーズ B（実装）** — Loop 12 merge 後。本 PR ではコードを書かない。
+**フェーズ B（実装）** ✅ コード完了。Consistency Review 済。ローカル画面確認済（2026-08-14）。commit / PR 待ち。
 
 ### Loop 13 確定方針（Approved 2026-08-14）
 

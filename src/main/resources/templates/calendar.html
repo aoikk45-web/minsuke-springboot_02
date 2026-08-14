@@ -21,6 +21,26 @@
     </div>
   </div>
 
+  <section class="section" th:if="${calendar.showHouseholdParticipation}">
+    <h2>本日の参加</h2>
+    <ul class="today-participations" th:if="${!calendar.todayParticipations.isEmpty()}">
+      <li th:each="ev : ${calendar.todayParticipations}">
+        <a th:href="@{/events/{id}(id=${ev.id})}">
+          <span th:if="${ev.startTime != null}"
+                th:text="${#temporals.format(ev.startTime, 'HH:mm')} + ' '">10:00 </span>
+          <span th:text="${ev.title}">イベント</span>
+        </a>
+      </li>
+    </ul>
+    <p th:if="${calendar.todayParticipations.isEmpty()}" class="hint">本日の参加イベントはありません。</p>
+  </section>
+
+  <p class="calendar-legend" th:if="${calendar.showHouseholdParticipation}">
+    <span class="calendar-legend-item"><span class="calendar-legend-swatch"></span>通常</span>
+    <span class="calendar-legend-item"><span class="calendar-legend-swatch calendar-legend-swatch-mine"></span>参加中</span>
+    <span class="calendar-legend-item"><span class="calendar-legend-swatch calendar-legend-swatch-full"></span>満員</span>
+  </p>
+
   <table class="calendar-grid">
     <thead>
     <tr>
@@ -41,7 +61,7 @@
         <ul class="calendar-events">
           <li th:each="ev : ${day.events}">
             <a th:href="@{/events/{id}(id=${ev.id})}" class="calendar-event-link"
-               th:classappend="${ev.full} ? ' calendar-event-full' : ''">
+               th:classappend="${ev.participating} ? ' calendar-event-participating' : (${ev.full} ? ' calendar-event-full' : '')">
               <span th:text="${ev.title}">イベント</span>
               <span th:if="${ev.full}" class="calendar-full-label">満</span>
             </a>
