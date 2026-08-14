@@ -1,6 +1,6 @@
 # MinSuke — Development Roadmap
 
-**Status:** Loop 13 **In Progress**（`feature/loop-13-my-participation`）— ローカル確認済・commit/PR 待ち  
+**Status:** Loop 14 **In Progress**（`feature/loop-14-mobile-ui`）— ローカル確認済・commit/PR 待ち  
 **Date:** 2026-08-14  
 **Version:** 1.9
 
@@ -54,6 +54,7 @@ gantt
 | **11** | Schedule Management | 定期・単発スケジュール（FR-S01）・複数曜日 | あり |
 | **12** | Participation Unit | 参加登録単位（FR-S03: 家庭/保護者/子ども） | あり |
 | **13** | My Participation | 自家庭の参加可視化（FR-E06: カレンダー色・本日参加） | あり |
+| **14** | Mobile UI | スマートフォンでの主要操作（NFR-02） | あり |
 
 ---
 
@@ -163,11 +164,12 @@ Loop 02 で決定すべき事項：
 
 ---
 
-## 8. Next Actions（Loop 13）
+## 8. Next Actions（Loop 14）
 
-1. ~~カレンダー色分け + 本日の参加一覧~~ ✅
-2. ~~ローカル確認~~ ✅ 2026-08-14
-3. commit / PR（人間指示）。FR-S04・Mobile UI・Testing は後続
+1. ~~人間承認 OQ-M01〜M03~~ ✅ 2026-08-14
+2. ~~ハンバーガーナビ + カレンダー縮小~~ ✅
+3. ~~ローカル確認~~ ✅ 2026-08-14
+4. commit / PR（人間指示）
 
 ---
 

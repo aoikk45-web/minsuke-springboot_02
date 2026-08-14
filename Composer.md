@@ -5,8 +5,8 @@
 **Project Name:** MinSuke（みんスケ）  
 **Development Model:** Greenfield / New Development  
 **Development Environment:** Cursor + Composer 2.5  
-**Current Loop:** Loop 13 — My Participation（`feature/loop-13-my-participation`）  
-**Current Phase:** Post-MVP / ローカル確認済・commit/PR 待ち（フェーズ B — OQ-E01 / DD-22 承認済）  
+**Current Loop:** Loop 14 — Mobile UI（`feature/loop-14-mobile-ui`）  
+**Current Phase:** Post-MVP / ローカル確認済・commit/PR 待ち（フェーズ B — OQ-M01〜M03 承認済）  
 **Date:** 2026-08-14
 
 MinSuke（みんスケ）は、家庭・講師・スケジュール・イベント等を管理するための新規システムとして開発する。
@@ -388,7 +388,7 @@ Loop 13の目的は、
 
 **フェーズ A（設計）** ✅ 2026-08-14 承認済（OQ-E01 / DD-22）
 
-**フェーズ B（実装）** ✅ コード完了。Consistency Review 済。ローカル画面確認済（2026-08-14）。commit / PR 待ち。
+**フェーズ B（実装）** ✅ コード完了。Consistency Review 済。ローカル画面確認済（2026-08-14）。PR **#8** merge 済。
 
 ### Loop 13 確定方針（Approved 2026-08-14）
 
@@ -398,6 +398,36 @@ Loop 13の目的は、
 | DD-22 | 自家庭の REGISTERED が 1 件以上なら参加中 |
 | ADMIN | 色分け・本日参加は出さない |
 | 含まない | 他家庭の可視化、FR-E05 履歴ページ、Mobile UI、FR-S04 |
+
+## 4.12 Current Loop — Loop 14
+
+Loop 14の目的は、
+
+**スマートフォンでの主要操作を実用レベルにすること（NFR-02 / Mobile UI）**
+
+である。
+
+**フェーズ A（設計）** ✅ 2026-08-14 承認済（OQ-M01〜M03、案 A）
+
+**フェーズ B（実装）** ✅ コード完了。Consistency Review 済。ローカル画面確認済（2026-08-14）。commit / PR 待ち。
+
+### Loop 14 候補と推奨
+
+| 候補 | 内容 | 評価 |
+|---|---|---|
+| **A. Mobile UI（推奨）** | ナビ圧縮・カレンダーの狭い画面対応。新テーブルなし | MVP 成功基準「スマホで主要操作」が未達 |
+| B. FR-S04 一括登録 | 複数イベントへの一括参加など | 要 OQ（何を一括するか未定義） |
+| C. Testing / CI | Testcontainers を CI で実行、`testing.md` | 品質。画面の価値は増えない |
+| D. FR-E05 参加履歴 | 過去の参加一覧ページ | FR-E06 と近いがカレンダー外 |
+
+### Loop 14 確定方針（Approved 2026-08-14）
+
+| 項目 | 推奨 |
+|---|---|
+| 対象 | 既存 Thymeleaf + CSS。SPA / ネイティブアプリは作らない |
+| ナビ | 狭い画面では折りたたみ（ハンバーガー） |
+| カレンダー | 狭い画面でもタップ可能なセル。参加色・本日一覧は維持 |
+| 含まない | FR-S04、FR-E05、INSTRUCTOR ログイン、メール通知 |
 
 ## 5. Loop 01 Investigation
 
@@ -685,7 +715,7 @@ Loop 11 — Mobile UI（初期案名。**現行 Loop 11 は Schedule Management*
 Loop 12 — Testing & Security
 Loop 13 — Integration Review
 
-**現行確定順序（2026-08-14）:** Loop 08 Instructor → Loop 09 Instructor Assignment → Loop 10 Notification → Loop 11 Schedule Management → Loop 12 Participation Unit（FR-S03）→ **Loop 13 自家庭の参加可視化（FR-E06 / OQ-E01 承認済）**。Mobile UI / Testing / FR-S04 は後続。
+**現行確定順序（2026-08-14）:** Loop 08〜13 完了。**Loop 14 Mobile UI（OQ-M01〜M03 承認済）**。FR-S04 / Testing / FR-E05 は後続。
 
 実際の順番は Loop 01 の結果から決定する。上記が現行の確定順序である。
 

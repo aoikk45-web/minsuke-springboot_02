@@ -16,8 +16,8 @@
 ## Current Loop
 
 **MVP（Loop 04〜07）完了** — 統合レビュー済（2026-08-11）  
-**Loop 08 / 09 / 10 / 11 / 12 完了** — PR #1 / #2 / #4 / #6 / **#7** を `main` へ merge 済  
-**Current Loop:** Loop 13 — My Participation（`feature/loop-13-my-participation`）
+**Loop 08 / 09 / 10 / 11 / 12 / 13 完了** — PR #1 / #2 / #4 / #6 / #7 / **#8** を `main` へ merge 済  
+**Current Loop:** Loop 14 — Mobile UI（`feature/loop-14-mobile-ui`）
 
 ## Date
 
@@ -29,8 +29,8 @@
 
 ## Current State
 
-**Loop 12 完了**（PR **#7** merge 2026-08-14）。  
-**Loop 13 ローカル確認済**（2026-08-14）。次アクション: commit / PR。
+**Loop 13 完了**（PR **#8** merge 2026-08-14）。  
+**Loop 14 ローカル確認済**（2026-08-14）。次アクション: commit / PR。
 
 ## Loop 12 Progress
 
@@ -55,7 +55,19 @@
 | テスト（Testcontainers） | ⏭ Docker Desktop 未起動のためスキップ |
 | Consistency Review（`roles.md` §12） | ✅ **2026-08-14** |
 | UI ローカル確認 | ✅ **2026-08-14**（人間確認） |
-| Loop 13 完了 | ⏳ commit / PR 待ち |
+| Loop 13 完了（PR #8 / merge） | ✅ **2026-08-14** |
+
+## Loop 14 Progress
+
+| 作業 | 状態 |
+|---|---|
+| 人間承認（案 A / OQ-M01〜M03） | ✅ **2026-08-14** |
+| ブランチ `feature/loop-14-mobile-ui` | ✅ |
+| ハンバーガーナビ + カレンダー縮小 | ✅ |
+| テスト（Testcontainers） | ⏭ Docker Desktop 未起動のためスキップ |
+| Consistency Review（`roles.md` §12） | ✅ **2026-08-14** |
+| UI ローカル確認 | ✅ **2026-08-14**（人間確認） |
+| Loop 14 完了 | ⏳ commit / PR 待ち |
 
 ## Loop 11 Progress
 
@@ -532,8 +544,8 @@ MVP は **認証 + ADMIN によるイベント管理 + 家庭管理 + 保護者�
 
 # 16. Next Loop
 
-**Loop 08 / 09 / 10 / 11 / 12** merged（PR #7）。  
-**Loop 13 — My Participation**（ブランチ: `feature/loop-13-my-participation`）  
+**Loop 08 / 09 / 10 / 11 / 12 / 13** merged（PR #8）。  
+**Loop 14 — Mobile UI**（ブランチ: `feature/loop-14-mobile-ui`）  
 実装完了。ローカル確認済。次アクション: commit / PR。
 
 ---
@@ -960,6 +972,101 @@ Consistency Engineer（`roles.md` §12）による横断確認。
 
 ---
 
+# 30. Loop 14 — Mobile UI（承認済 2026-08-14）
+
+## 目的
+
+スマートフォンでカレンダー・参加登録・マイファミリーなどの主要操作を実用レベルにする（NFR-02）。
+
+## 背景
+
+- Loop 13 完了（PR #8）。カレンダーに参加色・本日一覧が載り、狭い画面での密度が上がった。
+- MVP 成功基準「スマートフォンで主要操作が可能」は ⚠ のまま（基本レスポンシブのみ）。
+- ヘッダーリンクが多く、折り返しで操作しづらい。カレンダーセルは高さ固定でタップしにくい。
+
+## 候補
+
+| 案 | 内容 | 評価 |
+|---|---|---|
+| **A. Mobile UI（推奨）** | CSS + ナビ折りたたみ。新テーブルなし | MVP 未達を埋める。Loop 13 の直後に効く |
+| B. FR-S04 一括登録 | 複数イベントへの一括参加など | 「何を一括するか」が未定義。先に OQ が必要 |
+| C. Testing / CI | CI で Testcontainers 実行、`testing.md` | 品質。利用者向けの変化は小さい |
+| D. FR-E05 参加履歴 | 過去参加の一覧ページ | FR-E06 と近い。急がない |
+
+## スコープ（Approved）
+
+| 含む | 含まない |
+|---|---|
+| 狭い画面でのヘッダー折りたたみ | SPA / ネイティブアプリ |
+| カレンダーのタップしやすい表示 | FR-S04 一括登録 |
+| 既存画面の余白・フォント調整 | FR-E05 履歴ページ |
+| 参加色・本日一覧は維持 | INSTRUCTOR ログイン、メール通知 |
+
+## 承認が必要な事項
+
+| ID | 質問 | 推奨案 |
+|---|---|---|
+| **OQ-M01** | Loop 14 の対象 | **A. Mobile UI** |
+| **OQ-M02** | カレンダーの狭い画面 | **グリッド維持 + セル縮小**（アジェンダ切替は後続） |
+| **OQ-M03** | ナビ | **ハンバーガー**（既存リンクを折りたたむ） |
+
+## 承認記録
+
+| 日付 | 内容 |
+|---|---|
+| 2026-08-14 | OQ-M01〜M03 を推奨案（案 A）のまま承認。 |
+
+## 次アクション
+
+実装完了。ローカル確認済。次アクション: commit / PR。
+
+## 参照
+
+- `Composer.md` §4.12
+- `ui.md` §1〜2（スマホ対応は Loop 14 Approved）
+- `requirements.md` NFR-02
+
+---
+
+# 30.1 Consistency Report — Loop 14（2026-08-14）
+
+Consistency Engineer（`roles.md` §12）による横断確認。
+
+| 区分 | 件数 |
+|---|---|
+| Blocker | 0 |
+| Warning | 1（残） / 是正済 1 |
+
+### Blockers
+
+（なし）
+
+### Warnings（是正済）
+
+| ID | 内容 | 状態 |
+|---|---|---|
+| CON-L14-02 | UI ローカル確認 | ✅ **2026-08-14** 人間確認で解消 |
+
+### Warnings（残）
+
+| ID | 内容 | 扱い |
+|---|---|---|
+| CON-L14-01 | Testcontainers 未実行（Docker Desktop 未起動） | 従来どおり。ローカル確認で代替 |
+
+### Verified ✅
+
+| 観点 | 結果 |
+|---|---|
+| A. 設計書 ↔ 設計書 | OQ-M01〜M03 / NFR-02 — `Composer` / `minutes` / `requirements` / `ui` 一致。新テーブルなし |
+| B. DB | 変更なし |
+| C. Security | URL 変更なし。`/css/**` は permitAll。ナビは既存リンクの折りたたみのみ |
+| D. 環境 | ポート方針は従来どおり |
+| E. 画面 ↔ Controller | `fragments/header.html` に `nav-toggle`。`calendar.html` に `calendar-scroll`。JS なし |
+| F. テスト | `CalendarRenderTest` が nav-toggle / calendar-scroll を含むことを検証 |
+| スコープ外 | SPA、FR-S04、FR-E05、アジェンダ切替 |
+
+---
+
 # 15.2 MVP Integration Review — Loop 04〜07（2026-08-11）
 
 Consistency Engineer 観点で横断確認。
@@ -1275,9 +1382,18 @@ docker compose up -d
 
 ## Loop 13
 
+- **Status:** **COMPLETED**
+- **Started:** 2026-08-14
+- **Completed:** 2026-08-14
+- **Branch:** `feature/loop-13-my-participation`（merged to main via PR #8）
+- **Last Updated:** 2026-08-14 — main へ merge 済
+- **Next Action:** —
+
+## Loop 14
+
 - **Status:** **IN PROGRESS**（ローカル確認済・commit/PR 待ち）
 - **Started:** 2026-08-14
-- **Branch:** `feature/loop-13-my-participation`
+- **Branch:** `feature/loop-14-mobile-ui`
 - **Last Updated:** 2026-08-14 — 人間による UI 確認済
 - **Next Action:** commit / PR
 
