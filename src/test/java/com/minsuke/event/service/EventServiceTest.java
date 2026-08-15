@@ -24,8 +24,11 @@ import com.minsuke.auth.domain.Role;
 import com.minsuke.auth.entity.User;
 import com.minsuke.auth.repository.UserRepository;
 import com.minsuke.auth.security.MinsukeUserDetails;
+import com.minsuke.event.domain.AttendanceStatus;
 import com.minsuke.event.domain.ParticipationUnit;
 import com.minsuke.event.dto.EventForm;
+import com.minsuke.event.dto.SeriesAttendResultDTO;
+import com.minsuke.event.entity.Event;
 import com.minsuke.event.exception.EventAccessDeniedException;
 import com.minsuke.event.exception.EventCapacityFullException;
 import com.minsuke.event.exception.EventNotFoundException;
@@ -40,6 +43,9 @@ import com.minsuke.family.repository.ParentRepository;
 import com.minsuke.family.service.FamilyService;
 import com.minsuke.instructor.entity.Instructor;
 import com.minsuke.instructor.repository.InstructorRepository;
+import com.minsuke.schedule.domain.ScheduleType;
+import com.minsuke.schedule.entity.Schedule;
+import com.minsuke.schedule.repository.ScheduleRepository;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -86,6 +92,9 @@ class EventServiceTest {
 
     @Autowired
     private InstructorRepository instructorRepository;
+
+    @Autowired
+    private ScheduleRepository scheduleRepository;
 
     private MinsukeUserDetails adminUser;
     private MinsukeUserDetails parentUser;
@@ -334,6 +343,58 @@ class EventServiceTest {
         assertThat(adminMarked).isFalse();
     }
 
+    @Test
+    void handmadeEventDoesNotOfferSeriesAttendance() {
+        Long eventId = eventService.createEvent(adminUser, sampleEventForm());
+        var detail = eventService.getEventDetail(eventId, parentUser);
+        assertThat(detail.isSeriesAttendanceAvailable()).isFalse();
+        assertThatThrownBy(() -> eventService.registerParentSeries(parentUser, eventId, parentId))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("スケジュール");
+    }
+
+    @Test
+    void parentCanRegisterSeriesSkippingFullAndPastThenCancel() {
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Tokyo"));
+        Long pastId = createEventOn(today.minusDays(7), null);
+        Long todayId = createEventOn(today, 1);
+        Long futureOpenId = createEventOn(today.plusDays(7), null);
+        Long futureFullId = createEventOn(today.plusDays(14), 1);
+        linkToSameSchedule(pastId, todayId, futureOpenId, futureFullId);
+
+        fillEventWithOtherHousehold(futureFullId);
+
+        assertThat(eventService.getEventDetail(todayId, parentUser).isSeriesAttendanceAvailable()).isTrue();
+
+        SeriesAttendResultDTO registered = eventService.registerParentSeries(parentUser, pastId, parentId);
+        assertThat(registered.getAppliedCount()).isEqualTo(2);
+        assertThat(registered.getSkippedFullCount()).isEqualTo(1);
+        assertThat(countRegistered(todayId)).isEqualTo(1);
+        assertThat(countRegistered(futureOpenId)).isEqualTo(1);
+        assertThat(countRegistered(futureFullId)).isEqualTo(1);
+        assertThat(countRegistered(pastId)).isZero();
+
+        SeriesAttendResultDTO cancelled = eventService.cancelParentSeries(parentUser, todayId, parentId);
+        assertThat(cancelled.getAppliedCount()).isEqualTo(2);
+        assertThat(countRegistered(todayId)).isZero();
+        assertThat(countRegistered(futureOpenId)).isZero();
+        assertThat(countRegistered(futureFullId)).isEqualTo(1);
+    }
+
+    @Test
+    void seriesRegisterIsIdempotentForAlreadyRegisteredEvents() {
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Tokyo"));
+        Long firstId = createEventOn(today, null);
+        Long secondId = createEventOn(today.plusDays(7), null);
+        linkToSameSchedule(firstId, secondId);
+
+        eventService.registerParent(parentUser, firstId, parentId);
+        SeriesAttendResultDTO result = eventService.registerParentSeries(parentUser, firstId, parentId);
+        assertThat(result.getAppliedCount()).isEqualTo(1);
+        assertThat(countRegistered(firstId)).isEqualTo(1);
+        assertThat(countRegistered(secondId)).isEqualTo(1);
+    }
+
     private EventForm sampleEventForm() {
         EventForm form = new EventForm();
         form.setTitle("運動会");
@@ -355,5 +416,60 @@ class EventServiceTest {
         instructor.setCreatedAt(now);
         instructor.setUpdatedAt(now);
         return instructorRepository.save(instructor).getId();
+    }
+
+    private Long createEventOn(LocalDate date, Integer capacity) {
+        EventForm form = sampleEventForm();
+        form.setEventDate(date);
+        form.setCapacity(capacity);
+        return eventService.createEvent(adminUser, form);
+    }
+
+    private void linkToSameSchedule(Long... eventIds) {
+        Instant now = Instant.now();
+        Schedule schedule = new Schedule();
+        schedule.setTitle("週次クラス");
+        schedule.setDescription("テスト用");
+        schedule.setScheduleType(ScheduleType.WEEKLY);
+        schedule.setCreatedByUserId(adminUser.getUser().getId());
+        schedule.setCreatedAt(now);
+        schedule.setUpdatedAt(now);
+        Long scheduleId = scheduleRepository.save(schedule).getId();
+        for (Long eventId : eventIds) {
+            Event event = eventRepository.findById(eventId).orElseThrow();
+            event.setScheduleId(scheduleId);
+            eventRepository.save(event);
+        }
+    }
+
+    private void fillEventWithOtherHousehold(Long eventId) {
+        Instant now = Instant.now();
+        Household otherHousehold = new Household();
+        otherHousehold.setName("B家");
+        otherHousehold.setNameKana("びーけ");
+        otherHousehold.setCreatedAt(now);
+        otherHousehold.setUpdatedAt(now);
+        otherHousehold = householdRepository.save(otherHousehold);
+
+        User otherParentUserEntity = new User();
+        otherParentUserEntity.setEmail("other-series@test.local");
+        otherParentUserEntity.setPasswordHash("hash");
+        otherParentUserEntity.setRole(Role.PARENT);
+        otherParentUserEntity.setHouseholdId(otherHousehold.getId());
+        otherParentUserEntity.setCreatedAt(now);
+        otherParentUserEntity.setUpdatedAt(now);
+        otherParentUserEntity = userRepository.save(otherParentUserEntity);
+        MinsukeUserDetails otherParentUser = new MinsukeUserDetails(otherParentUserEntity);
+
+        ParentForm otherParentForm = new ParentForm();
+        otherParentForm.setName("次郎");
+        otherParentForm.setNameKana("じろう");
+        familyService.createParent(otherParentUser, otherParentForm);
+        Long otherParentId = parentRepository.findByHouseholdIdOrderByIdAsc(otherHousehold.getId()).get(0).getId();
+        eventService.registerParent(otherParentUser, eventId, otherParentId);
+    }
+
+    private long countRegistered(Long eventId) {
+        return attendanceRepository.countByEventIdAndStatus(eventId, AttendanceStatus.REGISTERED);
     }
 }

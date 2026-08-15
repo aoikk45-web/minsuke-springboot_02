@@ -180,7 +180,7 @@ flowchart LR
 | FR-S01 | 定期・単発スケジュールの登録 | **Approved（Loop 11）** | **Yes** |
 | FR-S02 | 講師割当 | **Approved（Loop 11・最小）** | **Yes** — schedule.instructor_id + 生成イベントへコピー |
 | FR-S03 | スケジュール／イベントごとの**参加登録単位**の設定 | **Approved（Loop 12）** | No |
-| FR-S04 | 一括登録 | Proposed | No |
+| FR-S04 | 一括登録（同じスケジュールの今後分） | **Approved（Loop 15・最小）** | No |
 
 #### FR-S03 詳細（Loop 12 Approved — 2026-08-14）
 
@@ -194,6 +194,19 @@ flowchart LR
 
 - 現状（MVP / Loop 07〜10）: イベントごとの単位設定はなく、**保護者・子ども個別**の両方が常に選択可能（OQ-10）。
 - **Loop 12 で実装。** `schedules.participation_unit` → 生成 `events` へコピー。手作りイベントは `events.participation_unit` を直接設定。
+
+#### FR-S04 詳細（Loop 15 Approved — 2026-08-15）
+
+PARENT がイベント詳細（S11）から、同じ `schedule_id` の**今日以降**の回へ、選んだ参加者を一度に登録／キャンセルできる。
+
+| 項目 | 内容 |
+|---|---|
+| 起点 | `schedule_id` 付きイベント詳細。手作りイベントには出さない |
+| 対象日 | 開催日 ≥ 今日（Asia/Tokyo）。過去は含めない |
+| 参加者 | 今選んだ単位と同じ（HOUSEHOLD / その保護者 / その子ども） |
+| 満員 | その日だけスキップし、成功件数とスキップ件数を表示 |
+| 認可 | 既存どおり PARENT のみ・自家庭のみ。新 URL なし（`scope=series`） |
+| 含まない | CSV、ADMIN の他家庭代行、複雑 RRULE |
 
 ### Loop 11 スコープ（Approved — 2026-08-13）
 

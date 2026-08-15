@@ -30,6 +30,8 @@ public class EventDetailDTO {
     private String scheduleTitle;
     private ParticipationUnit participationUnit;
     private String participationUnitLabel;
+    /** 同じスケジュールの今後イベントへ一括参加できる */
+    private boolean seriesAttendanceAvailable;
     private List<ParticipantOptionDTO> participantOptions = new ArrayList<>();
     private List<RegisteredParticipantDTO> registeredParticipants = new ArrayList<>();
 

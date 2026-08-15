@@ -22,4 +22,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     boolean existsByScheduleIdAndEventDate(Long scheduleId, LocalDate eventDate);
 
     List<Event> findByScheduleIdOrderByEventDateAscStartTimeAscIdAsc(Long scheduleId);
+
+    List<Event> findByScheduleIdAndEventDateGreaterThanEqualOrderByEventDateAscStartTimeAscIdAsc(
+            Long scheduleId, LocalDate fromInclusive);
 }

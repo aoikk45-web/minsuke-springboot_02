@@ -1,8 +1,8 @@
 # MinSuke — Development Roadmap
 
-**Status:** Loop 14 **In Progress**（`feature/loop-14-mobile-ui`）— ローカル確認済・commit/PR 待ち  
-**Date:** 2026-08-14  
-**Version:** 1.9
+**Status:** Loop 15 **Implemented** — FR-S04 シリーズ一括参加（ローカル確認済、PR 待ち）  
+**Date:** 2026-08-15  
+**Version:** 1.10
 
 ---
 
@@ -55,6 +55,7 @@ gantt
 | **12** | Participation Unit | 参加登録単位（FR-S03: 家庭/保護者/子ども） | あり |
 | **13** | My Participation | 自家庭の参加可視化（FR-E06: カレンダー色・本日参加） | あり |
 | **14** | Mobile UI | スマートフォンでの主要操作（NFR-02） | あり |
+| **15** | Bulk Attend | 同じスケジュールの今後イベントへ一括参加（FR-S04 最小） | あり |
 
 ---
 
@@ -164,12 +165,10 @@ Loop 02 で決定すべき事項：
 
 ---
 
-## 8. Next Actions（Loop 14）
+## 8. Next Actions（Loop 15）
 
-1. ~~人間承認 OQ-M01〜M03~~ ✅ 2026-08-14
-2. ~~ハンバーガーナビ + カレンダー縮小~~ ✅
-3. ~~ローカル確認~~ ✅ 2026-08-14
-4. commit / PR（人間指示）
+1. PR 作成（人間指示があれば）
+2. FR-E05・Testing は後続
 
 ---
 

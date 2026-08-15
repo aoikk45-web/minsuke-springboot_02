@@ -1,5 +1,6 @@
 package com.minsuke.schedule.controller;
 
+import static com.minsuke.auth.security.MinsukeMockUsers.admin;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -56,9 +57,8 @@ class ScheduleControllerSecurityTest {
     }
 
     @Test
-    @WithMockUser(roles = "ADMIN")
     void adminCanViewScheduleList() throws Exception {
-        mockMvc.perform(get("/schedules"))
+        mockMvc.perform(get("/schedules").with(admin()))
                 .andExpect(status().isOk());
     }
 

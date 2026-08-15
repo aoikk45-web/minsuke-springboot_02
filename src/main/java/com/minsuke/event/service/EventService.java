@@ -27,6 +27,7 @@ import com.minsuke.event.domain.ParticipationUnit;
 import com.minsuke.event.dto.CalendarViewDTO;
 import com.minsuke.event.dto.EventDetailDTO;
 import com.minsuke.event.dto.EventForm;
+import com.minsuke.event.dto.SeriesAttendResultDTO;
 import com.minsuke.event.entity.Event;
 import com.minsuke.event.entity.EventAttendance;
 import com.minsuke.event.exception.EventAccessDeniedException;
@@ -240,6 +241,109 @@ public class EventService {
     public void cancelHousehold(MinsukeUserDetails user, Long eventId) {
         Long householdId = requireParentHouseholdId(user);
         cancelParticipant(eventId, null, null, householdId);
+    }
+
+    @Transactional
+    public SeriesAttendResultDTO registerParentSeries(MinsukeUserDetails user, Long eventId, Long parentId) {
+        Long householdId = requireParentHouseholdId(user);
+        Event source = requireSeriesSource(eventId);
+        requireUnitAllows(source, ParticipantType.PARENT);
+        Parent parent = parentRepository.findByIdAndHouseholdId(parentId, householdId)
+                .orElseThrow(EventAccessDeniedException::new);
+        return applySeries(user, source, ParticipantType.PARENT, parent.getId(), null, householdId, false);
+    }
+
+    @Transactional
+    public SeriesAttendResultDTO registerChildSeries(MinsukeUserDetails user, Long eventId, Long childId) {
+        Long householdId = requireParentHouseholdId(user);
+        Event source = requireSeriesSource(eventId);
+        requireUnitAllows(source, ParticipantType.CHILD);
+        Child child = childRepository.findByIdAndHouseholdId(childId, householdId)
+                .orElseThrow(EventAccessDeniedException::new);
+        return applySeries(user, source, ParticipantType.CHILD, null, child.getId(), householdId, false);
+    }
+
+    @Transactional
+    public SeriesAttendResultDTO registerHouseholdSeries(MinsukeUserDetails user, Long eventId) {
+        Long householdId = requireParentHouseholdId(user);
+        Event source = requireSeriesSource(eventId);
+        requireUnitAllows(source, ParticipantType.HOUSEHOLD);
+        return applySeries(user, source, ParticipantType.HOUSEHOLD, null, null, householdId, false);
+    }
+
+    @Transactional
+    public SeriesAttendResultDTO cancelParentSeries(MinsukeUserDetails user, Long eventId, Long parentId) {
+        Long householdId = requireParentHouseholdId(user);
+        Event source = requireSeriesSource(eventId);
+        parentRepository.findByIdAndHouseholdId(parentId, householdId)
+                .orElseThrow(EventAccessDeniedException::new);
+        return applySeries(user, source, ParticipantType.PARENT, parentId, null, householdId, true);
+    }
+
+    @Transactional
+    public SeriesAttendResultDTO cancelChildSeries(MinsukeUserDetails user, Long eventId, Long childId) {
+        Long householdId = requireParentHouseholdId(user);
+        Event source = requireSeriesSource(eventId);
+        childRepository.findByIdAndHouseholdId(childId, householdId)
+                .orElseThrow(EventAccessDeniedException::new);
+        return applySeries(user, source, ParticipantType.CHILD, null, childId, householdId, true);
+    }
+
+    @Transactional
+    public SeriesAttendResultDTO cancelHouseholdSeries(MinsukeUserDetails user, Long eventId) {
+        Long householdId = requireParentHouseholdId(user);
+        Event source = requireSeriesSource(eventId);
+        return applySeries(user, source, ParticipantType.HOUSEHOLD, null, null, householdId, true);
+    }
+
+    private Event requireSeriesSource(Long eventId) {
+        Event event = findEventOrThrow(eventId);
+        if (event.getScheduleId() == null) {
+            throw new IllegalArgumentException("このイベントはスケジュールに紐づいていないため、今後分を一括操作できません");
+        }
+        return event;
+    }
+
+    private SeriesAttendResultDTO applySeries(
+            MinsukeUserDetails user,
+            Event source,
+            ParticipantType type,
+            Long parentId,
+            Long childId,
+            Long householdId,
+            boolean cancel) {
+        LocalDate today = LocalDate.now(ZONE);
+        List<Event> targets = eventRepository
+                .findByScheduleIdAndEventDateGreaterThanEqualOrderByEventDateAscStartTimeAscIdAsc(
+                        source.getScheduleId(), today);
+        SeriesAttendResultDTO result = new SeriesAttendResultDTO();
+        for (Event event : targets) {
+            if (cancel) {
+                OptionalAttendance existing = findExistingAttendance(event.getId(), parentId, childId, householdId);
+                if (existing.isRegistered()) {
+                    cancelParticipant(event.getId(), parentId, childId, householdId);
+                    result.setAppliedCount(result.getAppliedCount() + 1);
+                }
+                continue;
+            }
+            try {
+                requireUnitAllows(event, type);
+            } catch (IllegalArgumentException ex) {
+                result.setSkippedFullCount(result.getSkippedFullCount() + 1);
+                continue;
+            }
+            OptionalAttendance existing = findExistingAttendance(event.getId(), parentId, childId, householdId);
+            if (existing.isRegistered()) {
+                continue;
+            }
+            try {
+                registerParticipant(user, event, type, parentId, childId, householdId);
+                result.setAppliedCount(result.getAppliedCount() + 1);
+            } catch (EventCapacityFullException ex) {
+                result.setSkippedFullCount(result.getSkippedFullCount() + 1);
+            }
+        }
+        return result;
     }
 
     private void registerParticipant(
@@ -522,6 +626,7 @@ public class EventService {
         if (event.getParticipationUnit() != null) {
             dto.setParticipationUnitLabel(event.getParticipationUnit().label());
         }
+        dto.setSeriesAttendanceAvailable(event.getScheduleId() != null);
         return dto;
     }
 

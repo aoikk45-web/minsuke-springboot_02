@@ -5,9 +5,9 @@
 **Project Name:** MinSuke（みんスケ）  
 **Development Model:** Greenfield / New Development  
 **Development Environment:** Cursor + Composer 2.5  
-**Current Loop:** Loop 14 — Mobile UI（`feature/loop-14-mobile-ui`）  
-**Current Phase:** Post-MVP / ローカル確認済・commit/PR 待ち（フェーズ B — OQ-M01〜M03 承認済）  
-**Date:** 2026-08-14
+**Current Loop:** Loop 15 — 一括参加登録（FR-S04 最小・ローカル確認済、PR 待ち）  
+**Current Phase:** Post-MVP / フェーズ B（実装・確認済。PR 未作成）  
+**Date:** 2026-08-15
 
 MinSuke（みんスケ）は、家庭・講師・スケジュール・イベント等を管理するための新規システムとして開発する。
 
@@ -409,7 +409,7 @@ Loop 14の目的は、
 
 **フェーズ A（設計）** ✅ 2026-08-14 承認済（OQ-M01〜M03、案 A）
 
-**フェーズ B（実装）** ✅ コード完了。Consistency Review 済。ローカル画面確認済（2026-08-14）。commit / PR 待ち。
+**フェーズ B（実装）** ✅ コード完了。Consistency Review 済。ローカル画面確認済（2026-08-14）。PR **#9** merge 済。
 
 ### Loop 14 候補と推奨
 
@@ -428,6 +428,37 @@ Loop 14の目的は、
 | ナビ | 狭い画面では折りたたみ（ハンバーガー） |
 | カレンダー | 狭い画面でもタップ可能なセル。参加色・本日一覧は維持 |
 | 含まない | FR-S04、FR-E05、INSTRUCTOR ログイン、メール通知 |
+
+## 4.13 Current Loop — Loop 15
+
+Loop 15の目的は、
+
+**同じスケジュールの今後イベントへ、自家庭を一括参加登録すること（FR-S04 最小）**
+
+である。
+
+**フェーズ A（設計）** ✅ 2026-08-15 承認済（OQ-S03〜S06、案 A）
+
+**フェーズ B（実装）** ✅ コード完了。Consistency Review 済。ローカル画面確認済（2026-08-15 人間確認）。PR 未作成。
+
+### Loop 15 候補と推奨
+
+| 候補 | 内容 | 評価 |
+|---|---|---|
+| **A. FR-S04 シリーズ一括参加（推奨）** | イベント詳細から、同じ `schedule_id` の今後イベントへ同じ参加者を一括登録 | スケジュール＋参加単位の直後に効く。PARENT は `/schedules` を見ない |
+| B. FR-E05 参加履歴 | 過去の参加一覧ページ | カレンダー色と近い。専用ページは後でもよい |
+| C. Testing / CI | CI で Testcontainers、`testing.md` | 品質。画面は変わらない |
+
+### Loop 15 確定方針（Approved 2026-08-15）
+
+| 項目 | 確定 |
+|---|---|
+| 起点 | イベント詳細（S11）。`schedule_id` があるときだけ |
+| 対象 | 開催日が今日以降（Asia/Tokyo）の、同じ schedule のイベント |
+| 参加者 | 今選んだ単位と同じ（HOUSEHOLD / その保護者 / その子ども） |
+| 定員満員 | その日だけスキップし、結果件数を出す（全体失敗にしない） |
+| 一括キャンセル | 含める（同じ参加者の今後分） |
+| 含まない | CSV、ADMIN の他家庭代行、過去イベント、手作りイベント（schedule なし） |
 
 ## 5. Loop 01 Investigation
 
@@ -715,7 +746,7 @@ Loop 11 — Mobile UI（初期案名。**現行 Loop 11 は Schedule Management*
 Loop 12 — Testing & Security
 Loop 13 — Integration Review
 
-**現行確定順序（2026-08-14）:** Loop 08〜13 完了。**Loop 14 Mobile UI（OQ-M01〜M03 承認済）**。FR-S04 / Testing / FR-E05 は後続。
+**現行確定順序（2026-08-15）:** Loop 08〜14 完了。**Loop 15 は FR-S04 シリーズ一括参加（実装・人間確認済、PR 待ち）**。FR-E05 / Testing は後続。
 
 実際の順番は Loop 01 の結果から決定する。上記が現行の確定順序である。
 
