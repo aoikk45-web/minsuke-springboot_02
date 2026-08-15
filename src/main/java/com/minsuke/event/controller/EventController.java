@@ -14,6 +14,7 @@ import com.minsuke.auth.security.MinsukeUserDetails;
 import com.minsuke.event.domain.ParticipationUnit;
 import com.minsuke.event.dto.AttendanceForm;
 import com.minsuke.event.dto.EventForm;
+import com.minsuke.event.dto.SeriesAttendResultDTO;
 import com.minsuke.event.exception.EventCapacityFullException;
 import com.minsuke.event.service.EventService;
 import com.minsuke.instructor.service.InstructorService;
@@ -100,15 +101,24 @@ public class EventController {
             @ModelAttribute AttendanceForm form,
             RedirectAttributes redirectAttributes) {
         try {
+            boolean series = "series".equals(form.getScope());
             if ("cancel".equals(form.getAction())) {
-                if ("PARENT".equals(form.getParticipantType())) {
-                    eventService.cancelParent(user, id, form.getParentId());
-                } else if ("HOUSEHOLD".equals(form.getParticipantType())) {
-                    eventService.cancelHousehold(user, id);
+                if (series) {
+                    SeriesAttendResultDTO result = cancelSeries(user, id, form);
+                    redirectAttributes.addFlashAttribute("successMessage", seriesMessage(true, result));
                 } else {
-                    eventService.cancelChild(user, id, form.getChildId());
+                    if ("PARENT".equals(form.getParticipantType())) {
+                        eventService.cancelParent(user, id, form.getParentId());
+                    } else if ("HOUSEHOLD".equals(form.getParticipantType())) {
+                        eventService.cancelHousehold(user, id);
+                    } else {
+                        eventService.cancelChild(user, id, form.getChildId());
+                    }
+                    redirectAttributes.addFlashAttribute("successMessage", "参加をキャンセルしました。");
                 }
-                redirectAttributes.addFlashAttribute("successMessage", "参加をキャンセルしました。");
+            } else if (series) {
+                SeriesAttendResultDTO result = registerSeries(user, id, form);
+                redirectAttributes.addFlashAttribute("successMessage", seriesMessage(false, result));
             } else {
                 if ("PARENT".equals(form.getParticipantType())) {
                     eventService.registerParent(user, id, form.getParentId());
@@ -123,6 +133,50 @@ public class EventController {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
         }
         return "redirect:/events/" + id;
+    }
+
+    private SeriesAttendResultDTO registerSeries(
+            MinsukeUserDetails user, Long eventId, AttendanceForm form) {
+        if ("PARENT".equals(form.getParticipantType())) {
+            return eventService.registerParentSeries(user, eventId, form.getParentId());
+        }
+        if ("HOUSEHOLD".equals(form.getParticipantType())) {
+            return eventService.registerHouseholdSeries(user, eventId);
+        }
+        return eventService.registerChildSeries(user, eventId, form.getChildId());
+    }
+
+    private SeriesAttendResultDTO cancelSeries(
+            MinsukeUserDetails user, Long eventId, AttendanceForm form) {
+        if ("PARENT".equals(form.getParticipantType())) {
+            return eventService.cancelParentSeries(user, eventId, form.getParentId());
+        }
+        if ("HOUSEHOLD".equals(form.getParticipantType())) {
+            return eventService.cancelHouseholdSeries(user, eventId);
+        }
+        return eventService.cancelChildSeries(user, eventId, form.getChildId());
+    }
+
+    private String seriesMessage(boolean cancel, SeriesAttendResultDTO result) {
+        int applied = result.getAppliedCount();
+        int skipped = result.getSkippedFullCount();
+        if (applied == 0 && skipped == 0) {
+            return cancel
+                    ? "キャンセルできる今後の回はありませんでした。"
+                    : "参加登録できる今後の回はありませんでした。";
+        }
+        StringBuilder message = new StringBuilder();
+        if (applied > 0) {
+            message.append(applied)
+                    .append(cancel ? "件をキャンセルしました。" : "件に参加登録しました。");
+        }
+        if (skipped > 0) {
+            if (!message.isEmpty()) {
+                message.append(" ");
+            }
+            message.append("満員などで ").append(skipped).append("件スキップしました。");
+        }
+        return message.toString();
     }
 
     private void prepareEventForm(Model model, EventForm form, Long eventId) {

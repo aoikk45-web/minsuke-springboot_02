@@ -16,12 +16,12 @@
 ## Current Loop
 
 **MVP（Loop 04〜07）完了** — 統合レビュー済（2026-08-11）  
-**Loop 08 / 09 / 10 / 11 / 12 / 13 完了** — PR #1 / #2 / #4 / #6 / #7 / **#8** を `main` へ merge 済  
-**Current Loop:** Loop 14 — Mobile UI（`feature/loop-14-mobile-ui`）
+**Loop 08 / 09 / 10 / 11 / 12 / 13 / 14 完了** — PR #1 / #2 / #4 / #6 / #7 / #8 / **#9** を `main` へ merge 済  
+**Current Loop:** Loop 15 — 一括参加登録（FR-S04 最小・ローカル確認済、PR 待ち）
 
 ## Date
 
-**2026-08-14**（最終更新）
+**2026-08-15**（最終更新）
 
 ---
 
@@ -29,8 +29,8 @@
 
 ## Current State
 
-**Loop 13 完了**（PR **#8** merge 2026-08-14）。  
-**Loop 14 ローカル確認済**（2026-08-14）。次アクション: commit / PR。
+**Loop 14 完了**（PR **#9** merge 2026-08-14）。  
+**Loop 15:** OQ-S03〜S06 承認済（2026-08-15）。実装・Consistency Review・人間確認済。PR **#10** 作成済。未 merge。
 
 ## Loop 12 Progress
 
@@ -67,7 +67,7 @@
 | テスト（Testcontainers） | ⏭ Docker Desktop 未起動のためスキップ |
 | Consistency Review（`roles.md` §12） | ✅ **2026-08-14** |
 | UI ローカル確認 | ✅ **2026-08-14**（人間確認） |
-| Loop 14 完了 | ⏳ commit / PR 待ち |
+| Loop 14 完了（PR #9 / merge） | ✅ **2026-08-14** |
 
 ## Loop 11 Progress
 
@@ -544,9 +544,8 @@ MVP は **認証 + ADMIN によるイベント管理 + 家庭管理 + 保護者�
 
 # 16. Next Loop
 
-**Loop 08 / 09 / 10 / 11 / 12 / 13** merged（PR #8）。  
-**Loop 14 — Mobile UI**（ブランチ: `feature/loop-14-mobile-ui`）  
-実装完了。ローカル確認済。次アクション: commit / PR。
+**Loop 08 / 09 / 10 / 11 / 12 / 13 / 14** merged（PR #9）。  
+**Loop 15 — 一括参加登録（実装・確認済、PR 待ち）** — `minutes.md` §31 / §31.1。
 
 ---
 
@@ -1067,6 +1066,92 @@ Consistency Engineer（`roles.md` §12）による横断確認。
 
 ---
 
+# 31. Loop 15 — 一括参加登録（Approved 2026-08-15）
+
+## 目的
+
+同じスケジュールから作られた今後のイベントへ、自家庭の参加者を一度に登録する（FR-S04 最小）。
+
+## 背景
+
+- Loop 11 でスケジュールからイベント生成。Loop 12 で参加単位。Loop 13 でカレンダー色。Loop 14 でスマホ対応。
+- PARENT は `/schedules` を見られない。一括の起点はイベント詳細が自然。
+- 「毎週同じクラスに毎回登録し直す」負担を減らす。
+
+## 候補
+
+| 案 | 内容 | 評価 |
+|---|---|---|
+| **A. シリーズ一括参加（採用）** | S11 で「今後の同じスケジュールにも参加」 | 新テーブル不要。単位・定員の既存ルールを再利用 |
+| B. FR-E05 参加履歴 | 過去参加の一覧ページ | カレンダーで月内は見える。急がない |
+| C. Testing / CI | CI で Testcontainers、`testing.md` | 品質。利用者向けの変化は小さい |
+
+## 確定スコープ（案 A）
+
+| 含む | 含まない |
+|---|---|
+| `schedule_id` 付きイベント詳細からの一括登録 | CSV インポート |
+| 開催日が今日以降の、同じ schedule のイベント | 過去イベント |
+| 今登録した参加者と同じ（家庭 / その保護者 / その子ども） | ADMIN の他家庭代行 |
+| 満員はその日だけスキップし、成功・スキップ件数を表示 | 手作りイベント（schedule なし） |
+| 一括キャンセル | 複雑 RRULE |
+
+## 承認事項
+
+| ID | 質問 | 確定 | 状態 |
+|---|---|---|---|
+| **OQ-S03** | Loop 15 の対象 | **A. シリーズ一括参加** | ✅ Approved 2026-08-15 |
+| **OQ-S04** | 起点画面 | **イベント詳細（S11）**（PARENT はスケジュール一覧を見ない） | ✅ Approved 2026-08-15 |
+| **OQ-S05** | 満員の扱い | **その日だけスキップ**（全体失敗にしない） | ✅ Approved 2026-08-15 |
+| **OQ-S06** | 一括キャンセル | **含める**（同じ参加者の今後分） | ✅ Approved 2026-08-15 |
+
+## 実装メモ
+
+- `POST /events/{id}/attend` に `scope=series`。新 URL・新テーブルなし。
+- 対象は `schedule_id` 同一かつ開催日 ≥ 今日（Asia/Tokyo）。既登録はスキップ（件数に含めない）。
+- フラッシュ例: 「2件に参加登録しました。満員などで 1件スキップしました。」
+
+## 参照
+
+- `Composer.md` §4.13
+- `requirements.md` FR-S04
+
+---
+
+# 31.1 Consistency Report — Loop 15（2026-08-15）
+
+Consistency Engineer（`roles.md` §12）による横断確認。
+
+| 区分 | 件数 |
+|---|---|
+| Blocker | 0 |
+| Warning | 1（是正済） |
+
+### Blockers
+
+（なし）
+
+### Warnings（是正済）
+
+| ID | 内容 | 状態 |
+|---|---|---|
+| CON-L15-01 | Testcontainers が Docker Engine 29 で API 1.32 を拒否され全スキップ | ✅ **2026-08-15** `src/test/resources/docker-java.properties` に `api.version=1.44`。`EventServiceTest` 16 件成功 |
+
+### Verified ✅
+
+| 観点 | 結果 |
+|---|---|
+| A. 設計書 ↔ 設計書 | OQ-S03〜S06 / FR-S04 — `Composer` / `minutes` / `requirements` / `security` / `ui` 一致。新テーブルなし |
+| B. DB | 変更なし（既存 `events.schedule_id` / `event_attendances`） |
+| C. Security | 新 URL なし。`POST /events/*/attend` は PARENT のみ。`scope=series` も自家庭のみ |
+| D. 環境 | PG `5433` healthy、app `8081`、profile=`local` |
+| E. 画面 ↔ Controller | `event/detail.html` に「今後の回にも参加」「今後の回もキャンセル」。手作りイベント（schedule なし）は非表示 |
+| F. テスト | Testcontainers 実行可。Loop 15 の `EventServiceTest` 16 件成功。Security テストは `MinsukeUserDetails` を使う 3 件を修正済み |
+| ローカル確認 | PARENT で `/events/7`（旗当番・schedule 付き）にシリーズボタン。`今後の回にも参加` → 「19件に参加登録しました。」`今後の回もキャンセル` → 「19件をキャンセルしました。」`/events/1`（手作り）はシリーズボタンなし。**2026-08-15 人間確認で問題なし** |
+| スコープ外 | CSV、ADMIN 代行、FR-E05、Testing/CI |
+
+---
+
 # 15.2 MVP Integration Review — Loop 04〜07（2026-08-11）
 
 Consistency Engineer 観点で横断確認。
@@ -1391,11 +1476,21 @@ docker compose up -d
 
 ## Loop 14
 
-- **Status:** **IN PROGRESS**（ローカル確認済・commit/PR 待ち）
+- **Status:** **COMPLETED**
 - **Started:** 2026-08-14
-- **Branch:** `feature/loop-14-mobile-ui`
-- **Last Updated:** 2026-08-14 — 人間による UI 確認済
-- **Next Action:** commit / PR
+- **Completed:** 2026-08-14
+- **Branch:** `feature/loop-14-mobile-ui`（merged to main via PR #9）
+- **Last Updated:** 2026-08-14 — main へ merge 済
+- **Next Action:** —
+
+## Loop 15
+
+- **Status:** **IMPLEMENTED**（Consistency Review 済・ローカル確認済。未 merge）
+- **Started:** 2026-08-14
+- **Completed:** —
+- **Branch:** `feature/loop-15-bulk-attend`
+- **Last Updated:** 2026-08-15 — PR **#10** 作成
+- **Next Action:** merge（人間指示があれば）
 
 ## Loop 10
 

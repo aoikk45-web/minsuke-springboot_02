@@ -1,5 +1,6 @@
 package com.minsuke.announcement.controller;
 
+import static com.minsuke.auth.security.MinsukeMockUsers.parent;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -49,9 +50,8 @@ class AnnouncementControllerSecurityTest {
     }
 
     @Test
-    @WithMockUser(roles = "PARENT")
     void parentCanViewAnnouncementList() throws Exception {
-        mockMvc.perform(get("/announcements"))
+        mockMvc.perform(get("/announcements").with(parent()))
                 .andExpect(status().isOk());
     }
 

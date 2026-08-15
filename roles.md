@@ -10,11 +10,11 @@ Greenfield / New Development
 
 ## Current Loop
 
-Loop 11〜13 完了 — **現行 Loop 14 は Mobile UI（ローカル確認済・PR 待ち）**
+Loop 11〜14 完了 — **現行 Loop 15 は一括参加登録（実装・確認済、PR 待ち）**
 
 ## Date
 
-2026-08-14
+2026-08-15
 
 ---
 

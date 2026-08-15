@@ -1,5 +1,6 @@
 package com.minsuke.family.controller;
 
+import static com.minsuke.auth.security.MinsukeMockUsers.admin;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -77,9 +78,8 @@ class FamilyControllerSecurityTest {
     }
 
     @Test
-    @WithMockUser(roles = "ADMIN")
     void adminCanPostDeleteHousehold() throws Exception {
-        mockMvc.perform(post("/families/99999/delete").with(csrf()))
+        mockMvc.perform(post("/families/99999/delete").with(admin()).with(csrf()))
                 .andExpect(status().is4xxClientError());
     }
 }

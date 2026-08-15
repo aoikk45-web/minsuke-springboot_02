@@ -55,6 +55,9 @@
 
   <section class="section" sec:authorize="hasRole('PARENT')" th:if="${!event.participantOptions.isEmpty()}">
     <h2>参加登録（マイファミリー）</h2>
+    <p th:if="${event.seriesAttendanceAvailable}" class="hint">
+      同じスケジュールの今日以降の回に、この参加者をまとめて登録／キャンセルできます。
+    </p>
     <ul class="member-list member-list-actions">
       <li th:each="option : ${event.participantOptions}">
         <div class="member-info">
@@ -73,6 +76,16 @@
             <input type="hidden" name="childId" th:if="${option.childId != null}" th:value="${option.childId}">
             <button type="submit" class="btn-link-inline">キャンセル</button>
           </form>
+          <form th:if="${event.seriesAttendanceAvailable}"
+                th:action="@{/events/{id}/attend(id=${event.id})}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <input type="hidden" name="action" value="cancel">
+            <input type="hidden" name="scope" value="series">
+            <input type="hidden" name="participantType" th:value="${option.type}">
+            <input type="hidden" name="parentId" th:if="${option.parentId != null}" th:value="${option.parentId}">
+            <input type="hidden" name="childId" th:if="${option.childId != null}" th:value="${option.childId}">
+            <button type="submit" class="btn-link-inline">今後の回もキャンセル</button>
+          </form>
           <form th:if="${option.canRegister}"
                 th:action="@{/events/{id}/attend(id=${event.id})}" method="post">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
@@ -81,6 +94,16 @@
             <input type="hidden" name="parentId" th:if="${option.parentId != null}" th:value="${option.parentId}">
             <input type="hidden" name="childId" th:if="${option.childId != null}" th:value="${option.childId}">
             <button type="submit" class="btn btn-primary btn-sm">参加する</button>
+          </form>
+          <form th:if="${event.seriesAttendanceAvailable}"
+                th:action="@{/events/{id}/attend(id=${event.id})}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <input type="hidden" name="action" value="register">
+            <input type="hidden" name="scope" value="series">
+            <input type="hidden" name="participantType" th:value="${option.type}">
+            <input type="hidden" name="parentId" th:if="${option.parentId != null}" th:value="${option.parentId}">
+            <input type="hidden" name="childId" th:if="${option.childId != null}" th:value="${option.childId}">
+            <button type="submit" class="btn btn-secondary btn-sm">今後の回にも参加</button>
           </form>
           <span th:if="${!option.registered and !option.canRegister and event.full}" class="hint">満員</span>
         </div>

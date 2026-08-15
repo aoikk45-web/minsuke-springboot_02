@@ -95,6 +95,13 @@
 | 参加中の色分け・本日参加 | **PARENT（household あり）** | 自 household の REGISTERED のみ |
 | ADMIN カレンダー | 色分けなし | household なし。全イベント表示のまま |
 
+### Loop 15 認可方針（Approved 2026-08-15）
+
+| 操作 | ロール | 備考 |
+|---|---|---|
+| シリーズ一括参加／キャンセル | **PARENT のみ** | 既存 `POST /events/*/attend` + `scope=series`。自家庭のみ |
+| 手作りイベント | 拒否 | `schedule_id` なしは Service で拒否（UI でもボタン非表示） | |
+
 ### Confirmed（2026-08-10）
 
 - MVP に **ADMIN ロールを含む**
