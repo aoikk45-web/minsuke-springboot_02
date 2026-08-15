@@ -1,8 +1,8 @@
 # MinSuke — Development Roadmap
 
-**Status:** Loop 15 **Implemented** — FR-S04 シリーズ一括参加（ローカル確認済、PR 待ち）  
+**Status:** Loop 15 **Complete** — FR-S04 シリーズ一括参加（PR **#10** merge）  
 **Date:** 2026-08-15  
-**Version:** 1.10
+**Version:** 1.11
 
 ---
 
@@ -165,10 +165,10 @@ Loop 02 で決定すべき事項：
 
 ---
 
-## 8. Next Actions（Loop 15）
+## 8. Next Actions
 
-1. PR 作成（人間指示があれば）
-2. FR-E05・Testing は後続
+1. 次 Loop の対象を決める（候補: FR-E05 参加履歴 / Testing・CI）
+2. 人間承認後に実装ブランチを切る
 
 ---
 

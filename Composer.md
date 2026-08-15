@@ -5,8 +5,8 @@
 **Project Name:** MinSuke（みんスケ）  
 **Development Model:** Greenfield / New Development  
 **Development Environment:** Cursor + Composer 2.5  
-**Current Loop:** Loop 15 — 一括参加登録（FR-S04 最小・ローカル確認済、PR 待ち）  
-**Current Phase:** Post-MVP / フェーズ B（実装・確認済。PR 未作成）  
+**Current Loop:** Loop 15 完了 — 一括参加登録（FR-S04 最小。PR **#10** merge 済）  
+**Current Phase:** Post-MVP（次 Loop は未定）  
 **Date:** 2026-08-15
 
 MinSuke（みんスケ）は、家庭・講師・スケジュール・イベント等を管理するための新規システムとして開発する。
@@ -439,7 +439,7 @@ Loop 15の目的は、
 
 **フェーズ A（設計）** ✅ 2026-08-15 承認済（OQ-S03〜S06、案 A）
 
-**フェーズ B（実装）** ✅ コード完了。Consistency Review 済。ローカル画面確認済（2026-08-15 人間確認）。PR 未作成。
+**フェーズ B（実装）** ✅ コード完了。Consistency Review 済。ローカル画面確認済（2026-08-15 人間確認）。PR **#10** merge 済。
 
 ### Loop 15 候補と推奨
 
@@ -746,7 +746,7 @@ Loop 11 — Mobile UI（初期案名。**現行 Loop 11 は Schedule Management*
 Loop 12 — Testing & Security
 Loop 13 — Integration Review
 
-**現行確定順序（2026-08-15）:** Loop 08〜14 完了。**Loop 15 は FR-S04 シリーズ一括参加（実装・人間確認済、PR 待ち）**。FR-E05 / Testing は後続。
+**現行確定順序（2026-08-15）:** Loop 08〜**15** 完了。次 Loop は未定（FR-E05 / Testing が候補）。
 
 実際の順番は Loop 01 の結果から決定する。上記が現行の確定順序である。
 

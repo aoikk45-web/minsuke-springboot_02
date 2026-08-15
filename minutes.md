@@ -16,8 +16,8 @@
 ## Current Loop
 
 **MVP（Loop 04〜07）完了** — 統合レビュー済（2026-08-11）  
-**Loop 08 / 09 / 10 / 11 / 12 / 13 / 14 完了** — PR #1 / #2 / #4 / #6 / #7 / #8 / **#9** を `main` へ merge 済  
-**Current Loop:** Loop 15 — 一括参加登録（FR-S04 最小・ローカル確認済、PR 待ち）
+**Loop 08 / 09 / 10 / 11 / 12 / 13 / 14 / 15 完了** — PR #1 / #2 / #4 / #6 / #7 / #8 / #9 / **#10** を `main` へ merge 済  
+**Current Loop:** Loop 15 完了。次 Loop は未定（FR-E05 / Testing が候補）
 
 ## Date
 
@@ -29,8 +29,8 @@
 
 ## Current State
 
-**Loop 14 完了**（PR **#9** merge 2026-08-14）。  
-**Loop 15:** OQ-S03〜S06 承認済（2026-08-15）。実装・Consistency Review・人間確認済。PR **#10** 作成済。未 merge。
+**Loop 15 完了**（PR **#10** merge 2026-08-15）。  
+次 Loop は未定。候補は FR-E05（参加履歴）または Testing / CI。
 
 ## Loop 12 Progress
 
@@ -544,8 +544,8 @@ MVP は **認証 + ADMIN によるイベント管理 + 家庭管理 + 保護者�
 
 # 16. Next Loop
 
-**Loop 08 / 09 / 10 / 11 / 12 / 13 / 14** merged（PR #9）。  
-**Loop 15 — 一括参加登録（実装・確認済、PR 待ち）** — `minutes.md` §31 / §31.1。
+**Loop 08 / 09 / 10 / 11 / 12 / 13 / 14 / 15** merged（PR **#10**）。  
+次 Loop は未定（FR-E05 / Testing が候補）。
 
 ---
 
@@ -1485,12 +1485,12 @@ docker compose up -d
 
 ## Loop 15
 
-- **Status:** **IMPLEMENTED**（Consistency Review 済・ローカル確認済。未 merge）
+- **Status:** **COMPLETED**
 - **Started:** 2026-08-14
-- **Completed:** —
-- **Branch:** `feature/loop-15-bulk-attend`
-- **Last Updated:** 2026-08-15 — PR **#10** 作成
-- **Next Action:** merge（人間指示があれば）
+- **Completed:** 2026-08-15
+- **Branch:** `feature/loop-15-bulk-attend`（merged to main via PR **#10**）
+- **Last Updated:** 2026-08-15 — main へ merge 済
+- **Next Action:** —
 
 ## Loop 10
 
