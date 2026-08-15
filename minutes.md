@@ -30,7 +30,7 @@
 ## Current State
 
 **Loop 14 完了**（PR **#9** merge 2026-08-14）。  
-**Loop 15:** OQ-S03〜S06 承認済（2026-08-15）。実装・Consistency Review・ローカル画面確認済。PR 未作成。
+**Loop 15:** OQ-S03〜S06 承認済（2026-08-15）。実装・Consistency Review・人間確認済。PR **#10** 作成済。未 merge。
 
 ## Loop 12 Progress
 
@@ -1489,8 +1489,8 @@ docker compose up -d
 - **Started:** 2026-08-14
 - **Completed:** —
 - **Branch:** `feature/loop-15-bulk-attend`
-- **Last Updated:** 2026-08-15 — シリーズ一括参加を実装。人間の画面確認で問題なし
-- **Next Action:** PR（人間指示があれば）
+- **Last Updated:** 2026-08-15 — PR **#10** 作成
+- **Next Action:** merge（人間指示があれば）
 
 ## Loop 10
 
