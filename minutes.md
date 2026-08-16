@@ -16,7 +16,7 @@
 ## Current Loop
 
 **MVP（Loop 04〜07）完了** — 統合レビュー済（2026-08-11）  
-**Loop 08 / 09 / 10 / 11 / 12 / 13 / 14 / 15 / 16 完了** — PR #1 / #2 / #4 / #6 / #7 / #8 / #9 / **#10** を `main` へ merge 済（Loop 16 は PR 作成）  
+**Loop 08 / 09 / 10 / 11 / 12 / 13 / 14 / 15 / 16 完了** — PR #1 / #2 / #4 / #6 / #7 / #8 / #9 / **#10** を `main` へ merge 済。Loop 16 は PR **#12**  
 **Current Loop:** Loop 16 完了 — 次 Loop は人間承認待ち
 
 ## Date
@@ -29,7 +29,7 @@
 
 ## Current State
 
-**Loop 16 完了**（2026-08-16 人間 UI 確認）。PR は `feature/loop-16-participation-history`。  
+**Loop 16 完了**（2026-08-16 人間 UI 確認）。PR **#12**。  
 **次 Loop:** 人間承認待ち（Testing/CI、または OQ-P01〜P05）。  
 **将来（未着手）:** 個人情報・メール・サブスク決済を外部システムへ寄せる案（`minutes.md` §33 / OQ-P01〜P05）。
 
@@ -1622,9 +1622,9 @@ docker compose up -d
 - **Status:** **COMPLETED**
 - **Started:** 2026-08-15
 - **Completed:** 2026-08-16
-- **Branch:** `feature/loop-16-participation-history`
-- **Last Updated:** 2026-08-16 — 人間 UI 確認済
-- **Next Action:** PR → merge
+- **Branch:** `feature/loop-16-participation-history`（PR **#12**）
+- **Last Updated:** 2026-08-16 — PR #12
+- **Next Action:** merge
 
 ## Loop 15
 
