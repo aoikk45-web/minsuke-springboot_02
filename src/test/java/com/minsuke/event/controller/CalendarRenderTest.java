@@ -46,6 +46,15 @@ class CalendarRenderTest {
         mockMvc.perform(get("/calendar"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(Matchers.containsString("nav-toggle")))
-                .andExpect(content().string(Matchers.containsString("calendar-scroll")));
+                .andExpect(content().string(Matchers.containsString("calendar-scroll")))
+                .andExpect(content().string(Matchers.not(Matchers.containsString("参加履歴"))));
+    }
+
+    @Test
+    @WithMockUser(roles = "PARENT")
+    void parentCalendarShowsParticipationHistoryNav() throws Exception {
+        mockMvc.perform(get("/calendar"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(Matchers.containsString("参加履歴")));
     }
 }

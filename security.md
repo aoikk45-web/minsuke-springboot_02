@@ -100,7 +100,14 @@
 | 操作 | ロール | 備考 |
 |---|---|---|
 | シリーズ一括参加／キャンセル | **PARENT のみ** | 既存 `POST /events/*/attend` + `scope=series`。自家庭のみ |
-| 手作りイベント | 拒否 | `schedule_id` なしは Service で拒否（UI でもボタン非表示） | |
+| 手作りイベント | 拒否 | `schedule_id` なしは Service で拒否（UI でもボタン非表示） |
+
+### Loop 16 認可方針（Approved 2026-08-15）
+
+| 操作 | ロール | 備考 |
+|---|---|---|
+| 参加履歴 `GET /my-participations` | **PARENT のみ** | `hasRole("PARENT")`。Service でも household 必須 |
+| 表示範囲 | 自 household の REGISTERED | 他家庭・CANCELLED・ADMIN は出さない | |
 
 ### Confirmed（2026-08-10）
 
@@ -258,6 +265,7 @@
 - パスワードポリシー（最小 8 文字等）
 - ログイン試行回数制限・ロックアウト
 - 個人情報保護法上の利用目的・同意取得
+- 本名・連絡先・メールを MinSuke に置かず外部会員へ寄せるか（**OQ-P01〜P05**、`minutes.md` §33）
 - 本番 HTTPS 証明書・運用
 - セキュリティテストの自動化範囲
 

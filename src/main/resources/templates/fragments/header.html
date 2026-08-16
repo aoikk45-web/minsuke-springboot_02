@@ -24,6 +24,7 @@
                     th:text="${unreadAnnouncementCount}">0</span>
             </a>
             <a th:href="@{/my-family}" sec:authorize="hasRole('PARENT')">マイファミリー</a>
+            <a th:href="@{/my-participations}" sec:authorize="hasRole('PARENT')">参加履歴</a>
             <a th:href="@{/announcements/new}" sec:authorize="hasRole('ADMIN')">お知らせ作成</a>
             <a th:href="@{/instructors/new}" sec:authorize="hasRole('ADMIN')">講師追加</a>
             <a th:href="@{/events/new}" sec:authorize="hasRole('ADMIN')">イベント作成</a>

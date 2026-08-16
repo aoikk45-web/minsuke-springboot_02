@@ -5,9 +5,9 @@
 **Project Name:** MinSuke（みんスケ）  
 **Development Model:** Greenfield / New Development  
 **Development Environment:** Cursor + Composer 2.5  
-**Current Loop:** Loop 15 完了 — 一括参加登録（FR-S04 最小。PR **#10** merge 済）  
-**Current Phase:** Post-MVP（次 Loop は未定）  
-**Date:** 2026-08-15
+**Current Loop:** Loop 16 完了 — 次 Loop は人間承認待ち  
+**Current Phase:** Post-MVP / 次 Loop 候補は Testing/CI または OQ-P01〜P05  
+**Date:** 2026-08-16
 
 MinSuke（みんスケ）は、家庭・講師・スケジュール・イベント等を管理するための新規システムとして開発する。
 
@@ -460,6 +460,36 @@ Loop 15の目的は、
 | 一括キャンセル | 含める（同じ参加者の今後分） |
 | 含まない | CSV、ADMIN の他家庭代行、過去イベント、手作りイベント（schedule なし） |
 
+## 4.14 Current Loop — Loop 16
+
+Loop 16の目的は、
+
+**自家庭の参加イベントを、月をまたいで一覧すること（FR-E05 最小）**
+
+である。
+
+**フェーズ A（設計）** ✅ 2026-08-15 承認済（OQ-E02〜E05、案 A）
+
+**フェーズ B（実装）** ✅ コード完了。Consistency Review 済。ローカル画面確認済（2026-08-16 人間確認）。PR **#12**。
+
+### Loop 16 候補と推奨
+
+| 候補 | 内容 | 評価 |
+|---|---|---|
+| **A. FR-E05 PARENT 参加一覧（採用）** | `/my-participations` で自家庭の REGISTERED を日付順に表示 | カレンダーは月内。シリーズ登録後の確認にも使える |
+| B. 家族詳細に履歴 | ADMIN が他家庭の参加も見られる | Loop 13 で他家庭は出していない。FR-F06 寄り |
+| C. Testing / CI | CI で Testcontainers、`testing.md` | 品質。画面は変わらない |
+
+### Loop 16 確定方針（Approved 2026-08-15）
+
+| 項目 | 推奨 |
+|---|---|
+| 対象者 | PARENT のみ（自 household） |
+| レコード | REGISTERED のみ |
+| 期間 | 今後＋過去（開催日降順） |
+| 画面 | 日付・イベント名・参加者・詳細リンク。ナビに「参加履歴」 |
+| 含まない | CSV、ADMIN 全家庭、キャンセル履歴、グラフ |
+
 ## 5. Loop 01 Investigation
 
 Loop 01では、以下を検討する。
@@ -746,7 +776,7 @@ Loop 11 — Mobile UI（初期案名。**現行 Loop 11 は Schedule Management*
 Loop 12 — Testing & Security
 Loop 13 — Integration Review
 
-**現行確定順序（2026-08-15）:** Loop 08〜**15** 完了。次 Loop は未定（FR-E05 / Testing が候補）。
+**現行確定順序（2026-08-16）:** Loop 08〜**16** 完了。次 Loop は人間承認待ち（Testing/CI、または個人情報・決済・メール外部化 OQ-P01〜P05）。
 
 実際の順番は Loop 01 の結果から決定する。上記が現行の確定順序である。
 

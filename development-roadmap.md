@@ -1,8 +1,8 @@
 # MinSuke — Development Roadmap
 
-**Status:** Loop 15 **Complete** — FR-S04 シリーズ一括参加（PR **#10** merge）  
-**Date:** 2026-08-15  
-**Version:** 1.11
+**Status:** Loop 16 **Completed** — FR-E05 参加履歴（人間 UI 確認済 2026-08-16）  
+**Date:** 2026-08-16  
+**Version:** 1.13
 
 ---
 
@@ -56,6 +56,7 @@ gantt
 | **13** | My Participation | 自家庭の参加可視化（FR-E06: カレンダー色・本日参加） | あり |
 | **14** | Mobile UI | スマートフォンでの主要操作（NFR-02） | あり |
 | **15** | Bulk Attend | 同じスケジュールの今後イベントへ一括参加（FR-S04 最小） | あり |
+| **16** | Participation History（完了） | 自家庭の参加イベント一覧（FR-E05 最小） | あり |
 
 ---
 
@@ -165,10 +166,10 @@ Loop 02 で決定すべき事項：
 
 ---
 
-## 8. Next Actions
+## 8. Next Actions（Loop 16 完了後）
 
-1. 次 Loop の対象を決める（候補: FR-E05 参加履歴 / Testing・CI）
-2. 人間承認後に実装ブランチを切る
+1. Loop 16 の PR を merge
+2. **次 Loop を人間承認:** Testing/CI、または OQ-P01〜P05（個人情報・決済・メール外部化）
 
 ---
 

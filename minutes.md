@@ -16,12 +16,12 @@
 ## Current Loop
 
 **MVP（Loop 04〜07）完了** — 統合レビュー済（2026-08-11）  
-**Loop 08 / 09 / 10 / 11 / 12 / 13 / 14 / 15 完了** — PR #1 / #2 / #4 / #6 / #7 / #8 / #9 / **#10** を `main` へ merge 済  
-**Current Loop:** Loop 15 完了。次 Loop は未定（FR-E05 / Testing が候補）
+**Loop 08 / 09 / 10 / 11 / 12 / 13 / 14 / 15 / 16 完了** — PR #1 / #2 / #4 / #6 / #7 / #8 / #9 / **#10** を `main` へ merge 済。Loop 16 は PR **#12**  
+**Current Loop:** Loop 16 完了 — 次 Loop は人間承認待ち
 
 ## Date
 
-**2026-08-15**（最終更新）
+**2026-08-16**（最終更新）
 
 ---
 
@@ -29,8 +29,21 @@
 
 ## Current State
 
-**Loop 15 完了**（PR **#10** merge 2026-08-15）。  
-次 Loop は未定。候補は FR-E05（参加履歴）または Testing / CI。
+**Loop 16 完了**（2026-08-16 人間 UI 確認）。PR **#12**。  
+**次 Loop:** 人間承認待ち（Testing/CI、または OQ-P01〜P05）。  
+**将来（未着手）:** 個人情報・メール・サブスク決済を外部システムへ寄せる案（`minutes.md` §33 / OQ-P01〜P05）。
+
+## Loop 16 Progress
+
+| 作業 | 状態 |
+|---|---|
+| 人間承認（OQ-E02〜E05 / 案 A） | ✅ **2026-08-15** |
+| ブランチ `feature/loop-16-participation-history` | ✅ |
+| `GET /my-participations` + S24 + ナビ | ✅ |
+| EventServiceTest / EventControllerSecurityTest | ✅ |
+| Consistency Review（`roles.md` §12） | ✅ **2026-08-16**（`minutes.md` §32.1） |
+| UI ローカル確認 | ✅ **2026-08-16**（人間確認） |
+| Loop 16 完了 | ✅ **2026-08-16** |
 
 ## Loop 12 Progress
 
@@ -367,6 +380,7 @@ MVP は **認証 + ADMIN によるイベント管理 + 家庭管理 + 保護者�
 | OQ-10 | 参加単位 | ✅ 個別 |
 | OQ-11 | 技術選定 | ✅ 承認済 |
 | OQ-12 | 初回 ADMIN の作成方法 | ✅ seed / 登録は PARENT のみ |
+| OQ-P01〜P05 | 個人情報・決済・お知らせメールの外部化 | Open（後続 Loop。`minutes.md` §33） |
 
 ---
 
@@ -545,7 +559,8 @@ MVP は **認証 + ADMIN によるイベント管理 + 家庭管理 + 保護者�
 # 16. Next Loop
 
 **Loop 08 / 09 / 10 / 11 / 12 / 13 / 14 / 15** merged（PR **#10**）。  
-次 Loop は未定（FR-E05 / Testing が候補）。
+**Loop 16 — 参加履歴（完了）** — `minutes.md` §32。人間 UI 確認済（2026-08-16）。  
+**次 Loop:** 人間承認待ち。候補: Testing/CI、個人情報・決済・メールの外部化（`minutes.md` §33）。
 
 ---
 
@@ -1152,6 +1167,125 @@ Consistency Engineer（`roles.md` §12）による横断確認。
 
 ---
 
+# 32. Loop 16 — 参加履歴（Approved 2026-08-15）
+
+## 目的
+
+自家庭が参加した（する）イベントを、カレンダーの月をまたいで一覧できる（FR-E05 最小）。
+
+## 背景
+
+- Loop 13 でカレンダー色と「本日の参加」がある。月を切り替えると過去・先の参加は追いにくい。
+- Loop 15 でシリーズ一括登録が増えると、「どの回に入っているか」を一覧したい。
+- 新テーブルは不要。既存 `event_attendances`（household_id + REGISTERED）で足りる。
+
+## 候補
+
+| 案 | 内容 | 評価 |
+|---|---|---|
+| **A. PARENT の参加一覧ページ（採用）** | ナビから自家庭の参加を日付順に見る | カレンダーの穴を埋める。認可は my-family と同じ |
+| B. 家族詳細に履歴を足す | ADMIN も他家庭の参加が見える | FR-F06 寄り。他家庭可視化は Loop 13 で出していない |
+| C. Testing / CI | CI で Testcontainers、`testing.md` | 品質。画面は変わらない |
+
+## 推奨スコープ（案 A）
+
+| 含む | 含まない |
+|---|---|
+| PARENT 向け `/my-participations`（S24） | ADMIN の全家庭レポート |
+| 自 household の **REGISTERED** | CANCELLED の履歴 |
+| 今後と過去の両方（開催日の新しい順） | CSV / 集計グラフ |
+| 日付・イベント名・参加者（家庭/保護者/子ども）・詳細へのリンク | FR-F06 利用状況ダッシュボード |
+| ヘッダー（PARENT）に「参加履歴」 | ページネーション（件数が少ない前提。必要なら後続） |
+
+## 承認事項
+
+| ID | 質問 | 確定 | 状態 |
+|---|---|---|---|
+| **OQ-E02** | Loop 16 の対象 | **A. PARENT 自家庭の参加一覧** | ✅ Approved 2026-08-15 |
+| **OQ-E03** | 出すレコード | **REGISTERED のみ**（キャンセルはイベント詳細で十分） | ✅ Approved 2026-08-15 |
+| **OQ-E04** | 期間 | **今後＋過去**（開催日降順）。カレンダーは月内、本ページは横断 | ✅ Approved 2026-08-15 |
+| **OQ-E05** | ADMIN | **出さない**（household なし。家族詳細への履歴は FR-F06） | ✅ Approved 2026-08-15 |
+
+## 次アクション
+
+**完了**（2026-08-16 人間 UI 確認）。続きの Loop は人間承認待ち。
+
+## 参照
+
+- `Composer.md` §4.14
+- `requirements.md` FR-E05（FR-E06 とは別。カレンダー視認性 vs 横断一覧）
+
+---
+
+# 32.1 Consistency Report — Loop 16（2026-08-16）
+
+Consistency Engineer（`roles.md` §12）による横断確認。ローカル UI は **2026-08-16 人間確認済**。
+
+| 区分 | 件数 |
+|---|---|
+| Blocker | 0 |
+| Warning | 0 |
+
+### Blockers
+
+（なし）
+
+### Verified ✅
+
+| 観点 | 結果 |
+|---|---|
+| A. 設計書 ↔ 設計書 | OQ-E02〜E05 / FR-E05 — `Composer` / `minutes` / `requirements` / `security` / `ui` / `roadmap` 一致。新テーブルなし |
+| B. DB | 変更なし（既存 `event_attendances.household_id` + `REGISTERED`） |
+| C. Security | `GET /my-participations` は `hasRole("PARENT")`。Service でも household 必須。ADMIN 403 / 未認証 302 |
+| D. 環境 | 変更なし（PG `5433` / app `8081` / `local`） |
+| E. 画面 ↔ Controller | `ParticipationController` → `event/participations.html`。ナビ「参加履歴」は PARENT のみ |
+| F. テスト | `EventServiceTest` 19 件、`EventControllerSecurityTest` 11 件、`CalendarRenderTest` 2 件 — 失敗 0 |
+| ローカル確認 | PARENT で `/my-participations`。ADMIN はナビなし・直アクセス 403。**2026-08-16 人間確認で問題なし** |
+
+---
+
+# 33. Future — 個人情報・決済・お知らせメールの外部化（Parked 2026-08-16）
+
+人間相談（2026-08-16）。**Loop 16 では実装しない。** 後続 Loop で設計する。
+
+## 動機
+
+スクール運用を想定し、MinSuke 内に個人情報を持たせずニックネーム等で運用したい。本名・メール・連絡先は外部の会員システムに置き、登録家庭のサブスク決済とお知らせメール送信もそこで行う。
+
+## 方針案（未承認）
+
+| 置く場所 | 持つもの |
+|---|---|
+| **MinSuke** | 家庭 ID、ニックネーム、参加・カレンダー・お知らせ本文 |
+| **外部（会員＋決済）** | 本名、住所、電話、メール、決済手段、サブスク状態 |
+
+つなぎは **家庭 ID ↔ 外部会員 ID**。メールアドレスを MinSuke にコピーしない。
+
+決済エンジンは MinSuke に作らない。課金単位の候補は **家庭（household）**。MinSuke が参照するのは `active` / `past_due` / `canceled` と外部 ID 程度。
+
+お知らせメールは Loop 10 のアプリ内配信を残し、送信は外部に任せる。MinSuke は家庭 ID リスト＋本文だけ渡し、外部が登録メールへ送る。
+
+完全な個人情報ゼロは不可（ログイン識別子・ニックネーム・参加履歴は個人情報になり得る）。狙いは「連絡先と決済を MinSuke に置かない」こと。
+
+## 後続で決めること
+
+| ID | 質問 | 候補 |
+|---|---|---|
+| **OQ-P01** | プロフィールをニックネーム中心にし、本名・連絡先を外部へ出すか | 案: MinSuke はニックネーム。外部が PII |
+| **OQ-P02** | 登録家庭のサブスク決済をどこで行うか | 案: 外部課金。MinSuke は状態参照のみ |
+| **OQ-P03** | お知らせメールの送信元 | 案: 外部の登録 email。MinSuke は SMTP を持たない（OQ-08 の将来分） |
+| **OQ-P04** | ログイン | 外部 SSO か、当面 `email + password` のままか（後者はメールが MinSuke に残る） |
+| **OQ-P05** | 未払い時に MinSuke で何を止めるか | ログイン / 参加登録 / 何もしない |
+
+採用する場合、**PD-01**（MinSuke 内の個人情報を標準保持）の見直しが必要。
+
+## 参照
+
+- `requirements.md` OQ-P01〜P05 / OQ-08 / NFR-01 / PD-01
+- `security.md` Open Questions
+
+---
+
 # 15.2 MVP Integration Review — Loop 04〜07（2026-08-11）
 
 Consistency Engineer 観点で横断確認。
@@ -1386,7 +1520,7 @@ Consistency Engineer 観点で横断確認。
 |---|---|
 | `/login`, `/register`, `/css/**`, `/health` | 公開 |
 | `/events/new`, `/events/*/edit` | ADMIN |
-| `/my-family/**` | PARENT |
+| `/my-family/**`, `/my-participations` | PARENT |
 | その他 | 認証必須 |
 
 ## 起動・確認手順
@@ -1482,6 +1616,15 @@ docker compose up -d
 - **Branch:** `feature/loop-14-mobile-ui`（merged to main via PR #9）
 - **Last Updated:** 2026-08-14 — main へ merge 済
 - **Next Action:** —
+
+## Loop 16
+
+- **Status:** **COMPLETED**
+- **Started:** 2026-08-15
+- **Completed:** 2026-08-16
+- **Branch:** `feature/loop-16-participation-history`（PR **#12**）
+- **Last Updated:** 2026-08-16 — PR #12
+- **Next Action:** merge
 
 ## Loop 15
 

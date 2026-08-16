@@ -1,10 +1,14 @@
 package com.minsuke.event.controller;
 
+import static com.minsuke.auth.security.MinsukeMockUsers.parent;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import org.hamcrest.Matchers;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,5 +111,26 @@ class EventControllerSecurityTest {
                         .param("participantType", "PARENT")
                         .param("parentId", "1"))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void participationsRequiresAuthentication() throws Exception {
+        mockMvc.perform(get("/my-participations"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login"));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void adminCannotViewParticipations() throws Exception {
+        mockMvc.perform(get("/my-participations"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void parentCanViewParticipations() throws Exception {
+        mockMvc.perform(get("/my-participations").with(parent()))
+                .andExpect(status().isOk())
+                .andExpect(content().string(Matchers.containsString("参加履歴")));
     }
 }
