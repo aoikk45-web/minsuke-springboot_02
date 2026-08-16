@@ -16,7 +16,7 @@
 ## Current Loop
 
 **MVP（Loop 04〜07）完了** — 統合レビュー済（2026-08-11）  
-**Loop 08 / 09 / 10 / 11 / 12 / 13 / 14 / 15 / 16 完了** — PR #1 / #2 / #4 / #6 / #7 / #8 / #9 / **#10** を `main` へ merge 済。Loop 16 は PR **#12**  
+**Loop 08 / 09 / 10 / 11 / 12 / 13 / 14 / 15 / 16 完了** — PR #1 / #2 / #4 / #6 / #7 / #8 / #9 / **#10** / **#12** を `main` へ merge 済  
 **Current Loop:** Loop 16 完了 — 次 Loop は人間承認待ち
 
 ## Date
@@ -29,7 +29,7 @@
 
 ## Current State
 
-**Loop 16 完了**（2026-08-16 人間 UI 確認）。PR **#12**。  
+**Loop 16 完了**（PR **#12** merge 2026-08-16）。  
 **次 Loop:** 人間承認待ち（Testing/CI、または OQ-P01〜P05）。  
 **将来（未着手）:** 個人情報・メール・サブスク決済を外部システムへ寄せる案（`minutes.md` §33 / OQ-P01〜P05）。
 
@@ -43,7 +43,7 @@
 | EventServiceTest / EventControllerSecurityTest | ✅ |
 | Consistency Review（`roles.md` §12） | ✅ **2026-08-16**（`minutes.md` §32.1） |
 | UI ローカル確認 | ✅ **2026-08-16**（人間確認） |
-| Loop 16 完了 | ✅ **2026-08-16** |
+| Loop 16 完了（PR #12 / merge） | ✅ **2026-08-16** |
 
 ## Loop 12 Progress
 
@@ -558,8 +558,7 @@ MVP は **認証 + ADMIN によるイベント管理 + 家庭管理 + 保護者�
 
 # 16. Next Loop
 
-**Loop 08 / 09 / 10 / 11 / 12 / 13 / 14 / 15** merged（PR **#10**）。  
-**Loop 16 — 参加履歴（完了）** — `minutes.md` §32。人間 UI 確認済（2026-08-16）。  
+**Loop 08 / 09 / 10 / 11 / 12 / 13 / 14 / 15 / 16** merged（PR **#12**）。  
 **次 Loop:** 人間承認待ち。候補: Testing/CI、個人情報・決済・メールの外部化（`minutes.md` §33）。
 
 ---
@@ -1622,9 +1621,9 @@ docker compose up -d
 - **Status:** **COMPLETED**
 - **Started:** 2026-08-15
 - **Completed:** 2026-08-16
-- **Branch:** `feature/loop-16-participation-history`（PR **#12**）
-- **Last Updated:** 2026-08-16 — PR #12
-- **Next Action:** merge
+- **Branch:** `feature/loop-16-participation-history`（merged to main via PR **#12**）
+- **Last Updated:** 2026-08-16 — main へ merge 済
+- **Next Action:** —
 
 ## Loop 15
 

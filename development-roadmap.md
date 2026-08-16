@@ -1,6 +1,6 @@
 # MinSuke — Development Roadmap
 
-**Status:** Loop 16 **Completed** — FR-E05 参加履歴（人間 UI 確認済 2026-08-16）  
+**Status:** Loop 16 **Completed** — FR-E05 参加履歴（PR **#12** merge 2026-08-16）  
 **Date:** 2026-08-16  
 **Version:** 1.13
 
@@ -168,8 +168,7 @@ Loop 02 で決定すべき事項：
 
 ## 8. Next Actions（Loop 16 完了後）
 
-1. Loop 16 の PR を merge
-2. **次 Loop を人間承認:** Testing/CI、または OQ-P01〜P05（個人情報・決済・メール外部化）
+1. **次 Loop を人間承認:** Testing/CI、または OQ-P01〜P05（個人情報・決済・メール外部化）
 
 ---
 
