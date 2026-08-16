@@ -10,7 +10,7 @@ Greenfield / New Development
 
 ## Current Loop
 
-Loop 11〜14 完了 — **現行 Loop 15 は一括参加登録（実装・確認済、PR 待ち）**
+Loop 11〜**15** 完了 — 次 Loop は未定（FR-E05 / Testing が候補）
 
 ## Date
 
