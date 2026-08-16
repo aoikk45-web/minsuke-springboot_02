@@ -8,6 +8,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +28,7 @@ import com.minsuke.event.domain.ParticipationUnit;
 import com.minsuke.event.dto.CalendarViewDTO;
 import com.minsuke.event.dto.EventDetailDTO;
 import com.minsuke.event.dto.EventForm;
+import com.minsuke.event.dto.ParticipationRowDTO;
 import com.minsuke.event.dto.SeriesAttendResultDTO;
 import com.minsuke.event.entity.Event;
 import com.minsuke.event.entity.EventAttendance;
@@ -125,6 +127,58 @@ public class EventService {
             dto.setParticipantOptions(buildParticipantOptions(event, user, registeredCount));
         }
         return dto;
+    }
+
+    @Transactional(readOnly = true)
+    public List<ParticipationRowDTO> listMyParticipations(MinsukeUserDetails user) {
+        Long householdId = requireParentHouseholdId(user);
+        List<EventAttendance> attendances = attendanceRepository
+                .findByHouseholdIdAndStatus(householdId, AttendanceStatus.REGISTERED);
+        if (attendances.isEmpty()) {
+            return List.of();
+        }
+        Set<Long> eventIds = attendances.stream()
+                .map(EventAttendance::getEventId)
+                .collect(Collectors.toSet());
+        Map<Long, Event> events = eventRepository.findAllById(eventIds).stream()
+                .collect(Collectors.toMap(Event::getId, event -> event));
+        String householdName = householdRepository.findById(householdId)
+                .map(Household::getName)
+                .orElse("—");
+        Map<Long, String> parentNames = parentRepository.findByHouseholdIdOrderByIdAsc(householdId).stream()
+                .collect(Collectors.toMap(Parent::getId, Parent::getName));
+        Map<Long, String> childNames = childRepository.findByHouseholdIdOrderByIdAsc(householdId).stream()
+                .collect(Collectors.toMap(Child::getId, Child::getName));
+
+        List<ParticipationRowDTO> rows = new ArrayList<>();
+        for (EventAttendance attendance : attendances) {
+            Event event = events.get(attendance.getEventId());
+            if (event == null) {
+                continue;
+            }
+            ParticipationRowDTO row = new ParticipationRowDTO();
+            row.setEventId(event.getId());
+            row.setEventTitle(event.getTitle());
+            row.setEventDate(event.getEventDate());
+            row.setStartTime(event.getStartTime());
+            row.setEndTime(event.getEndTime());
+            if (attendance.getParticipantType() == ParticipantType.PARENT) {
+                row.setParticipantName(parentNames.getOrDefault(attendance.getParentId(), "—"));
+                row.setParticipantTypeLabel("保護者");
+            } else if (attendance.getParticipantType() == ParticipantType.CHILD) {
+                row.setParticipantName(childNames.getOrDefault(attendance.getChildId(), "—"));
+                row.setParticipantTypeLabel("子ども");
+            } else {
+                row.setParticipantName(householdName);
+                row.setParticipantTypeLabel("家庭");
+            }
+            rows.add(row);
+        }
+        rows.sort(Comparator
+                .comparing(ParticipationRowDTO::getEventDate, Comparator.reverseOrder())
+                .thenComparing(ParticipationRowDTO::getStartTime, Comparator.nullsLast(Comparator.reverseOrder()))
+                .thenComparing(ParticipationRowDTO::getEventId, Comparator.reverseOrder()));
+        return rows;
     }
 
     @Transactional(readOnly = true)

@@ -10,11 +10,11 @@ Greenfield / New Development
 
 ## Current Loop
 
-Loop 11〜**15** 完了 — 次 Loop は未定（FR-E05 / Testing が候補）
+Loop 11〜16 完了 — **次 Loop は人間承認待ち**
 
 ## Date
 
-2026-08-15
+2026-08-16
 
 ---
 

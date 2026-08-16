@@ -27,6 +27,7 @@ import com.minsuke.auth.security.MinsukeUserDetails;
 import com.minsuke.event.domain.AttendanceStatus;
 import com.minsuke.event.domain.ParticipationUnit;
 import com.minsuke.event.dto.EventForm;
+import com.minsuke.event.dto.ParticipationRowDTO;
 import com.minsuke.event.dto.SeriesAttendResultDTO;
 import com.minsuke.event.entity.Event;
 import com.minsuke.event.exception.EventAccessDeniedException;
@@ -393,6 +394,36 @@ class EventServiceTest {
         assertThat(result.getAppliedCount()).isEqualTo(1);
         assertThat(countRegistered(firstId)).isEqualTo(1);
         assertThat(countRegistered(secondId)).isEqualTo(1);
+    }
+
+    @Test
+    void parentSeesOwnRegisteredParticipationsNewestFirst() {
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Tokyo"));
+        Long olderId = createEventOn(today.minusDays(3), null);
+        Long newerId = createEventOn(today.plusDays(3), null);
+        eventService.registerParent(parentUser, olderId, parentId);
+        eventService.registerParent(parentUser, newerId, parentId);
+
+        var rows = eventService.listMyParticipations(parentUser);
+        assertThat(rows).extracting(ParticipationRowDTO::getEventId).containsExactly(newerId, olderId);
+        assertThat(rows).allMatch(row -> "保護者".equals(row.getParticipantTypeLabel()));
+
+        eventService.cancelParent(parentUser, olderId, parentId);
+        rows = eventService.listMyParticipations(parentUser);
+        assertThat(rows).extracting(ParticipationRowDTO::getEventId).containsExactly(newerId);
+    }
+
+    @Test
+    void otherHouseholdParticipationsAreHiddenFromHistory() {
+        Long eventId = eventService.createEvent(adminUser, sampleEventForm());
+        fillEventWithOtherHousehold(eventId);
+        assertThat(eventService.listMyParticipations(parentUser)).isEmpty();
+    }
+
+    @Test
+    void adminCannotListParticipations() {
+        assertThatThrownBy(() -> eventService.listMyParticipations(adminUser))
+                .isInstanceOf(EventAccessDeniedException.class);
     }
 
     private EventForm sampleEventForm() {
