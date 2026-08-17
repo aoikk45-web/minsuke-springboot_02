@@ -107,7 +107,14 @@
 | 操作 | ロール | 備考 |
 |---|---|---|
 | 参加履歴 `GET /my-participations` | **PARENT のみ** | `hasRole("PARENT")`。Service でも household 必須 |
-| 表示範囲 | 自 household の REGISTERED | 他家庭・CANCELLED・ADMIN は出さない | |
+| 表示範囲 | 自 household の REGISTERED | 他家庭・CANCELLED・ADMIN は出さない |
+
+### Loop 17 認可方針（Approved 2026-08-17）
+
+| 操作 | ロール | 備考 |
+|---|---|---|
+| 参加状況 `GET /admin/participations` | **ADMIN のみ** | 月次のイベント充足 |
+| 家庭参加率 `GET /schedules/{id}/participations` | **ADMIN のみ** | 全家庭の参加率。PARENT は 403 | |
 
 ### Confirmed（2026-08-10）
 
