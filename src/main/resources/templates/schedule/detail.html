@@ -85,6 +85,7 @@
   </section>
 
   <div class="form-actions">
+    <a th:href="@{/schedules/{id}/participations(id=${schedule.id})}" class="btn btn-primary">参加状況</a>
     <a th:href="@{/schedules/{id}/edit(id=${schedule.id})}" class="btn btn-secondary">編集</a>
     <form th:action="@{/schedules/{id}/delete(id=${schedule.id})}" method="post"
           onsubmit="return confirm('このスケジュールを削除しますか？');">

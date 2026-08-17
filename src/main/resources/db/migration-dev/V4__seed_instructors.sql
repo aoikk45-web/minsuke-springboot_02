@@ -1,11 +1,4 @@
--- Loop 08 local seed: sample instructor
+-- Loop 08 local seed placeholder.
+-- Instructor demo data is created in V10__reset_demo_seed.sql (local profile).
 
-INSERT INTO instructors (name, name_kana, email, phone, notes, active)
-VALUES (
-    '山田 講師',
-    'やまだ こうし',
-    'instructor@minsuke.local',
-    '090-0000-1001',
-    '開発用サンプル講師',
-    TRUE
-);
+SELECT 1;

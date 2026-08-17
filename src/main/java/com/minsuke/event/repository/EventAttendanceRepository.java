@@ -27,4 +27,6 @@ public interface EventAttendanceRepository extends JpaRepository<EventAttendance
             Long householdId, AttendanceStatus status, Collection<Long> eventIds);
 
     List<EventAttendance> findByHouseholdIdAndStatus(Long householdId, AttendanceStatus status);
+
+    List<EventAttendance> findByEventIdInAndStatus(Collection<Long> eventIds, AttendanceStatus status);
 }

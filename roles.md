@@ -10,11 +10,11 @@ Greenfield / New Development
 
 ## Current Loop
 
-Loop 11〜16 完了 — **次 Loop は人間承認待ち**
+Loop 11〜17 完了 — **次 Loop は人間承認待ち**
 
 ## Date
 
-2026-08-16
+2026-08-17
 
 ---
 

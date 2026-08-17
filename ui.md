@@ -57,6 +57,7 @@
 | S22 | スケジュール詳細 | `/schedules/{id}` | **ADMIN** | Loop 11 → Loop 12 で単位表示 |
 | S23 | スケジュール作成・編集 | `/schedules/new`, `/schedules/{id}/edit` | **ADMIN** | Loop 11 → Loop 12 で参加登録単位 |
 | S24 | 参加履歴 | `/my-participations` | PARENT | **Loop 16（FR-E05）** |
+| S25 | 参加状況 | `/admin/participations`, `/schedules/{id}/participations` | ADMIN | **Loop 17（FR-E07）** |
 
 > S13〜S14 の閲覧は **認証済み全員**（OQ-I02 ✅）。
 
@@ -92,6 +93,7 @@ flowchart TD
 | 家族一覧 | S04 | 全員 |
 | マイファミリー | S06 | PARENT |
 | 参加履歴 | S24 | PARENT |
+| 参加状況 | S25 | ADMIN |
 | イベント作成 | S10 | ADMIN |
 | 講師一覧 | S13 | 認証済 |
 | ログアウト | — | 全員 |
@@ -149,6 +151,7 @@ flowchart TD
 | 自家庭の参加可視化 | カレンダー色分け・本日参加一覧（**FR-E06 — Loop 13 実装**） |
 | シリーズ一括参加 | イベント詳細から同じスケジュールの今後分を一括登録／キャンセル（**FR-S04 — Loop 15 実装**） |
 | 参加履歴 | 自家庭の参加イベント一覧（**FR-E05 — Loop 16 実装**） |
+| 参加状況 | ADMIN のシリーズ家庭参加率・月次充足（**FR-E07 — Loop 17 実装**） |
 | 管理者 | ユーザー管理、CSV インポート |
 | 通知バッジ | 未読お知らせ数（**Loop 10 任意**） |
 

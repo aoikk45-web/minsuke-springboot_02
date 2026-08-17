@@ -5,9 +5,9 @@
 **Project Name:** MinSuke（みんスケ）  
 **Development Model:** Greenfield / New Development  
 **Development Environment:** Cursor + Composer 2.5  
-**Current Loop:** Loop 16 完了 — 次 Loop は人間承認待ち  
+**Current Loop:** Loop 17 完了 — 次 Loop は人間承認待ち  
 **Current Phase:** Post-MVP / 次 Loop 候補は Testing/CI または OQ-P01〜P05  
-**Date:** 2026-08-16
+**Date:** 2026-08-17
 
 MinSuke（みんスケ）は、家庭・講師・スケジュール・イベント等を管理するための新規システムとして開発する。
 
@@ -470,7 +470,7 @@ Loop 16の目的は、
 
 **フェーズ A（設計）** ✅ 2026-08-15 承認済（OQ-E02〜E05、案 A）
 
-**フェーズ B（実装）** ✅ コード完了。Consistency Review 済。ローカル画面確認済（2026-08-16 人間確認）。PR **#12**。
+**フェーズ B（実装）** ✅ コード完了。Consistency Review 済。ローカル画面確認済（2026-08-16 人間確認）。PR **#12** merge 済。
 
 ### Loop 16 候補と推奨
 
@@ -489,6 +489,38 @@ Loop 16の目的は、
 | 期間 | 今後＋過去（開催日降順） |
 | 画面 | 日付・イベント名・参加者・詳細リンク。ナビに「参加履歴」 |
 | 含まない | CSV、ADMIN 全家庭、キャンセル履歴、グラフ |
+
+## 4.15 Current Loop — Loop 17
+
+Loop 17の目的は、
+
+**管理者がシリーズ（旗当番など）の各家庭の参加率と、月次のイベント充足を見ること（FR-E07 最小）**
+
+である。
+
+**フェーズ A（設計）** ✅ 2026-08-17 承認済（OQ-R01〜R06、案 A）
+
+**フェーズ B（実装）** ✅ コード完了。Consistency Review 済。ローカル画面確認済（2026-08-17 人間確認）。PR **#13**。
+
+### Loop 17 候補と推奨
+
+| 候補 | 内容 | 評価 |
+|---|---|---|
+| **A. ADMIN 参加状況＋家庭参加率（採用）** | スケジュール別に各家庭の参加回数／対象回数／参加率。月次の定員充足も出す | 当番の公平に直結。新テーブルなし |
+| B. 家族詳細に利用状況（FR-F06） | 1家庭ずつの履歴 | 全体の偏りが見えない |
+| C. Testing / CI | CI で Testcontainers | 品質。画面は変わらない |
+
+### Loop 17 確定方針（Approved 2026-08-17）
+
+| 項目 | 確定 |
+|---|---|
+| 対象者 | ADMIN のみ |
+| 主画面 | スケジュール（例: 旗当番）× 全家庭の参加率。低い順 |
+| 参加の定義 | その回に household の REGISTERED が **1件以上** なら 1 回 |
+| 分母 | 期間内の当該 `schedule_id` の生成済みイベント数（満員回も含む） |
+| 期間 | 初期は生成済みの全期間。今月フィルタあり |
+| 副画面 | 対象月のイベント充足（定員・登録数・空き） |
+| 含まない | CSV、グラフ、PARENT、CANCELLED 分析、家族詳細の FR-F06、未払い突合 |
 
 ## 5. Loop 01 Investigation
 
@@ -776,7 +808,7 @@ Loop 11 — Mobile UI（初期案名。**現行 Loop 11 は Schedule Management*
 Loop 12 — Testing & Security
 Loop 13 — Integration Review
 
-**現行確定順序（2026-08-16）:** Loop 08〜**16** 完了。次 Loop は人間承認待ち（Testing/CI、または個人情報・決済・メール外部化 OQ-P01〜P05）。
+**現行確定順序（2026-08-17）:** Loop 08〜**17** 完了。次 Loop は人間承認待ち（Testing/CI、または個人情報・決済・メール外部化 OQ-P01〜P05）。
 
 実際の順番は Loop 01 の結果から決定する。上記が現行の確定順序である。
 

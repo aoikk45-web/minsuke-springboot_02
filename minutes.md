@@ -16,12 +16,12 @@
 ## Current Loop
 
 **MVP（Loop 04〜07）完了** — 統合レビュー済（2026-08-11）  
-**Loop 08 / 09 / 10 / 11 / 12 / 13 / 14 / 15 / 16 完了** — PR #1 / #2 / #4 / #6 / #7 / #8 / #9 / **#10** を `main` へ merge 済。Loop 16 は PR **#12**  
-**Current Loop:** Loop 16 完了 — 次 Loop は人間承認待ち
+**Loop 08 / 09 / 10 / 11 / 12 / 13 / 14 / 15 / 16 / 17 完了** — PR #1 / #2 / #4 / #6 / #7 / #8 / #9 / **#10** / **#12** を `main` へ merge 済。Loop 17 は PR **#13**  
+**Current Loop:** Loop 17 完了 — 次 Loop は人間承認待ち
 
 ## Date
 
-**2026-08-16**（最終更新）
+**2026-08-17**（最終更新）
 
 ---
 
@@ -29,7 +29,7 @@
 
 ## Current State
 
-**Loop 16 完了**（2026-08-16 人間 UI 確認）。PR **#12**。  
+**Loop 17 完了**（2026-08-17 人間 UI 確認）。PR **#13**。  
 **次 Loop:** 人間承認待ち（Testing/CI、または OQ-P01〜P05）。  
 **将来（未着手）:** 個人情報・メール・サブスク決済を外部システムへ寄せる案（`minutes.md` §33 / OQ-P01〜P05）。
 
@@ -43,7 +43,21 @@
 | EventServiceTest / EventControllerSecurityTest | ✅ |
 | Consistency Review（`roles.md` §12） | ✅ **2026-08-16**（`minutes.md` §32.1） |
 | UI ローカル確認 | ✅ **2026-08-16**（人間確認） |
-| Loop 16 完了 | ✅ **2026-08-16** |
+| Loop 16 完了（PR #12 / merge） | ✅ **2026-08-16** |
+
+## Loop 17 Progress
+
+| 作業 | 状態 |
+|---|---|
+| 設計草案（案 A＋家庭参加率） | ✅ **2026-08-16** |
+| 人間承認（OQ-R01〜R06） | ✅ **2026-08-17** |
+| ブランチ `feature/loop-17-admin-participation` | ✅ |
+| `GET /schedules/{id}/participations` + `/admin/participations` | ✅ |
+| ローカルシード入れ替え（V10） | ✅ |
+| テスト | ✅ |
+| Consistency Review（`roles.md` §12） | ✅ **2026-08-17**（`minutes.md` §34.1） |
+| UI ローカル確認 | ✅ **2026-08-17**（人間確認） |
+| Loop 17 完了 | ✅ **2026-08-17** |
 
 ## Loop 12 Progress
 
@@ -381,6 +395,7 @@ MVP は **認証 + ADMIN によるイベント管理 + 家庭管理 + 保護者�
 | OQ-11 | 技術選定 | ✅ 承認済 |
 | OQ-12 | 初回 ADMIN の作成方法 | ✅ seed / 登録は PARENT のみ |
 | OQ-P01〜P05 | 個人情報・決済・お知らせメールの外部化 | Open（後続 Loop。`minutes.md` §33） |
+| OQ-R01〜R06 | ADMIN 参加状況・家庭参加率 | Open（Loop 17 設計。`minutes.md` §34） |
 
 ---
 
@@ -558,8 +573,7 @@ MVP は **認証 + ADMIN によるイベント管理 + 家庭管理 + 保護者�
 
 # 16. Next Loop
 
-**Loop 08 / 09 / 10 / 11 / 12 / 13 / 14 / 15** merged（PR **#10**）。  
-**Loop 16 — 参加履歴（完了）** — `minutes.md` §32。人間 UI 確認済（2026-08-16）。  
+**Loop 08 / 09 / 10 / 11 / 12 / 13 / 14 / 15 / 16 / 17** — Loop 17 完了（人間 UI 確認済）。  
 **次 Loop:** 人間承認待ち。候補: Testing/CI、個人情報・決済・メールの外部化（`minutes.md` §33）。
 
 ---
@@ -1286,6 +1300,110 @@ Consistency Engineer（`roles.md` §12）による横断確認。ローカル UI
 
 ---
 
+# 34. Loop 17 — ADMIN 参加状況（Approved 2026-08-17）
+
+## 目的
+
+管理者が、旗当番などのシリーズについて **各家庭の参加率** を把握し、あわせて月次のイベント充足を見られる（FR-E07 最小）。
+
+## 背景
+
+- Loop 16 は PARENT の自家庭一覧。ADMIN の全家庭レポートは出していない（OQ-E05）。
+- イベント詳細は「その1回の参加者」だけ。当番の公平（誰が何回出たか）は見えない。
+- 新テーブルは不要。`events.schedule_id` と `event_attendances` で足りる。
+
+## 候補
+
+| 案 | 内容 | 評価 |
+|---|---|---|
+| **A. ADMIN 参加状況＋家庭参加率（推奨）** | スケジュール別に家庭の参加率。月次の定員充足も出す | 旗当番の偏りが一覧で分かる |
+| B. 家族詳細に履歴（FR-F06） | 1家庭ずつ | 全体比較ができない |
+| C. Testing / CI | CI で Testcontainers | 画面は変わらない |
+
+## 推奨スコープ（案 A）
+
+**主:** スケジュール（例: 旗当番）の家庭参加率。
+
+| 家庭 | 参加 | 対象 | 参加率 |
+|---|---|---|---|
+| C家 | 2 | 20 | 10% |
+| A家 | 8 | 20 | 40% |
+
+- **参加:** その回にその household の `REGISTERED` が **1件以上** なら 1 回（同じ回に保護者2人でも 1）
+- **対象（分母）:** 期間内の当該 `schedule_id` の生成済みイベント数。満員で入れなかった回も含む
+- **家庭:** **全家庭**（0% も出す。当番の穴を見つけるため）
+- **並び:** 参加率の低い順
+- **期間:** 初期は生成済みの **全期間**。今月フィルタあり
+- **入口:** スケジュール詳細の「参加状況」、ヘッダー（ADMIN）「参加状況」
+
+**副:** 対象月のイベント充足（日付・タイトル・定員・登録数・空き）。手作りイベント（`schedule_id` なし）もここに出す。シリーズ率は出さない。
+
+| 含む | 含まない |
+|---|---|
+| ADMIN のみ `GET /admin/participations`（月次充足） | PARENT |
+| `GET /schedules/{id}/participations`（家庭参加率） | CSV / グラフ |
+| REGISTERED のみを「参加」 | CANCELLED の分析 |
+| 全家庭（0% 含む） | 家族詳細の FR-F06 |
+| | 未払いとの突合（OQ-P02） |
+
+## 承認事項
+
+| ID | 質問 | 確定 | 状態 |
+|---|---|---|---|
+| **OQ-R01** | Loop 17 の対象 | **A.** シリーズ家庭参加率を主、月次充足を副 | ✅ Approved 2026-08-17 |
+| **OQ-R02** | 家庭の「1回参加」 | その回に household の REGISTERED が1件以上 | ✅ Approved 2026-08-17 |
+| **OQ-R03** | 分母 | 期間内の生成済みイベント数（満員回も含む） | ✅ Approved 2026-08-17 |
+| **OQ-R04** | 出す家庭 | **全家庭**（一度も登録していなくても 0%） | ✅ Approved 2026-08-17 |
+| **OQ-R05** | 期間の初期値 | 当該スケジュールの **生成済み全期間**（今月フィルタあり） | ✅ Approved 2026-08-17 |
+| **OQ-R06** | 月次充足表 | **含める**（手作りイベントの空き確認用） | ✅ Approved 2026-08-17 |
+
+## 次アクション
+
+**完了**（2026-08-17 人間 UI 確認）。続きの Loop は人間承認待ち。
+
+## ローカル確認用アカウント（V10 入れ替え後）
+
+| ロール | email | パスワード | 備考 |
+|---|---|---|---|
+| ADMIN | admin@minsuke.local | password | 参加状況・旗当番の家庭参加率 |
+| PARENT | parent@minsuke.local | password | サンプル家（旗当番 高参加率） |
+| PARENT | parent-b@minsuke.local | password | 中村家（中参加率） |
+| PARENT | parent-c@minsuke.local | password | 佐藤家（0%） |
+
+## 参照
+
+- `Composer.md` §4.15
+- `requirements.md` FR-E07（FR-E05 は PARENT、本機能は ADMIN）
+
+---
+
+# 34.1 Consistency Report — Loop 17（2026-08-17）
+
+Consistency Engineer（`roles.md` §12）による横断確認。ローカル UI は **2026-08-17 人間確認済**。
+
+| 区分 | 件数 |
+|---|---|
+| Blocker | 0 |
+| Warning | 0 |
+
+### Blockers
+
+（なし）
+
+### Verified ✅
+
+| 観点 | 結果 |
+|---|---|
+| A. 設計書 ↔ 設計書 | OQ-R01〜R06 / FR-E07 — `Composer` / `minutes` / `requirements` / `security` / `ui` 一致。新テーブルなし |
+| B. DB | スキーマ変更なし。local のみ `V10__reset_demo_seed.sql` でデモデータ入れ替え |
+| C. Security | `/admin/**` と `/schedules/**` は ADMIN。Service でも ADMIN 必須 |
+| D. 環境 | PG `5433` / app `8081` / `local`。V10 適用済 |
+| E. 画面 ↔ Controller | `schedule/participations`・`event/admin-participations`。ナビ「参加状況」（ADMIN） |
+| F. テスト | `AdminParticipationServiceTest` 4 件、`EventControllerSecurityTest` 14 件 — 失敗 0 |
+| ローカル確認 | ADMIN で旗当番の家庭参加率（佐藤家 0%）。月次充足。PARENT は 403。**2026-08-17 人間確認で問題なし** |
+
+---
+
 # 15.2 MVP Integration Review — Loop 04〜07（2026-08-11）
 
 Consistency Engineer 観点で横断確認。
@@ -1539,7 +1657,7 @@ docker compose up -d
 | http://localhost:8081/register | 保護者登録画面 |
 | http://localhost:8081/health | `{"status":"UP"}` |
 
-**dev seed（local プロファイル）:** `admin@minsuke.local` / `parent@minsuke.local` — パスワード `password`
+**dev seed（local プロファイル・V10）:** `admin@minsuke.local` / `parent@minsuke.local` / `parent-b@minsuke.local` / `parent-c@minsuke.local` — パスワード `password`。旗当番の参加率確認用。
 
 ---
 
@@ -1570,12 +1688,14 @@ docker compose up -d
 | Docker | 29.7.2 |
 | PostgreSQL（コンテナ） | 16-alpine |
 
-**dev seed アカウント（local プロファイル）:**
+**dev seed アカウント（local プロファイル・V10）:**
 
 | ロール | email | パスワード（開発用） |
 |---|---|---|
 | ADMIN | admin@minsuke.local | password |
-| PARENT | parent@minsuke.local | password |
+| PARENT | parent@minsuke.local | password（サンプル家・高参加率） |
+| PARENT | parent-b@minsuke.local | password（中村家・中参加率） |
+| PARENT | parent-c@minsuke.local | password（佐藤家・0%） |
 
 ---
 
@@ -1617,14 +1737,23 @@ docker compose up -d
 - **Last Updated:** 2026-08-14 — main へ merge 済
 - **Next Action:** —
 
+## Loop 17
+
+- **Status:** **COMPLETED**
+- **Started:** 2026-08-16
+- **Completed:** 2026-08-17
+- **Branch:** `feature/loop-17-admin-participation`（PR **#13**）
+- **Last Updated:** 2026-08-17 — PR #13
+- **Next Action:** merge
+
 ## Loop 16
 
 - **Status:** **COMPLETED**
 - **Started:** 2026-08-15
 - **Completed:** 2026-08-16
-- **Branch:** `feature/loop-16-participation-history`（PR **#12**）
-- **Last Updated:** 2026-08-16 — PR #12
-- **Next Action:** merge
+- **Branch:** `feature/loop-16-participation-history`（merged to main via PR **#12**）
+- **Last Updated:** 2026-08-16 — main へ merge 済
+- **Next Action:** —
 
 ## Loop 15
 

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>参加状況 — MinSuke</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header th:replace="~{fragments/header :: header}"></header>
+<main class="container container-wide">
+  <p class="breadcrumb"><a th:href="@{/calendar}">カレンダー</a> &gt; 参加状況</p>
+
+  <div class="page-header">
+    <h1>参加状況（月次充足）</h1>
+  </div>
+
+  <p class="hint">対象月のイベントごとの定員・登録数・空きです。シリーズの家庭参加率は各スケジュール詳細から開けます。</p>
+
+  <div class="page-header">
+    <a class="btn btn-secondary btn-sm"
+       th:href="@{/admin/participations(year=${prevMonth.year}, month=${prevMonth.monthValue})}">前月</a>
+    <strong th:text="${#temporals.format(yearMonth.atDay(1), 'yyyy年M月')}">月</strong>
+    <a class="btn btn-secondary btn-sm"
+       th:href="@{/admin/participations(year=${nextMonth.year}, month=${nextMonth.monthValue})}">翌月</a>
+  </div>
+
+  <table class="data-table" th:if="${!fills.isEmpty()}">
+    <thead>
+    <tr>
+      <th>日付</th>
+      <th>イベント</th>
+      <th>スケジュール</th>
+      <th>定員</th>
+      <th>登録</th>
+      <th>空き</th>
+      <th>充足率</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="row : ${fills}">
+      <td th:text="${#temporals.format(row.eventDate, 'yyyy年M月d日')}">日付</td>
+      <td>
+        <a th:href="@{/events/{id}(id=${row.eventId})}" th:text="${row.eventTitle}">イベント</a>
+      </td>
+      <td th:text="${row.scheduleTitle != null} ? ${row.scheduleTitle} : '—（手作り）'">スケジュール</td>
+      <td th:text="${row.capacity != null} ? ${row.capacity} : 'なし'">定員</td>
+      <td th:text="${row.registeredCount}">0</td>
+      <td th:text="${row.remaining != null} ? ${row.remaining} : '—'">空き</td>
+      <td th:text="${row.fillPercent != null} ? ${row.fillPercent} + '%' : '—'">—</td>
+    </tr>
+    </tbody>
+  </table>
+  <p th:if="${fills.isEmpty()}" class="hint">この月のイベントはありません。</p>
+</main>
+</body>
+</html>
