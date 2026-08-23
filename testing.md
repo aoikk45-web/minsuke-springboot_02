@@ -13,7 +13,7 @@
 | トリガー | `main` への push、すべての pull_request |
 | 統合テスト | Testcontainers PostgreSQL 16（本番と同じエンジン。H2 は使わない） |
 | ローカル Docker なし | `@Testcontainers(disabledWithoutDocker = true)` により DB テストはスキップ。`mvnw test` は成功しうる |
-Windows で作ったリポジトリでは `mvnw` に実行ビットが付かないことがある。CI では `bash ./mvnw -B test` を使う。
+GitHub Actions の JVM 既定は UTC。Hibernate が `TIME` をタイムゾーン変換すると 14:00〜15:00 が 23:00〜00:00 になり `chk_events_time_range` に落ちる。CI は `TZ=Asia/Tokyo`、Surefire は `-Duser.timezone=Asia/Tokyo`。`LocalTime` は `@JdbcTypeCode(SqlTypes.TIME)` で素の TIME として保存する。
 | Docker Engine 29 | `src/test/resources/docker-java.properties` の `api.version=1.44` を維持する |
 
 E2E ブラウザテスト・カバレッジ失敗ゲートは本 Loop に含めない。
