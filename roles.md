@@ -10,7 +10,7 @@ Greenfield / New Development
 
 ## Current Loop
 
-**Current Loop:** **Loop 20** — Testing / CI
+**Loop 08〜18・20 完了** — MinSuke は地域スケジュール管理（CTX-02）。次 Loop は人間承認待ち
 
 ## Date
 

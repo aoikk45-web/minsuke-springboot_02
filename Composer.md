@@ -5,8 +5,8 @@
 **Project Name:** MinSuke（みんスケ）  
 **Development Model:** Greenfield / New Development  
 **Development Environment:** Cursor + Composer 2.5  
-**Current Loop:** **Loop 20** — Testing / CI  
-**Current Phase:** Post-MVP / 実装  
+**Current Loop:** Loop 20 完了 — **地域のスケジュール管理アプリ**（CTX-02）  
+**Current Phase:** Post-MVP / 一旦完成。次 Loop は人間承認待ち  
 **Date:** 2026-08-23
 
 MinSuke（みんスケ）は、地域の **スケジュール・イベント・参加登録** を扱うアプリとして開発する（CTX-02、2026-08-23）。家庭・講師・カレンダーが中心。総合型地域スポーツクラブの会員・決済・公的報告は外部システムに任せる。
@@ -532,13 +532,12 @@ Loop 18の目的は、
 
 クラブ向け汎用活動レポート（年齢・性別・教室・外部 Port）は **設計のみ。CTX-02 により実装しない。** 詳細は `minutes.md` §36〜§37。
 
-## 4.18 Current Loop — Loop 20
+## 4.18 Loop 20 — 完了
 
-Loop 20 の目的は、**テストを CI で毎回実行し、地域スケジュール管理アプリとしての品質ゲートを置くこと**である。画面機能は増やさない。
+テストを CI で毎回実行する品質ゲート。画面機能は増やしていない。PR **#15** merge 2026-08-23。詳細は `minutes.md` §39。
 
-**フェーズ A（設計）** ✅ 人間承認 2026-08-23（`minutes.md` §39）
-
-**フェーズ B（実装）** ✅ ローカル `mvnw test` 96 件成功。PR 待ち
+**フェーズ A（設計）** ✅  
+**フェーズ B（実装）** ✅ `mvnw test` 96 件。GitHub Actions 緑。
 
 | 含む | 含まない |
 |---|---|
@@ -831,7 +830,7 @@ Loop 11 — Mobile UI（初期案名。**現行 Loop 11 は Schedule Management*
 Loop 12 — Testing & Security
 Loop 13 — Integration Review
 
-**現行確定順序（2026-08-23）:** Loop 08〜**18** 完了。Loop 19 中止。**Loop 20** = Testing / CI。
+**現行確定順序（2026-08-23）:** Loop 08〜**18**・**20** 完了。Loop 19 中止。MinSuke は地域スケジュール管理（CTX-02）。次 Loop は人間承認待ち。
 
 実際の順番は Loop 01 の結果から決定する。上記が現行の確定順序である。
 

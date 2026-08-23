@@ -1,6 +1,6 @@
 # MinSuke — Testing（Loop 20）
 
-**Status:** Approved（2026-08-23）  
+**Status:** Completed（PR **#15** merge 2026-08-23）  
 **目的:** 地域スケジュール管理アプリとしての品質ゲート。画面機能の追加ではない。
 
 ---
