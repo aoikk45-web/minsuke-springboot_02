@@ -44,7 +44,7 @@
 | GitHub Actions CI | ✅ `.github/workflows/ci.yml` |
 | `testing.md` | ✅ |
 | Consistency Review | ✅ **2026-08-23**（`minutes.md` §39.1） |
-| Loop 20 完了（PR） | — 人間が push / PR を指示するまで |
+| Loop 20 完了（PR） | ⏳ PR **#15** |
 
 ## Loop 16 Progress
 
@@ -1855,7 +1855,7 @@ MinSuke の強み（薄めない）: 家庭単位・保護者／子ども単位�
 | 既存テストの CI 実行 | Jacoco 失敗ゲート |
 | サブスク非 ACTIVE の参加拒否テスト | 本番デプロイ（OQ-07） |
 
-ブランチ: `feature/loop-20-testing-ci`
+ブランチ: `feature/loop-20-testing-ci`（PR **#15**）
 
 ## 39.1 Consistency Report（Loop 20 — 2026-08-23）
 
@@ -2184,7 +2184,7 @@ docker compose up -d
 - **Started:** 2026-08-23
 - **Branch:** `feature/loop-20-testing-ci`
 - **Last Updated:** 2026-08-23
-- **Next Action:** push / PR（人間指示後）。CI 初回実行を確認して完了
+- **Next Action:** PR **#15** の CI 確認後に merge
 
 ## Loop 19
 
