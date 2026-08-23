@@ -1,8 +1,8 @@
 # MinSuke — Development Roadmap
 
-**Status:** **Loop 20** — Testing / CI  
+**Status:** Loop 20 **Completed** — Testing / CI（PR **#15** merge 2026-08-23）。次 Loop は人間承認待ち  
 **Date:** 2026-08-23  
-**Version:** 1.18
+**Version:** 1.19
 
 ---
 
@@ -167,10 +167,10 @@ Loop 02 で決定すべき事項：
 
 ---
 
-## 8. Next Actions（Loop 20）
+## 8. Next Actions（Loop 20 完了後）
 
-1. GitHub Actions で `mvnw test` を通す（本 Loop）
-2. サークルスクエア比較の候補 A〜D は `minutes.md` §38（未承認・本 Loop 外）
+1. MinSuke は地域スケジュール管理アプリとして一旦完成
+2. サークルスクエア比較の候補 A〜D は `minutes.md` §38（未承認）
 3. 総合型クラブの会員・決済・報告は外部（範囲外）
 
 ---

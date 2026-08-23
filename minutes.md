@@ -16,8 +16,8 @@
 ## Current Loop
 
 **MVP（Loop 04〜07）完了** — 統合レビュー済（2026-08-11）  
-**Loop 08 / 09 / 10 / 11 / 12 / 13 / 14 / 15 / 16 / 17 / 18 完了** — PR #1 / #2 / #4 / #6 / #7 / #8 / #9 / **#10** / **#12** / **#13** / **#14** を `main` へ merge 済  
-**Current Loop:** **Loop 20** — Testing / CI（実装中。人間承認 2026-08-23）
+**Loop 08 / 09 / 10 / 11 / 12 / 13 / 14 / 15 / 16 / 17 / 18 / 20 完了** — PR #1 / #2 / #4 / #6 / #7 / #8 / #9 / **#10** / **#12** / **#13** / **#14** / **#15** を `main` へ merge 済  
+**Current Loop:** Loop 20 完了 — 地域スケジュール管理アプリとして一旦完成。次 Loop は人間承認待ち
 
 ## Date
 
@@ -29,11 +29,10 @@
 
 ## Current State
 
-**Loop 18 完了**（PR **#14** merge 2026-08-23）。  
+**Loop 20 完了**（PR **#15** merge 2026-08-23）。GitHub Actions で Testcontainers テストが走る。  
 **位置づけ（CTX-02 / 2026-08-23）:** MinSuke は **地域のスケジュール管理アプリ**。総合型地域スポーツクラブの会員・決済・補助金報告は **外部システム**。  
 **Loop 19**（クラブ報告・属性 Port）は **中止**。  
-**Current Loop:** **Loop 20** — Testing / CI（承認済 2026-08-23）。画面機能は増やさない。品質ゲートでアプリを一旦完成させる。  
-**参考調査:** サークルスクエア比較は §38（未承認の機能候補）。
+次 Loop は人間承認待ち（サークルスクエア候補 A〜D は §38、未承認）。
 
 ## Loop 20 Progress
 
@@ -44,7 +43,7 @@
 | GitHub Actions CI | ✅ `.github/workflows/ci.yml` |
 | `testing.md` | ✅ |
 | Consistency Review | ✅ **2026-08-23**（`minutes.md` §39.1） |
-| Loop 20 完了（PR） | ⏳ PR **#15** |
+| Loop 20 完了（PR） | ✅ **2026-08-23**（PR **#15** / merge） |
 
 ## Loop 16 Progress
 
@@ -1875,9 +1874,13 @@ MinSuke の強み（薄めない）: 家庭単位・保護者／子ども単位�
 
 | ID | 内容 | 分類 |
 |---|---|---|
-| CON-L20-01 | GitHub Actions は push / PR 後に初回実行。未 push のためリモート結果は未確認 | Warning |
+| CON-L20-01 | GitHub Actions 初回未実行 | ✅ **解消** PR **#15** CI 成功後 merge |
 
 スコープ外: E2E、カバレッジ失敗ゲート、本番デプロイ、§38 機能。
+
+## 39.2 完了（2026-08-23）
+
+PR **#15** を `main` へ merge。CI は `mvnw` 実行ビット、`bash ./mvnw`、`TZ=Asia/Tokyo` / `SqlTypes.TIME` で UTC ランナーの時刻ずれを解消して緑。
 
 ---
 
@@ -2180,11 +2183,12 @@ docker compose up -d
 
 ## Loop 20
 
-- **Status:** **IN PROGRESS**
+- **Status:** **COMPLETED**
 - **Started:** 2026-08-23
-- **Branch:** `feature/loop-20-testing-ci`
+- **Completed:** 2026-08-23
+- **Branch:** `feature/loop-20-testing-ci`（merged via PR **#15**）
 - **Last Updated:** 2026-08-23
-- **Next Action:** PR **#15** の CI 確認後に merge
+- **Next Action:** —
 
 ## Loop 19
 
