@@ -317,7 +317,7 @@ services:
 | 機密 | 環境変数 | `SPRING_DATASOURCE_PASSWORD` |
 | テスト | `application-test.yml` | Flyway V1 のみ（seed なし） |
 
-**テスト実行（Testcontainers）:** 統合テストは PostgreSQL コンテナを使用する。`@Testcontainers(disabledWithoutDocker = true)` により **Docker 未起動時は DB テストをスキップ**する。CI では Docker サービスを有効にすること（Loop 12 で方針確定予定）。
+**テスト実行（Testcontainers）:** 統合テストは PostgreSQL コンテナを使用する。`@Testcontainers(disabledWithoutDocker = true)` により **Docker 未起動時は DB テストをスキップ**する。**CI**（GitHub Actions、Loop 20）では Docker 付きで `./mvnw test` を実行する。詳細は `testing.md`。
 
 ### 8.4 主要依存関係（Loop 04 予定）
 

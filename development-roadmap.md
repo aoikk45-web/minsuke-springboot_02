@@ -1,8 +1,8 @@
 # MinSuke — Development Roadmap
 
-**Status:** Loop 17 **Completed** — FR-E07 ADMIN 参加状況（PR **#13** merge 2026-08-17）  
-**Date:** 2026-08-17  
-**Version:** 1.16
+**Status:** **Loop 20** — Testing / CI  
+**Date:** 2026-08-23  
+**Version:** 1.18
 
 ---
 
@@ -143,16 +143,16 @@ Loop 02 で決定すべき事項：
 | 04 | プロジェクト起動、Smoke Test |
 | 05 | 認証・認可の Security Test |
 | 06-07 | Service Unit Test、Controller Test |
-| 12 | E2E、カバレッジ目標設定 |
+| 20 | CI（GitHub Actions） |
 
 **Testcontainers 方針（2026-08-11）:**
 
 - 統合テストは PostgreSQL 16 コンテナを使用（`@Testcontainers(disabledWithoutDocker = true)`）
 - ローカルで Docker 未起動の場合、DB 依存テストは**スキップ**され `mvnw test` は成功する
-- **CI では Docker を有効化**すること。未設定だと DB テストが実行されずカバレッジが不足する
+- **CI**（Loop 20）では GitHub Actions 上で Docker 付き `./mvnw test` を実行する
 - H2 への切り替えは採用しない（PostgreSQL 固有制約・Flyway 整合のため）
 
-詳細は Loop 12 前に `testing.md` を検討。
+詳細は `testing.md`。
 
 ---
 
@@ -167,9 +167,11 @@ Loop 02 で決定すべき事項：
 
 ---
 
-## 8. Next Actions（Loop 18 完了後）
+## 8. Next Actions（Loop 20）
 
-1. **次 Loop を人間承認:** Testing/CI、または外部 webhook / 実メールアダプタ / SSO
+1. GitHub Actions で `mvnw test` を通す（本 Loop）
+2. サークルスクエア比較の候補 A〜D は `minutes.md` §38（未承認・本 Loop 外）
+3. 総合型クラブの会員・決済・報告は外部（範囲外）
 
 ---
 
@@ -178,3 +180,4 @@ Loop 02 で決定すべき事項：
 - `minutes.md` — 意思決定・Loop 履歴
 - `Composer.md` — Loop ルール
 - `roles.md` — 専門家ロール
+- `testing.md` — テスト・CI

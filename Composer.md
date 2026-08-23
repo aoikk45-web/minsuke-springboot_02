@@ -5,11 +5,11 @@
 **Project Name:** MinSuke（みんスケ）  
 **Development Model:** Greenfield / New Development  
 **Development Environment:** Cursor + Composer 2.5  
-**Current Loop:** Loop 18 完了 — 次 Loop は人間承認待ち  
-**Current Phase:** Post-MVP / 次 Loop 候補は Testing/CI または webhook・実メール・SSO  
+**Current Loop:** **Loop 20** — Testing / CI  
+**Current Phase:** Post-MVP / 実装  
 **Date:** 2026-08-23
 
-MinSuke（みんスケ）は、家庭・講師・スケジュール・イベント等を管理するための新規システムとして開発する。
+MinSuke（みんスケ）は、地域の **スケジュール・イベント・参加登録** を扱うアプリとして開発する（CTX-02、2026-08-23）。家庭・講師・カレンダーが中心。総合型地域スポーツクラブの会員・決済・公的報告は外部システムに任せる。
 
 本プロジェクトでは、既存MinSukeのソースコードを引き継がない。
 
@@ -528,6 +528,23 @@ Loop 18の目的は、
 | PD-01 | 連絡先・決済は外部責任に見直し |
 | 含まない | Stripe / SSO / 本番メール / webhook 自動同期 / FR-U04 メールリセット |
 
+## 4.17 Loop 19 — 中止
+
+クラブ向け汎用活動レポート（年齢・性別・教室・外部 Port）は **設計のみ。CTX-02 により実装しない。** 詳細は `minutes.md` §36〜§37。
+
+## 4.18 Current Loop — Loop 20
+
+Loop 20 の目的は、**テストを CI で毎回実行し、地域スケジュール管理アプリとしての品質ゲートを置くこと**である。画面機能は増やさない。
+
+**フェーズ A（設計）** ✅ 人間承認 2026-08-23（`minutes.md` §39）
+
+**フェーズ B（実装）** ✅ ローカル `mvnw test` 96 件成功。PR 待ち
+
+| 含む | 含まない |
+|---|---|
+| GitHub Actions + Testcontainers | E2E、カバレッジ失敗ゲート、本番デプロイ |
+| `testing.md` | §38 の機能候補 |
+
 ## 5. Loop 01 Investigation
 
 Loop 01では、以下を検討する。
@@ -814,7 +831,7 @@ Loop 11 — Mobile UI（初期案名。**現行 Loop 11 は Schedule Management*
 Loop 12 — Testing & Security
 Loop 13 — Integration Review
 
-**現行確定順序（2026-08-23）:** Loop 08〜**18** 完了。次 Loop は人間承認待ち（Testing/CI、または webhook / 実メール / SSO）。
+**現行確定順序（2026-08-23）:** Loop 08〜**18** 完了。Loop 19 中止。**Loop 20** = Testing / CI。
 
 実際の順番は Loop 01 の結果から決定する。上記が現行の確定順序である。
 

@@ -10,7 +10,7 @@ Greenfield / New Development
 
 ## Current Loop
 
-**Loop 08〜18 完了** — 次 Loop は人間承認待ち
+**Current Loop:** **Loop 20** — Testing / CI
 
 ## Date
 
