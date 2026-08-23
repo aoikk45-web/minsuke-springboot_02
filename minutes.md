@@ -67,7 +67,7 @@
 | 実装ブランチ `feature/loop-18-pii-externalization` | ✅ |
 | Consistency Review（`roles.md` §12） | ✅ **2026-08-17**（`minutes.md` §35.1） |
 | UI ローカル確認 | ✅ **2026-08-23**（人間確認） |
-| Loop 18 完了 | —（PR 待ち） |
+| Loop 18 完了 | —（PR **#14** 待ち） |
 
 ## Loop 12 Progress
 
@@ -1866,8 +1866,8 @@ docker compose up -d
 - **Status:** **IN PROGRESS**（実装・UI 確認済、PR 待ち）
 - **Started:** 2026-08-17
 - **Branch:** `feature/loop-18-pii-externalization`
-- **Last Updated:** 2026-08-23 — ローカル UI 人間確認済
-- **Next Action:** PR → merge
+- **Last Updated:** 2026-08-23 — ローカル UI 人間確認済、PR **#14**
+- **Next Action:** merge
 
 ## Loop 11
 
