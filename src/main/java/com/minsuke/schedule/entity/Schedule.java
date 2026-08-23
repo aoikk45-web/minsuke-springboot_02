@@ -56,9 +56,11 @@ public class Schedule {
     private Set<Integer> daysOfWeek = new LinkedHashSet<>();
 
     @Column(name = "start_time")
+    @JdbcTypeCode(SqlTypes.TIME)
     private LocalTime startTime;
 
     @Column(name = "end_time")
+    @JdbcTypeCode(SqlTypes.TIME)
     private LocalTime endTime;
 
     @Column(name = "one_off_date")

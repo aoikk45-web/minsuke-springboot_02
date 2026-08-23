@@ -10,7 +10,7 @@ Greenfield / New Development
 
 ## Current Loop
 
-**Loop 18** — 個人情報・決済・メール外部化（PR 待ち）
+**Current Loop:** **Loop 20** — Testing / CI
 
 ## Date
 

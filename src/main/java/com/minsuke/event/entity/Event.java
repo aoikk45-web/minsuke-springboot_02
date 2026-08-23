@@ -14,6 +14,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -39,9 +41,11 @@ public class Event {
     private LocalDate eventDate;
 
     @Column(name = "start_time")
+    @JdbcTypeCode(SqlTypes.TIME)
     private LocalTime startTime;
 
     @Column(name = "end_time")
+    @JdbcTypeCode(SqlTypes.TIME)
     private LocalTime endTime;
 
     @Column

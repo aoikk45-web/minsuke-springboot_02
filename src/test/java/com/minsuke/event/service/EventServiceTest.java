@@ -35,6 +35,7 @@ import com.minsuke.event.exception.EventCapacityFullException;
 import com.minsuke.event.exception.EventNotFoundException;
 import com.minsuke.event.repository.EventAttendanceRepository;
 import com.minsuke.event.repository.EventRepository;
+import com.minsuke.family.domain.SubscriptionStatus;
 import com.minsuke.family.dto.ChildForm;
 import com.minsuke.family.dto.ParentForm;
 import com.minsuke.family.entity.Household;
@@ -188,6 +189,18 @@ class EventServiceTest {
         eventService.cancelParent(parentUser, eventId, parentId);
         detail = eventService.getEventDetail(eventId, parentUser);
         assertThat(detail.getRegisteredCount()).isZero();
+    }
+
+    @Test
+    void inactiveSubscriptionPreventsRegistration() {
+        Long eventId = eventService.createEvent(adminUser, sampleEventForm());
+        Household household = householdRepository.findById(parentUser.getHouseholdId()).orElseThrow();
+        household.setSubscriptionStatus(SubscriptionStatus.PAST_DUE);
+        householdRepository.save(household);
+
+        assertThatThrownBy(() -> eventService.registerParent(parentUser, eventId, parentId))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("サブスクリプション");
     }
 
     @Test

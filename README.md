@@ -112,6 +112,7 @@ com.minsuke
 | [security.md](security.md) | セキュリティ |
 | [ui.md](ui.md) | 画面仕様 |
 | [development-roadmap.md](development-roadmap.md) | Loop ロードマップ |
+| [testing.md](testing.md) | テスト・CI |
 
 ---
 
@@ -123,6 +124,8 @@ com.minsuke
 
 DB 連携テストは Testcontainers（PostgreSQL）を使用します。Docker 未起動時は該当テストがスキップされる場合があります。
 
+**CI:** `main` への push と pull request で GitHub Actions が `./mvnw test` を実行します（`.github/workflows/ci.yml`）。方針は [testing.md](testing.md)。
+
 ---
 
 ## 開発の進め方
@@ -130,8 +133,8 @@ DB 連携テストは Testcontainers（PostgreSQL）を使用します。Docker 
 1. `main` … 公開・安定（MVP）
 2. 機能は `feature/loop-XX-...` ブランチで実装 → PR → merge
 
-完了: Loop 08〜17（PR #1 / #2 / #4 / #6 / #7 / #8 / #9 / **#10** / **#12** / **#13**）。  
-次: **Loop 18** — 個人情報・決済・メール外部化（PR **#14**）
+完了: Loop 08〜18（PR #1 / #2 / #4 / #6 / #7 / #8 / #9 / **#10** / **#12** / **#13** / **#14**）。  
+位置づけ: **地域のスケジュール管理**。**Loop 20:** Testing / CI。
 
 ---
 
