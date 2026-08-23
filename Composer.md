@@ -5,8 +5,8 @@
 **Project Name:** MinSuke（みんスケ）  
 **Development Model:** Greenfield / New Development  
 **Development Environment:** Cursor + Composer 2.5  
-**Current Loop:** **Loop 18** — 個人情報・決済・メール外部化（PR 待ち）  
-**Current Phase:** Post-MVP / フェーズ B（実装・UI 確認済）  
+**Current Loop:** Loop 18 完了 — 次 Loop は人間承認待ち  
+**Current Phase:** Post-MVP / 次 Loop 候補は Testing/CI または webhook・実メール・SSO  
 **Date:** 2026-08-23
 
 MinSuke（みんスケ）は、家庭・講師・スケジュール・イベント等を管理するための新規システムとして開発する。
@@ -506,7 +506,7 @@ Loop 18の目的は、
 
 **フェーズ A（設計）** ✅ 2026-08-17 承認済（OQ-P01〜P05、案 A、P04-A login_id）
 
-**フェーズ B（実装）** ✅ コード完了。Consistency Review 済。ローカル画面確認済（2026-08-23 人間確認）。PR **#14**。
+**フェーズ B（実装）** ✅ コード完了。Consistency Review 済。ローカル画面確認済（2026-08-23 人間確認）。PR **#14** merge 済。
 
 ### Loop 18 候補と推奨
 
@@ -814,7 +814,7 @@ Loop 11 — Mobile UI（初期案名。**現行 Loop 11 は Schedule Management*
 Loop 12 — Testing & Security
 Loop 13 — Integration Review
 
-**現行確定順序（2026-08-23）:** Loop 08〜**17** 完了。**Loop 18** = 個人情報・決済・メール外部化（実装・UI 確認済、PR 待ち）。Testing/CI は別候補のまま。
+**現行確定順序（2026-08-23）:** Loop 08〜**18** 完了。次 Loop は人間承認待ち（Testing/CI、または webhook / 実メール / SSO）。
 
 実際の順番は Loop 01 の結果から決定する。上記が現行の確定順序である。
 

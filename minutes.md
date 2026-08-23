@@ -16,8 +16,8 @@
 ## Current Loop
 
 **MVP（Loop 04〜07）完了** — 統合レビュー済（2026-08-11）  
-**Loop 08 / 09 / 10 / 11 / 12 / 13 / 14 / 15 / 16 / 17 完了** — PR #1 / #2 / #4 / #6 / #7 / #8 / #9 / **#10** / **#12** / **#13** を `main` へ merge 済  
-**Current Loop:** **Loop 18** — 個人情報・決済・メール外部化（PR 待ち）
+**Loop 08 / 09 / 10 / 11 / 12 / 13 / 14 / 15 / 16 / 17 / 18 完了** — PR #1 / #2 / #4 / #6 / #7 / #8 / #9 / **#10** / **#12** / **#13** / **#14** を `main` へ merge 済  
+**Current Loop:** Loop 18 完了 — 次 Loop は人間承認待ち
 
 ## Date
 
@@ -29,8 +29,8 @@
 
 ## Current State
 
-**Loop 17 完了**（PR **#13** merge 2026-08-17）。  
-**Current Loop:** **Loop 18** — 個人情報・決済・お知らせメールの外部化。実装・Consistency Review・**ローカル UI 人間確認済（2026-08-23）**。PR 待ち（`feature/loop-18-pii-externalization`）。
+**Loop 18 完了**（PR **#14** merge 2026-08-23）。  
+**次 Loop:** 人間承認待ち（Testing/CI、または webhook / 実メール / SSO）。
 
 ## Loop 16 Progress
 
@@ -67,7 +67,7 @@
 | 実装ブランチ `feature/loop-18-pii-externalization` | ✅ |
 | Consistency Review（`roles.md` §12） | ✅ **2026-08-17**（`minutes.md` §35.1） |
 | UI ローカル確認 | ✅ **2026-08-23**（人間確認） |
-| Loop 18 完了 | —（PR **#14** 待ち） |
+| Loop 18 完了（PR #14 / merge） | ✅ **2026-08-23** |
 
 ## Loop 12 Progress
 
@@ -1863,11 +1863,12 @@ docker compose up -d
 
 ## Loop 18
 
-- **Status:** **IN PROGRESS**（実装・UI 確認済、PR 待ち）
+- **Status:** **COMPLETED**
 - **Started:** 2026-08-17
-- **Branch:** `feature/loop-18-pii-externalization`
-- **Last Updated:** 2026-08-23 — ローカル UI 人間確認済、PR **#14**
-- **Next Action:** merge
+- **Completed:** 2026-08-23
+- **Branch:** `feature/loop-18-pii-externalization`（merged to main via PR **#14**）
+- **Last Updated:** 2026-08-23 — main へ merge 済
+- **Next Action:** —
 
 ## Loop 11
 

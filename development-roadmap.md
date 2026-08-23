@@ -167,11 +167,9 @@ Loop 02 で決定すべき事項：
 
 ---
 
-## 8. Next Actions（Loop 18 実装・UI 確認済）
+## 8. Next Actions（Loop 18 完了後）
 
-1. **PR:** `feature/loop-18-pii-externalization` → `main`
-2. merge 後に Loop 18 完了を記録
-3. Testing/CI は別 Loop 候補のまま
+1. **次 Loop を人間承認:** Testing/CI、または外部 webhook / 実メールアダプタ / SSO
 
 ---
 
