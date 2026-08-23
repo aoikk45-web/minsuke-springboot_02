@@ -20,7 +20,7 @@ public class MinsukeUserDetailsService implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByEmail(username)
+        return userRepository.findByLoginId(username)
                 .map(MinsukeUserDetails::new)
                 .orElseThrow(() -> new UsernameNotFoundException("ユーザーが見つかりません: " + username));
     }

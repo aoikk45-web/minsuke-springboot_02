@@ -32,9 +32,6 @@ public class Parent {
     @Column(name = "name_kana", nullable = false, length = 100)
     private String nameKana;
 
-    @Column(length = 20)
-    private String phone;
-
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 

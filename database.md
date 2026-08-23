@@ -125,6 +125,8 @@ erDiagram
 | name | VARCHAR(100) | NO | | 家族名 |
 | name_kana | VARCHAR(100) | NO | | ふりがな |
 | group_name | VARCHAR(50) | YES | | 班名等 |
+| external_member_id | VARCHAR(100) | YES | UNIQUE | 外部会員 ID（Loop 18） |
+| subscription_status | VARCHAR(20) | NO | CHECK / DEFAULT `ACTIVE` | `ACTIVE`/`PAST_DUE`/`CANCELED`/`UNKNOWN` |
 | created_at | TIMESTAMPTZ | NO | DEFAULT now() | |
 | updated_at | TIMESTAMPTZ | NO | DEFAULT now() | |
 
@@ -133,7 +135,7 @@ erDiagram
 | カラム | 型 | NULL | 制約 | 説明 |
 |---|---|---|---|---|
 | id | BIGSERIAL | NO | PK | |
-| email | VARCHAR(255) | NO | UNIQUE | ログイン ID |
+| login_id | VARCHAR(255) | NO | UNIQUE | アカウント ID（Loop 18。旧 email） |
 | password_hash | VARCHAR(255) | NO | | BCrypt |
 | role | VARCHAR(20) | NO | CHECK `ADMIN`,`PARENT` | |
 | household_id | BIGINT | YES | FK → households | **ADMIN は NULL** |
@@ -151,9 +153,8 @@ erDiagram
 |---|---|---|---|---|
 | id | BIGSERIAL | NO | PK | |
 | household_id | BIGINT | NO | FK → households ON DELETE CASCADE | |
-| name | VARCHAR(100) | NO | | |
-| name_kana | VARCHAR(100) | NO | | |
-| phone | VARCHAR(20) | YES | | 連絡先 |
+| name | VARCHAR(100) | NO | | 表示名（ニックネーム） |
+| name_kana | VARCHAR(100) | NO | | ふりがな |
 | created_at | TIMESTAMPTZ | NO | DEFAULT now() | |
 | updated_at | TIMESTAMPTZ | NO | DEFAULT now() | |
 

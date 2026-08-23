@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.minsuke.family.domain.SubscriptionStatus;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +17,8 @@ public class HouseholdDetailDTO {
     private String name;
     private String nameKana;
     private String groupName;
+    private String externalMemberId;
+    private SubscriptionStatus subscriptionStatus;
     private List<ParentSummaryDTO> parents = new ArrayList<>();
     private List<ChildSummaryDTO> children = new ArrayList<>();
 
@@ -24,7 +28,6 @@ public class HouseholdDetailDTO {
         private Long id;
         private String name;
         private String nameKana;
-        private String phone;
     }
 
     @Getter

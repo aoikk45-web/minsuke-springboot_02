@@ -77,7 +77,7 @@ class AnnouncementServiceTest {
         household = householdRepository.save(household);
 
         User admin = new User();
-        admin.setEmail("admin-a@test.local");
+        admin.setLoginId("admin-a@test.local");
         admin.setPasswordHash("hash");
         admin.setRole(Role.ADMIN);
         admin.setCreatedAt(now);
@@ -85,7 +85,7 @@ class AnnouncementServiceTest {
         adminUser = new MinsukeUserDetails(userRepository.save(admin));
 
         User parent = new User();
-        parent.setEmail("parent-a@test.local");
+        parent.setLoginId("parent-a@test.local");
         parent.setPasswordHash("hash");
         parent.setRole(Role.PARENT);
         parent.setHouseholdId(household.getId());

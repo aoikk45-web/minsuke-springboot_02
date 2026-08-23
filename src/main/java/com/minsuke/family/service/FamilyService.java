@@ -10,6 +10,7 @@ import com.minsuke.auth.domain.Role;
 import com.minsuke.auth.repository.UserRepository;
 import com.minsuke.auth.security.MinsukeUserDetails;
 import com.minsuke.family.dto.ChildForm;
+import com.minsuke.family.dto.HouseholdBillingForm;
 import com.minsuke.family.dto.HouseholdCardDTO;
 import com.minsuke.family.dto.HouseholdDetailDTO;
 import com.minsuke.family.dto.HouseholdForm;
@@ -143,6 +144,27 @@ public class FamilyService {
         householdRepository.delete(household);
     }
 
+    @Transactional
+    public void updateBilling(MinsukeUserDetails user, Long householdId, HouseholdBillingForm form) {
+        if (user.getUser().getRole() != Role.ADMIN) {
+            throw new FamilyAccessDeniedException();
+        }
+        Household household = findHouseholdOrThrow(householdId);
+        household.setExternalMemberId(emptyToNull(form.getExternalMemberId()));
+        household.setSubscriptionStatus(form.getSubscriptionStatus());
+        household.setUpdatedAt(Instant.now());
+        householdRepository.save(household);
+    }
+
+    @Transactional(readOnly = true)
+    public HouseholdBillingForm toBillingForm(Long householdId) {
+        Household household = findHouseholdOrThrow(householdId);
+        HouseholdBillingForm form = new HouseholdBillingForm();
+        form.setExternalMemberId(household.getExternalMemberId());
+        form.setSubscriptionStatus(household.getSubscriptionStatus());
+        return form;
+    }
+
     @Transactional(readOnly = true)
     public ParentForm toParentForm(MinsukeUserDetails user, Long parentId) {
         Long householdId = requireParentHouseholdId(user);
@@ -199,13 +221,14 @@ public class FamilyService {
         dto.setName(household.getName());
         dto.setNameKana(household.getNameKana());
         dto.setGroupName(household.getGroupName());
+        dto.setExternalMemberId(household.getExternalMemberId());
+        dto.setSubscriptionStatus(household.getSubscriptionStatus());
 
         parentRepository.findByHouseholdIdOrderByIdAsc(household.getId()).forEach(parent -> {
             HouseholdDetailDTO.ParentSummaryDTO summary = new HouseholdDetailDTO.ParentSummaryDTO();
             summary.setId(parent.getId());
             summary.setName(parent.getName());
             summary.setNameKana(parent.getNameKana());
-            summary.setPhone(parent.getPhone());
             dto.getParents().add(summary);
         });
 
@@ -230,7 +253,6 @@ public class FamilyService {
     private void applyParentForm(Parent parent, ParentForm form) {
         parent.setName(form.getName());
         parent.setNameKana(form.getNameKana());
-        parent.setPhone(emptyToNull(form.getPhone()));
     }
 
     private void applyChildForm(Child child, ChildForm form) {
@@ -251,7 +273,6 @@ public class FamilyService {
         ParentForm form = new ParentForm();
         form.setName(parent.getName());
         form.setNameKana(parent.getNameKana());
-        form.setPhone(parent.getPhone());
         return form;
     }
 

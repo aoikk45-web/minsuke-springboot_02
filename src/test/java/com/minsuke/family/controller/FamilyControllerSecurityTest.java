@@ -1,6 +1,7 @@
 package com.minsuke.family.controller;
 
 import static com.minsuke.auth.security.MinsukeMockUsers.admin;
+import static com.minsuke.auth.security.MinsukeMockUsers.parent;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -71,9 +72,17 @@ class FamilyControllerSecurityTest {
     }
 
     @Test
-    @WithMockUser(roles = "PARENT")
     void parentCannotDeleteHousehold() throws Exception {
-        mockMvc.perform(post("/families/1/delete").with(csrf()))
+        mockMvc.perform(post("/families/1/delete").with(parent()).with(csrf()))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void parentCannotUpdateBilling() throws Exception {
+        mockMvc.perform(post("/families/1/billing")
+                        .with(parent())
+                        .with(csrf())
+                        .param("subscriptionStatus", "ACTIVE"))
                 .andExpect(status().isForbidden());
     }
 

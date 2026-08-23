@@ -3,13 +3,19 @@ package com.minsuke.family.controller;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.minsuke.auth.security.MinsukeUserDetails;
+import com.minsuke.family.domain.SubscriptionStatus;
+import com.minsuke.family.dto.HouseholdBillingForm;
 import com.minsuke.family.service.FamilyService;
+
+import jakarta.validation.Valid;
 
 @Controller
 public class FamilyController {
@@ -29,7 +35,29 @@ public class FamilyController {
     @GetMapping("/families/{id}")
     public String detail(@PathVariable Long id, Model model) {
         model.addAttribute("household", familyService.getHouseholdDetail(id));
+        if (!model.containsAttribute("billingForm")) {
+            model.addAttribute("billingForm", familyService.toBillingForm(id));
+        }
+        model.addAttribute("subscriptionStatuses", SubscriptionStatus.values());
         return "family/detail";
+    }
+
+    @PostMapping("/families/{id}/billing")
+    public String updateBilling(
+            @PathVariable Long id,
+            @AuthenticationPrincipal MinsukeUserDetails user,
+            @Valid @ModelAttribute("billingForm") HouseholdBillingForm billingForm,
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttributes,
+            Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("household", familyService.getHouseholdDetail(id));
+            model.addAttribute("subscriptionStatuses", SubscriptionStatus.values());
+            return "family/detail";
+        }
+        familyService.updateBilling(user, id, billingForm);
+        redirectAttributes.addFlashAttribute("successMessage", "外部会員・サブスク状態を更新しました。");
+        return "redirect:/families/" + id;
     }
 
     @PostMapping("/families/{id}/delete")

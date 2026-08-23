@@ -12,21 +12,48 @@
 <main class="container container-wide">
     <p class="breadcrumb"><a th:href="@{/families}">家族一覧</a> &gt; 詳細</p>
 
+    <p th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></p>
     <p th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></p>
 
     <section class="section">
         <h1 th:text="${household.name}">家族名</h1>
         <p class="card-kana" th:text="${household.nameKana}">ふりがな</p>
         <p th:if="${household.groupName != null}" th:text="'班: ' + ${household.groupName}"></p>
+        <p th:text="'サブスク: ' + ${household.subscriptionStatus}">サブスク</p>
+        <p th:if="${household.externalMemberId != null}"
+           th:text="'外部会員 ID: ' + ${household.externalMemberId}"></p>
+    </section>
+
+    <section class="section" sec:authorize="hasRole('ADMIN')">
+        <h2>外部会員・サブスク（管理者）</h2>
+        <p class="hint">外部システム未接続時はここで手動設定します。</p>
+        <form th:action="@{/families/{id}/billing(id=${household.id})}"
+              th:object="${billingForm}" method="post" class="form">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <div class="form-group">
+                <label for="externalMemberId">外部会員 ID</label>
+                <input type="text" id="externalMemberId" th:field="*{externalMemberId}">
+                <span class="field-error" th:if="${#fields.hasErrors('externalMemberId')}"
+                      th:errors="*{externalMemberId}"></span>
+            </div>
+            <div class="form-group">
+                <label for="subscriptionStatus">サブスク状態 *</label>
+                <select id="subscriptionStatus" th:field="*{subscriptionStatus}" required>
+                    <option th:each="s : ${subscriptionStatuses}" th:value="${s}" th:text="${s}"></option>
+                </select>
+                <span class="field-error" th:if="${#fields.hasErrors('subscriptionStatus')}"
+                      th:errors="*{subscriptionStatus}"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">保存する</button>
+        </form>
     </section>
 
     <section class="section">
         <h2>保護者</h2>
         <ul class="member-list" th:if="${!household.parents.isEmpty()}">
             <li th:each="p : ${household.parents}">
-                <span th:text="${p.name}">名前</span>
+                <span th:text="${p.name}">表示名</span>
                 <span class="member-kana" th:text="'（' + ${p.nameKana} + '）'"></span>
-                <span th:if="${p.phone != null}" th:text="' — ' + ${p.phone}"></span>
             </li>
         </ul>
         <p th:if="${household.parents.isEmpty()}" class="hint">登録されている保護者はいません。</p>
@@ -36,7 +63,7 @@
         <h2>子ども</h2>
         <ul class="member-list" th:if="${!household.children.isEmpty()}">
             <li th:each="c : ${household.children}">
-                <span th:text="${c.name}">名前</span>
+                <span th:text="${c.name}">表示名</span>
                 <span class="member-kana" th:text="'（' + ${c.nameKana} + '）'"></span>
                 <span th:if="${c.birthDate != null}" th:text="' — 生年月日: ' + ${c.birthDate}"></span>
             </li>

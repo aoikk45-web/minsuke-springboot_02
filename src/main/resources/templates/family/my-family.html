@@ -28,9 +28,8 @@
         <ul class="member-list member-list-actions" th:if="${!household.parents.isEmpty()}">
             <li th:each="p : ${household.parents}">
                 <div class="member-info">
-                    <span th:text="${p.name}">名前</span>
+                    <span th:text="${p.name}">表示名</span>
                     <span class="member-kana" th:text="'（' + ${p.nameKana} + '）'"></span>
-                    <span th:if="${p.phone != null}" th:text="' — ' + ${p.phone}"></span>
                 </div>
                 <div class="member-actions">
                     <a th:href="@{/my-family/parents/{id}/edit(id=${p.id})}" class="btn-link-inline">編集</a>

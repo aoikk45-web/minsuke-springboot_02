@@ -46,7 +46,7 @@ class AuthServiceTest {
     @Test
     void registerParentCreatesUserAndHousehold() {
         RegisterForm form = new RegisterForm();
-        form.setEmail("new-parent@example.com");
+        form.setLoginId("new-parent");
         form.setPassword("password12");
         form.setConfirmPassword("password12");
         form.setHouseholdName("テスト家");
@@ -55,7 +55,7 @@ class AuthServiceTest {
 
         authService.registerParent(form);
 
-        var user = userRepository.findByEmail("new-parent@example.com").orElseThrow();
+        var user = userRepository.findByLoginId("new-parent").orElseThrow();
         assertThat(user.getRole()).isEqualTo(Role.PARENT);
         assertThat(user.getHouseholdId()).isNotNull();
         assertThat(user.getPasswordHash()).isNotEqualTo("password12");
@@ -64,7 +64,7 @@ class AuthServiceTest {
     @Test
     void registerRejectsMismatchedPasswords() {
         RegisterForm form = new RegisterForm();
-        form.setEmail("bad@example.com");
+        form.setLoginId("bad-parent");
         form.setPassword("password12");
         form.setConfirmPassword("different12");
         form.setHouseholdName("テスト家");

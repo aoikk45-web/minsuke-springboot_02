@@ -8,9 +8,9 @@ import com.minsuke.auth.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    Optional<User> findByEmail(String email);
+    Optional<User> findByLoginId(String loginId);
 
-    boolean existsByEmail(String email);
+    boolean existsByLoginId(String loginId);
 
     boolean existsByHouseholdId(Long householdId);
 }

@@ -17,11 +17,11 @@
 
 **MVP（Loop 04〜07）完了** — 統合レビュー済（2026-08-11）  
 **Loop 08 / 09 / 10 / 11 / 12 / 13 / 14 / 15 / 16 / 17 完了** — PR #1 / #2 / #4 / #6 / #7 / #8 / #9 / **#10** / **#12** / **#13** を `main` へ merge 済  
-**Current Loop:** Loop 17 完了 — 次 Loop は人間承認待ち
+**Current Loop:** **Loop 18** — 個人情報・決済・メール外部化（PR 待ち）
 
 ## Date
 
-**2026-08-17**（最終更新）
+**2026-08-23**（最終更新）
 
 ---
 
@@ -30,8 +30,7 @@
 ## Current State
 
 **Loop 17 完了**（PR **#13** merge 2026-08-17）。  
-**次 Loop:** 人間承認待ち（Testing/CI、または OQ-P01〜P05）。  
-**将来（未着手）:** 個人情報・メール・サブスク決済を外部システムへ寄せる案（`minutes.md` §33 / OQ-P01〜P05）。
+**Current Loop:** **Loop 18** — 個人情報・決済・お知らせメールの外部化。実装・Consistency Review・**ローカル UI 人間確認済（2026-08-23）**。PR 待ち（`feature/loop-18-pii-externalization`）。
 
 ## Loop 16 Progress
 
@@ -58,6 +57,17 @@
 | Consistency Review（`roles.md` §12） | ✅ **2026-08-17**（`minutes.md` §34.1） |
 | UI ローカル確認 | ✅ **2026-08-17**（人間確認） |
 | Loop 17 完了（PR #13 / merge） | ✅ **2026-08-17** |
+
+## Loop 18 Progress
+
+| 作業 | 状態 |
+|---|---|
+| 設計草案（案 A・境界土台） | ✅ **2026-08-17**（`minutes.md` §35） |
+| 人間承認（OQ-P01〜P05 / P04-A login_id） | ✅ **2026-08-17** |
+| 実装ブランチ `feature/loop-18-pii-externalization` | ✅ |
+| Consistency Review（`roles.md` §12） | ✅ **2026-08-17**（`minutes.md` §35.1） |
+| UI ローカル確認 | ✅ **2026-08-23**（人間確認） |
+| Loop 18 完了 | —（PR 待ち） |
 
 ## Loop 12 Progress
 
@@ -394,8 +404,8 @@ MVP は **認証 + ADMIN によるイベント管理 + 家庭管理 + 保護者�
 | OQ-10 | 参加単位 | ✅ 個別 |
 | OQ-11 | 技術選定 | ✅ 承認済 |
 | OQ-12 | 初回 ADMIN の作成方法 | ✅ seed / 登録は PARENT のみ |
-| OQ-P01〜P05 | 個人情報・決済・お知らせメールの外部化 | Open（後続 Loop。`minutes.md` §33） |
-| OQ-R01〜R06 | ADMIN 参加状況・家庭参加率 | Open（Loop 17 設計。`minutes.md` §34） |
+| OQ-P01〜P05 | 個人情報・決済・お知らせメールの外部化 | ✅ Approved（Loop 18。`minutes.md` §35） |
+| OQ-R01〜R06 | ADMIN 参加状況・家庭参加率 | ✅ Approved（Loop 17） |
 
 ---
 
@@ -1404,6 +1414,156 @@ Consistency Engineer（`roles.md` §12）による横断確認。ローカル UI
 
 ---
 
+# 35. Loop 18 — 個人情報・決済・メール外部化（**Approved 2026-08-17**）
+
+人間が「個人情報・決済・メールの外部化を進めたい」と指示（2026-08-17）。§33 の Parked 方針を **Loop 18** として設計。  
+**人間承認（2026-08-17）:** 案 A + OQ-P01〜P05（OQ-P04 は **login_id**）。実装ブランチ `feature/loop-18-pii-externalization`。
+
+## 目的
+
+スクール運用向けに、MinSuke から **連絡先・決済・お知らせメール送信** を切り離し、ニックネーム中心の運用と家庭サブスク状態の参照ができる境界を作る。
+
+## 境界（目標アーキテクチャ）
+
+| 置く場所 | 持つもの |
+|---|---|
+| **MinSuke** | 家庭 ID、表示名（ニックネーム）、参加・カレンダー・お知らせ本文、`external_member_id`、`subscription_status` |
+| **外部（会員＋決済＋メール）** | 本名、住所、電話、メール、決済手段、サブスク実体、SMTP |
+
+つなぎ: **`households.id` ↔ `external_member_id`**。本名・連絡先・メールを MinSuke にコピーしない。ログインは **アカウント ID**（OQ-P04 改訂案）。
+
+## 候補
+
+| 案 | 内容 | 評価 |
+|---|---|---|
+| **A. MinSuke 側の境界土台（推奨）** | スキーマ＋Port＋未払い時の参加制限＋**login_id 認証**。外部ベンダーは Stub | 1 Loop で境界が固まる。メールをログインからも外せる |
+| B. Stripe + SSO + メールプロバイダまで一括 | 実課金・OAuth・SMTP まで | スコープ過大。ベンダー未定で止まる |
+| C. 設計ドキュメントのみ | 実装ゼロ | 画面・DB に変化がなく検証しづらい |
+
+## OQ-P04 補足 — ログイン識別子（人間提案 2026-08-17）
+
+「ログイン時に email を使わずアカウント ID を使う」案。
+
+| 案 | 内容 | 評価 |
+|---|---|---|
+| **P04-A. `login_id` + password（推奨改訂）** | `users.email` を廃止。`users.login_id` UNIQUE でフォームログイン | 連絡先メールを MinSuke に置かない方針と一致。SSO より小さい |
+| P04-B. 当面 email+password | 現行維持 | 実装は軽いが、メールが MinSuke に残る |
+| P04-C. 外部 SSO のみ | OAuth / OIDC | 外部会員必須。本 Loop では過大 |
+
+**推奨: P04-A**
+
+| 項目 | 方針 |
+|---|---|
+| 識別子 | `login_id`（例: `parent-sample`）。英数字・ハイフン等。**email 形式を要求しない** |
+| 発行 | 登録時にユーザーが選ぶ、または ADMIN 発行（運用は後で詰めてよい） |
+| DB | `users.email` → `users.login_id`（Flyway で rename / 置換）。UNIQUE NOT NULL |
+| Spring Security | `usernameParameter("loginId")`、`loadUserByUsername` は login_id |
+| パスワードリセット | MinSuke にメールがないため **本 Loop では FR-U04 未実装のまま**。必要なら ADMIN 再設定、または後続で外部経由 |
+| シード | `admin` / `parent` / `parent-b` / `parent-c` など（password は従来どおり） |
+| 世帯との関係 | login_id は **ユーザー単位**。`external_member_id` は家庭単位のまま |
+
+## 推奨スコープ（案 A）
+
+### OQ 推奨回答（**Approved 2026-08-17**）
+
+| ID | 決定 | 理由 |
+|---|---|---|
+| **OQ-P01** | **Yes** — MinSuke は表示名（ニックネーム）中心。`parents.phone` 削除。`name` / `name_kana` は「表示名・ふりがな」 | 連絡先を MinSuke に置かない |
+| **OQ-P02** | **Yes** — 課金は外部。MinSuke は `subscription_status` + `external_member_id` のみ。単位 **household** | 決済エンジンを作らない |
+| **OQ-P03** | **Yes** — SMTP なし。`NotificationMailPort` Stub。アプリ内お知らせは残す | OQ-08 のメール将来分を外部化 |
+| **OQ-P04** | **`login_id` + password**（email ログイン廃止）。SSO は後続 | メールを MinSuke に残さない |
+| **OQ-P05** | **参加登録を止める**（非 ACTIVE）。ログイン・閲覧・キャンセルは可 | 未払いでも予定確認可 |
+
+### PD-01 見直し（同時承認）
+
+| 項目 | 現行 PD-01 | Loop 18 案 |
+|---|---|---|
+| 保持方針 | MinSuke 内に標準保持（選択肢 B） | **連絡先・決済は外部責任**。MinSuke は表示名・参加履歴・**login_id** |
+| 削除 | 退会後30日等 | 家庭削除時は従来どおり CASCADE。外部会員の削除は外部側。MinSuke は `external_member_id` の参照切れを許容 |
+
+### 実装に含める（承認後）
+
+| 含む | 含まない（後続） |
+|---|---|
+| Flyway: `households.external_member_id`（nullable UNIQUE）、`households.subscription_status`（`ACTIVE`/`PAST_DUE`/`CANCELED`/`UNKNOWN`、default `ACTIVE`） | Stripe / 実決済 UI |
+| Flyway: `users.email` → `users.login_id`（認証・登録・シード・画面の置換） | OAuth / SSO |
+| ADMIN: 家庭詳細で external ID・status を手動編集（外部未接続時の検証用） | 本番 SMTP・メール送信 |
+| `BillingPort` / `NotificationMailPort` インターフェース + NoOp Stub | パスワードリセットメール（FR-U04） |
+| PARENT 参加登録時に `subscription_status == ACTIVE` チェック | 未払い家庭の自動同期 webhook |
+| UI: phone 入力の削除。ログイン／登録を login_id 化 | 外部会員システムの構築そのもの |
+| ラベル: 「氏名」→「表示名（ニックネーム）」 | |
+
+### 画面・API（案）
+
+| 対象 | 変更 |
+|---|---|
+| `/login` `/register` | email → **アカウント ID（login_id）** |
+| 家族フォーム | phone フィールド削除。表示名ラベル変更 |
+| 家庭詳細（ADMIN） | `external_member_id` / `subscription_status` 編集 |
+| `POST /events/{id}/attend` | 非 ACTIVE ならエラーメッセージ（参加不可） |
+| お知らせ送信 | 既存のアプリ内配信のみ。メール Port は呼ぶが Stub |
+
+### 完了条件（実装フェーズ）
+
+- OQ-P01〜P05 / PD-01 見直しが minutes に Approved
+- スキーマ・Entity・Port Stub・参加制限・ADMIN 手動 status
+- Consistency Report + ローカル UI 確認
+- Testing/CI は本 Loop に含めない（別候補のまま）
+
+## 後続 Loop（案）
+
+| Loop | 内容 |
+|---|---|
+| 19+ | 外部 webhook（status 同期）、実メールアダプタ、必要なら SSO |
+| — | Testing/CI（本 Loop と並行候補だったもの） |
+
+## 参照
+
+- `minutes.md` §33（動機・方針案）
+- `requirements.md` OQ-P01〜P05 / NFR-01 / PD-01
+- `security.md` Open Questions
+- `database.md` households / parents
+
+---
+
+# 35.1 Consistency Report — Loop 18（2026-08-17）
+
+Consistency Engineer（`roles.md` §12）による横断確認。ローカル UI は **2026-08-23 人間確認済**。
+
+| 区分 | 件数 |
+|---|---|
+| Blocker | 0 |
+| Warning | 1 |
+
+### Blockers
+
+（なし）
+
+### Warnings
+
+| ID | 内容 | 対応 |
+|---|---|---|
+| L18-W01 | 講師マスタの email/phone は本 Loop 対象外（孤立マスタ）。家庭・ログインの外部化とは別 | 後続で講師 PII 方針を決める場合は別 Loop |
+
+### Verified ✅
+
+| 観点 | 結果 |
+|---|---|
+| A. 設計書 ↔ 設計書 | OQ-P01〜P05 Approved — `Composer` / `minutes` §35 / `requirements` / `security` / `database` / `README` 同期 |
+| B. DB | Flyway **V11**: `users.login_id`、`households.external_member_id` / `subscription_status`、`parents.phone` DROP。JPA 一致 |
+| C. Security | ログイン `loginId`。`POST /families/*/billing` は ADMIN。参加登録は非 ACTIVE で拒否（Service）。キャンセル・閲覧は可 |
+| D. 環境 | PG `5433` / app `8081` / `local`。V11 適用後シード login: `admin` / `parent` / `parent-b` / `parent-c` |
+| E. 画面 ↔ Controller | login/register、family detail billing、parent/child 表示名ラベル、phone 削除 |
+| F. テスト | Auth / Family / Event（含 inactive subscription）/ Announcement — 失敗 0 |
+| 統合 Port | `BillingPort` / `NotificationMailPort` + NoOp Stub。お知らせ作成時に Stub 呼び出し |
+| ローカル確認 | `login_id` ログイン、phone なし、ADMIN 課金状態編集、非 ACTIVE の参加登録拒否。**2026-08-23 人間確認で問題なし** |
+
+### PD-01
+
+連絡先・決済は外部責任。MinSuke 保持は表示名・参加履歴・`login_id`・サブスク状態参照。
+
+---
+
 # 15.2 MVP Integration Review — Loop 04〜07（2026-08-11）
 
 Consistency Engineer 観点で横断確認。
@@ -1625,7 +1785,7 @@ Consistency Engineer 観点で横断確認。
 
 | 項目 | 内容 |
 |---|---|
-| 認証 | Spring Security フォームログイン（email / password） |
+| 認証 | Spring Security フォームログイン（login_id / password。Loop 18） |
 | 登録 | 公開登録は PARENT のみ（Household + User 作成） |
 | パスワード | BCrypt（SD-01） |
 | CSRF | Spring Security 標準（有効） |
@@ -1688,18 +1848,26 @@ docker compose up -d
 | Docker | 29.7.2 |
 | PostgreSQL（コンテナ） | 16-alpine |
 
-**dev seed アカウント（local プロファイル・V10）:**
+**dev seed アカウント（local プロファイル・V10 + V11）:**
 
-| ロール | email | パスワード（開発用） |
+| ロール | アカウント ID | パスワード（開発用） |
 |---|---|---|
-| ADMIN | admin@minsuke.local | password |
-| PARENT | parent@minsuke.local | password（サンプル家・高参加率） |
-| PARENT | parent-b@minsuke.local | password（中村家・中参加率） |
-| PARENT | parent-c@minsuke.local | password（佐藤家・0%） |
+| ADMIN | admin | password |
+| PARENT | parent | password（サンプル家・高参加率） |
+| PARENT | parent-b | password（中村家・中参加率） |
+| PARENT | parent-c | password（佐藤家・0%） |
 
 ---
 
 # 18. Loop History
+
+## Loop 18
+
+- **Status:** **IN PROGRESS**（実装・UI 確認済、PR 待ち）
+- **Started:** 2026-08-17
+- **Branch:** `feature/loop-18-pii-externalization`
+- **Last Updated:** 2026-08-23 — ローカル UI 人間確認済
+- **Next Action:** PR → merge
 
 ## Loop 11
 

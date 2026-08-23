@@ -37,6 +37,7 @@ import com.minsuke.event.exception.EventCapacityFullException;
 import com.minsuke.event.exception.EventNotFoundException;
 import com.minsuke.event.repository.EventAttendanceRepository;
 import com.minsuke.event.repository.EventRepository;
+import com.minsuke.family.domain.SubscriptionStatus;
 import com.minsuke.family.entity.Child;
 import com.minsuke.family.entity.Household;
 import com.minsuke.family.entity.Parent;
@@ -250,6 +251,7 @@ public class EventService {
     @Transactional
     public void registerParent(MinsukeUserDetails user, Long eventId, Long parentId) {
         Long householdId = requireParentHouseholdId(user);
+        requireActiveSubscription(householdId);
         Event event = findEventOrThrow(eventId);
         requireUnitAllows(event, ParticipantType.PARENT);
         Parent parent = parentRepository.findByIdAndHouseholdId(parentId, householdId)
@@ -260,6 +262,7 @@ public class EventService {
     @Transactional
     public void registerChild(MinsukeUserDetails user, Long eventId, Long childId) {
         Long householdId = requireParentHouseholdId(user);
+        requireActiveSubscription(householdId);
         Event event = findEventOrThrow(eventId);
         requireUnitAllows(event, ParticipantType.CHILD);
         Child child = childRepository.findByIdAndHouseholdId(childId, householdId)
@@ -270,6 +273,7 @@ public class EventService {
     @Transactional
     public void registerHousehold(MinsukeUserDetails user, Long eventId) {
         Long householdId = requireParentHouseholdId(user);
+        requireActiveSubscription(householdId);
         Event event = findEventOrThrow(eventId);
         requireUnitAllows(event, ParticipantType.HOUSEHOLD);
         registerParticipant(user, event, ParticipantType.HOUSEHOLD, null, null, householdId);
@@ -300,6 +304,7 @@ public class EventService {
     @Transactional
     public SeriesAttendResultDTO registerParentSeries(MinsukeUserDetails user, Long eventId, Long parentId) {
         Long householdId = requireParentHouseholdId(user);
+        requireActiveSubscription(householdId);
         Event source = requireSeriesSource(eventId);
         requireUnitAllows(source, ParticipantType.PARENT);
         Parent parent = parentRepository.findByIdAndHouseholdId(parentId, householdId)
@@ -310,6 +315,7 @@ public class EventService {
     @Transactional
     public SeriesAttendResultDTO registerChildSeries(MinsukeUserDetails user, Long eventId, Long childId) {
         Long householdId = requireParentHouseholdId(user);
+        requireActiveSubscription(householdId);
         Event source = requireSeriesSource(eventId);
         requireUnitAllows(source, ParticipantType.CHILD);
         Child child = childRepository.findByIdAndHouseholdId(childId, householdId)
@@ -320,6 +326,7 @@ public class EventService {
     @Transactional
     public SeriesAttendResultDTO registerHouseholdSeries(MinsukeUserDetails user, Long eventId) {
         Long householdId = requireParentHouseholdId(user);
+        requireActiveSubscription(householdId);
         Event source = requireSeriesSource(eventId);
         requireUnitAllows(source, ParticipantType.HOUSEHOLD);
         return applySeries(user, source, ParticipantType.HOUSEHOLD, null, null, householdId, false);
@@ -743,6 +750,14 @@ public class EventService {
             throw new EventAccessDeniedException();
         }
         return householdId;
+    }
+
+    private void requireActiveSubscription(Long householdId) {
+        Household household = householdRepository.findById(householdId)
+                .orElseThrow(EventAccessDeniedException::new);
+        if (household.getSubscriptionStatus() != SubscriptionStatus.ACTIVE) {
+            throw new IllegalArgumentException("サブスクリプションが有効でないため、参加登録できません。");
+        }
     }
 
     private record OptionalAttendance(EventAttendance attendance, boolean registered) {

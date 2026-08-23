@@ -20,6 +20,9 @@ import com.minsuke.announcement.repository.AnnouncementReadRepository;
 import com.minsuke.announcement.repository.AnnouncementRepository;
 import com.minsuke.auth.domain.Role;
 import com.minsuke.auth.security.MinsukeUserDetails;
+import com.minsuke.family.entity.Household;
+import com.minsuke.family.repository.HouseholdRepository;
+import com.minsuke.integration.NotificationMailPort;
 
 @Service
 public class AnnouncementService {
@@ -28,12 +31,18 @@ public class AnnouncementService {
 
     private final AnnouncementRepository announcementRepository;
     private final AnnouncementReadRepository announcementReadRepository;
+    private final HouseholdRepository householdRepository;
+    private final NotificationMailPort notificationMailPort;
 
     public AnnouncementService(
             AnnouncementRepository announcementRepository,
-            AnnouncementReadRepository announcementReadRepository) {
+            AnnouncementReadRepository announcementReadRepository,
+            HouseholdRepository householdRepository,
+            NotificationMailPort notificationMailPort) {
         this.announcementRepository = announcementRepository;
         this.announcementReadRepository = announcementReadRepository;
+        this.householdRepository = householdRepository;
+        this.notificationMailPort = notificationMailPort;
     }
 
     @Transactional(readOnly = true)
@@ -68,7 +77,9 @@ public class AnnouncementService {
         announcement.setPublishedAt(now);
         announcement.setCreatedAt(now);
         announcement.setUpdatedAt(now);
-        return announcementRepository.save(announcement).getId();
+        Long id = announcementRepository.save(announcement).getId();
+        notifyExternalMail(announcement);
+        return id;
     }
 
     @Transactional
@@ -125,6 +136,15 @@ public class AnnouncementService {
     private void applyForm(Announcement announcement, AnnouncementForm form) {
         announcement.setTitle(form.getTitle().trim());
         announcement.setBody(form.getBody().trim());
+    }
+
+    private void notifyExternalMail(Announcement announcement) {
+        List<String> externalMemberIds = householdRepository.findAll().stream()
+                .map(Household::getExternalMemberId)
+                .filter(id -> id != null && !id.isBlank())
+                .toList();
+        notificationMailPort.sendAnnouncement(
+                externalMemberIds, announcement.getTitle(), announcement.getBody());
     }
 
     private AnnouncementForm toForm(Announcement announcement) {

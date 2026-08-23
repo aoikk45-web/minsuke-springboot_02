@@ -80,7 +80,7 @@ class AuthControllerSecurityTest {
     void registerCreatesAccount() throws Exception {
         mockMvc.perform(post("/register")
                         .with(csrf())
-                        .param("email", "register-test@example.com")
+                        .param("loginId", "register-test")
                         .param("password", "password12")
                         .param("confirmPassword", "password12")
                         .param("householdName", "登録テスト家")
