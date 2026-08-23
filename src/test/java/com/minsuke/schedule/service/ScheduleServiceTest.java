@@ -89,7 +89,7 @@ class ScheduleServiceTest {
         household = householdRepository.save(household);
 
         User admin = new User();
-        admin.setEmail("admin-s@test.local");
+        admin.setLoginId("admin-s@test.local");
         admin.setPasswordHash("hash");
         admin.setRole(Role.ADMIN);
         admin.setCreatedAt(now);
@@ -97,7 +97,7 @@ class ScheduleServiceTest {
         adminUser = new MinsukeUserDetails(userRepository.save(admin));
 
         User parent = new User();
-        parent.setEmail("parent-s@test.local");
+        parent.setLoginId("parent-s@test.local");
         parent.setPasswordHash("hash");
         parent.setRole(Role.PARENT);
         parent.setHouseholdId(household.getId());

@@ -91,7 +91,7 @@ class FamilyServiceTest {
         householdB = householdRepository.save(householdB);
 
         User parent = new User();
-        parent.setEmail("parent-a@test.local");
+        parent.setLoginId("parent-a@test.local");
         parent.setPasswordHash("hash");
         parent.setRole(Role.PARENT);
         parent.setHouseholdId(householdA.getId());
@@ -101,7 +101,7 @@ class FamilyServiceTest {
         parentUser = new MinsukeUserDetails(parent);
 
         User admin = new User();
-        admin.setEmail("admin@test.local");
+        admin.setLoginId("admin@test.local");
         admin.setPasswordHash("hash");
         admin.setRole(Role.ADMIN);
         admin.setHouseholdId(null);
@@ -146,7 +146,6 @@ class FamilyServiceTest {
         ParentForm parentForm = new ParentForm();
         parentForm.setName("太郎");
         parentForm.setNameKana("たろう");
-        parentForm.setPhone("090-1111-2222");
         familyService.createParent(parentUser, parentForm);
 
         ChildForm childForm = new ChildForm();

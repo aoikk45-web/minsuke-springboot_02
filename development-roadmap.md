@@ -1,6 +1,6 @@
 # MinSuke — Development Roadmap
 
-**Status:** Loop 17 **Completed** — FR-E07 ADMIN 参加状況（人間 UI 確認済 2026-08-17）  
+**Status:** Loop 17 **Completed** — FR-E07 ADMIN 参加状況（PR **#13** merge 2026-08-17）  
 **Date:** 2026-08-17  
 **Version:** 1.16
 
@@ -167,10 +167,11 @@ Loop 02 で決定すべき事項：
 
 ---
 
-## 8. Next Actions（Loop 17 完了後）
+## 8. Next Actions（Loop 18 実装・UI 確認済）
 
-1. Loop 17 の PR を merge
-2. **次 Loop を人間承認:** Testing/CI、または OQ-P01〜P05（個人情報・決済・メール外部化）
+1. **PR:** `feature/loop-18-pii-externalization` → `main`
+2. merge 後に Loop 18 完了を記録
+3. Testing/CI は別 Loop 候補のまま
 
 ---
 

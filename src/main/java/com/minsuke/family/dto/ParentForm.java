@@ -9,14 +9,11 @@ import lombok.Setter;
 @Setter
 public class ParentForm {
 
-    @NotBlank(message = "氏名を入力してください")
-    @Size(max = 100, message = "氏名は100文字以内で入力してください")
+    @NotBlank(message = "表示名を入力してください")
+    @Size(max = 100, message = "表示名は100文字以内で入力してください")
     private String name;
 
     @NotBlank(message = "ふりがなを入力してください")
     @Size(max = 100, message = "ふりがなは100文字以内で入力してください")
     private String nameKana;
-
-    @Size(max = 20, message = "電話番号は20文字以内で入力してください")
-    private String phone;
 }

@@ -10,6 +10,7 @@ import com.minsuke.auth.domain.Role;
 import com.minsuke.auth.dto.RegisterForm;
 import com.minsuke.auth.entity.User;
 import com.minsuke.auth.repository.UserRepository;
+import com.minsuke.family.domain.SubscriptionStatus;
 import com.minsuke.family.entity.Household;
 import com.minsuke.family.repository.HouseholdRepository;
 
@@ -34,8 +35,9 @@ public class AuthService {
         if (!form.getPassword().equals(form.getConfirmPassword())) {
             throw new IllegalArgumentException("パスワードが一致しません");
         }
-        if (userRepository.existsByEmail(form.getEmail())) {
-            throw new IllegalArgumentException("このメールアドレスは既に登録されています");
+        String loginId = form.getLoginId().trim();
+        if (userRepository.existsByLoginId(loginId)) {
+            throw new IllegalArgumentException("このアカウント ID は既に登録されています");
         }
 
         Instant now = Instant.now();
@@ -44,12 +46,13 @@ public class AuthService {
         household.setName(form.getHouseholdName());
         household.setNameKana(form.getHouseholdNameKana());
         household.setGroupName(emptyToNull(form.getGroupName()));
+        household.setSubscriptionStatus(SubscriptionStatus.ACTIVE);
         household.setCreatedAt(now);
         household.setUpdatedAt(now);
         household = householdRepository.save(household);
 
         User user = new User();
-        user.setEmail(form.getEmail());
+        user.setLoginId(loginId);
         user.setPasswordHash(passwordEncoder.encode(form.getPassword()));
         user.setRole(Role.PARENT);
         user.setHouseholdId(household.getId());

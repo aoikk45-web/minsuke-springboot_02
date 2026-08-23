@@ -97,7 +97,7 @@ class AdminParticipationServiceTest {
         Instant now = Instant.now();
 
         User admin = new User();
-        admin.setEmail("admin-rate@test.local");
+        admin.setLoginId("admin-rate@test.local");
         admin.setPasswordHash("hash");
         admin.setRole(Role.ADMIN);
         admin.setCreatedAt(now);
@@ -223,7 +223,7 @@ class AdminParticipationServiceTest {
 
     private MinsukeUserDetails saveParentUser(String email, Long householdId, Instant now) {
         User user = new User();
-        user.setEmail(email);
+        user.setLoginId(email);
         user.setPasswordHash("hash");
         user.setRole(Role.PARENT);
         user.setHouseholdId(householdId);

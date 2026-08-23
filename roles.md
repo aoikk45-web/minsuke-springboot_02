@@ -10,11 +10,11 @@ Greenfield / New Development
 
 ## Current Loop
 
-Loop 11〜17 完了 — **次 Loop は人間承認待ち**
+**Loop 18** — 個人情報・決済・メール外部化（PR 待ち）
 
 ## Date
 
-2026-08-17
+2026-08-23
 
 ---
 

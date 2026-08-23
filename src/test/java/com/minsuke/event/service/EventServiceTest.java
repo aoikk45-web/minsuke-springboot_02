@@ -114,7 +114,7 @@ class EventServiceTest {
         household = householdRepository.save(household);
 
         User parent = new User();
-        parent.setEmail("parent@test.local");
+        parent.setLoginId("parent@test.local");
         parent.setPasswordHash("hash");
         parent.setRole(Role.PARENT);
         parent.setHouseholdId(household.getId());
@@ -124,7 +124,7 @@ class EventServiceTest {
         parentUser = new MinsukeUserDetails(parent);
 
         User admin = new User();
-        admin.setEmail("admin@test.local");
+        admin.setLoginId("admin@test.local");
         admin.setPasswordHash("hash");
         admin.setRole(Role.ADMIN);
         admin.setCreatedAt(now);
@@ -207,7 +207,7 @@ class EventServiceTest {
         otherHousehold = householdRepository.save(otherHousehold);
 
         User otherParentUserEntity = new User();
-        otherParentUserEntity.setEmail("other@test.local");
+        otherParentUserEntity.setLoginId("other@test.local");
         otherParentUserEntity.setPasswordHash("hash");
         otherParentUserEntity.setRole(Role.PARENT);
         otherParentUserEntity.setHouseholdId(otherHousehold.getId());
@@ -294,6 +294,19 @@ class EventServiceTest {
                 .hasMessageContaining("子ども");
         eventService.registerChild(parentUser, eventId, childId);
         assertThat(eventService.getEventDetail(eventId, parentUser).getRegisteredCount()).isEqualTo(1);
+    }
+
+    @Test
+    void inactiveSubscriptionBlocksRegistration() {
+        Household hh = householdRepository.findById(parentUser.getHouseholdId()).orElseThrow();
+        hh.setSubscriptionStatus(com.minsuke.family.domain.SubscriptionStatus.PAST_DUE);
+        householdRepository.save(hh);
+
+        Long eventId = eventService.createEvent(adminUser, sampleEventForm());
+
+        assertThatThrownBy(() -> eventService.registerParent(parentUser, eventId, parentId))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("サブスクリプション");
     }
 
     @Test
@@ -483,7 +496,7 @@ class EventServiceTest {
         otherHousehold = householdRepository.save(otherHousehold);
 
         User otherParentUserEntity = new User();
-        otherParentUserEntity.setEmail("other-series@test.local");
+        otherParentUserEntity.setLoginId("other-series@test.local");
         otherParentUserEntity.setPasswordHash("hash");
         otherParentUserEntity.setRole(Role.PARENT);
         otherParentUserEntity.setHouseholdId(otherHousehold.getId());

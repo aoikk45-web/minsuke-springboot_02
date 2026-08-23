@@ -81,7 +81,7 @@ class InstructorServiceTest {
         household = householdRepository.save(household);
 
         User admin = new User();
-        admin.setEmail("admin-i@test.local");
+        admin.setLoginId("admin-i@test.local");
         admin.setPasswordHash("hash");
         admin.setRole(Role.ADMIN);
         admin.setCreatedAt(now);
@@ -89,7 +89,7 @@ class InstructorServiceTest {
         adminUser = new MinsukeUserDetails(userRepository.save(admin));
 
         User parent = new User();
-        parent.setEmail("parent-i@test.local");
+        parent.setLoginId("parent-i@test.local");
         parent.setPasswordHash("hash");
         parent.setRole(Role.PARENT);
         parent.setHouseholdId(household.getId());

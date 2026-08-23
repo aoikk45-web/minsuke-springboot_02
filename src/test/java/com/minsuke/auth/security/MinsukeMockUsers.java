@@ -22,7 +22,7 @@ public final class MinsukeMockUsers {
     private static RequestPostProcessor user(Role role, Long id, Long householdId) {
         User entity = new User();
         entity.setId(id);
-        entity.setEmail(role == Role.ADMIN ? "admin@test.local" : "parent@test.local");
+        entity.setLoginId(role == Role.ADMIN ? "admin" : "parent");
         entity.setPasswordHash("hash");
         entity.setRole(role);
         entity.setHouseholdId(householdId);

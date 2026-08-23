@@ -39,6 +39,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/events/*/edit").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/events/*/attend").hasRole("PARENT")
                         .requestMatchers(HttpMethod.POST, "/families/*/delete").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/families/*/billing").hasRole("ADMIN")
                         .requestMatchers("/instructors/new", "/instructors/*/edit").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/instructors/*/deactivate").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/instructors/*/delete").hasRole("ADMIN")
@@ -55,7 +56,7 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
-                        .usernameParameter("email")
+                        .usernameParameter("loginId")
                         .passwordParameter("password")
                         .defaultSuccessUrl("/calendar", true)
                         .permitAll())
